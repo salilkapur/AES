@@ -196,7 +196,7 @@ module aes_encrypt(
     input [0:127] in,
     input [0:1407] key_schedule,
     input clk,
-    output reg [0:127] out //out is used as the intermediate state and also the final output
+    output reg [0:127] out //out is used as the final output
     );
     
     //Helper variables
@@ -216,19 +216,10 @@ module aes_encrypt(
         $display("State: %h", state);
         $display("Round Key Value: %h", key_schedule[0:127]);
         // Add the first round key. This happens outside of the loop
-        /*
-        for(c = 0; c < 4; c = c + 1) 
-        begin
-            state[8*(c+0)+:8]  = state[8*(c+0)+:8]  + key_schedule[(0 + c + 0)+:8];
-            state[8*(c+32)+:8] = state[8*(c+32)+:8] + key_schedule[(0 + c + 32)+:8];
-            state[8*(c+64)+:8] = state[8*(c+64)+:8] + key_schedule[(0 + c + 64)+:8];
-            state[8*(c+96)+:8] = state[8*(c+96)+:8] + key_schedule[(0 + c + 96)+:8];
-        end
-        */
         state = state ^ key_schedule[0:127];
         $display("After AddRoundKey %h", state);
         
-        // Loop for 9 rounds. Last round is different
+        // Loop for 9 rounds. Last round is different. No MixColumns operation for round = 10
         for(round = 1; round <= 10; round = round + 1)
         begin
             $display("-------------------- Round %0d --------------------", round);
@@ -268,16 +259,6 @@ module aes_encrypt(
                 mix_column_state = state;
             
             // Applying AddRoundKey operation to the state
-            /*
-            for(c = 0; c < 4; c = c + 1) 
-            begin
-                state[8*(c+0)+:8]  = state[8*(c+0)+:8]  | key_schedule[(round * 128 + c + 0)+:8];
-                state[8*(c+32)+:8] = state[8*(c+32)+:8] | key_schedule[(round * 128 + c + 32)+:8];
-                state[8*(c+64)+:8] = state[8*(c+64)+:8] | key_schedule[(round * 128 + c + 64)+:8];
-                state[8*(c+96)+:8] = state[8*(c+96)+:8] | key_schedule[(round * 128 + c + 96)+:8];
-            end
-            */
-            
             state = mix_column_state ^ key_schedule[round*128 +:128];
             $display("RoundKey Value %h", key_schedule[round*128 +:128]);
             $display("After AddRoundKey %h", state);

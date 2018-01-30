@@ -30,10 +30,10 @@ module key_expansion(
     reg [0:31] temp_rot_word;
     reg [0:31] temp_sub_word;
     reg [0:31] temp;
-    //sub_word sub_word_instance(.clk(clk), .key_word(temp_rot_word), .out(temp_sub_word));
+
     always @(negedge clk)
     begin
-        key_schedule[0:127] = cipher_key; // The first key is the original key
+        key_schedule[0:127] = cipher_key; // The first key is the original key.
         for( i = 4; i < 44; i++)
         begin
             temp = key_schedule[(i-1)*32+:32];
