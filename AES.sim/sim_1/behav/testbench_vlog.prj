@@ -1,0 +1,10 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  "../../../AES.srcs/sources_1/new/aes_encrypt.sv"
+sv xil_defaultlib  "../../../AES.srcs/sources_1/new/key_expansion.sv"
+sv xil_defaultlib  "../../../AES.srcs/sim_1/imports/new/testbench.sv"
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
