@@ -24,14 +24,13 @@ module testbench(
 
     );
     reg clk = 1'b0;
-    reg [0:1407] key_schedule;
     
     // Encryption Sample Test 1
-    
+    /*
     reg [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;
     reg [0:127] plain_text = 128'h3243f6a8885a308d313198a2e0370734;
     reg [0:127] cipher_text;
-    
+    */
     
     // Encryption Sample Test 2
     /*
@@ -47,6 +46,9 @@ module testbench(
     reg [0:127] plain_text;
     */
     
+    aes aes_top_module(.clk(clk));
+    
+    /*
     // Key expasion module
     key_expansion key_expansion_ut(
                 .cipher_key(cipher_key),
@@ -61,6 +63,7 @@ module testbench(
                     .clk(clk),
                     .out(cipher_text)
     );
+    */
     
     //Decryption module
     /*
@@ -75,7 +78,5 @@ module testbench(
         #10 clk = ~clk;
         #10 clk = ~clk;
         #10 clk = ~clk;
-        $display("%h", key_schedule);
-        $display("%h", cipher_text);
     end
 endmodule
