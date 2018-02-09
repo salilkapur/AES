@@ -74,7 +74,7 @@ module display(
     9:a_to_g = 7'b0010000;////1001
     'hA:a_to_g = 7'b0001000; 
     'hB:a_to_g = 7'b0000011; 
-    'hC:a_to_g = 7'b0100011;
+    'hC:a_to_g = 7'b0100111;
     'hD:a_to_g = 7'b0100001;
     'hE:a_to_g = 7'b0000110;
     'hF:a_to_g = 7'b0001110;
