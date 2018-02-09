@@ -72,10 +72,10 @@ module display(
     7:a_to_g = 7'b1111000;////0111
     8:a_to_g = 7'b0000000;////1000
     9:a_to_g = 7'b0010000;////1001
-    'hA:a_to_g = 7'b0001000; // dash-(g)
-    'hB:a_to_g = 7'b0000000; // all turned off
-    'hC:a_to_g = 7'b1000110;
-    'hD:a_to_g = 7'b1000000;
+    'hA:a_to_g = 7'b0001000; 
+    'hB:a_to_g = 7'b0000011; 
+    'hC:a_to_g = 7'b0100011;
+    'hD:a_to_g = 7'b0100001;
     'hE:a_to_g = 7'b0000110;
     'hF:a_to_g = 7'b0001110;
     default: a_to_g = 7'b0000000; // U

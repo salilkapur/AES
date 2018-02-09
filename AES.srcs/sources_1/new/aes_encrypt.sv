@@ -189,18 +189,19 @@ package globals;
         8'hc6, 8'h97, 8'h35, 8'h6a, 8'hd4, 8'hb3, 8'h7d, 8'hfa, 8'hef, 8'hc5, 8'h91, 8'h39, 8'h72, 8'he4, 8'hd3, 8'hbd, 
         8'h61, 8'hc2, 8'h9f, 8'h25, 8'h4a, 8'h94, 8'h33, 8'h66, 8'hcc, 8'h83, 8'h1d, 8'h3a, 8'h74, 8'he8, 8'hcb, 8'h8d
     };
-
+    
+    const bit [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;
 endpackage
 
 module aes_encrypt(
     input [0:127] in,
-    input [0:1407] key_schedule,
     input clk,
     output reg [0:127] out //out is used as the final output
     );
     
     //Helper variables
     integer i;
+    integer j;
     integer round;
     integer c;
     integer row;
@@ -208,9 +209,31 @@ module aes_encrypt(
     // To store intermediate states
     reg [0:127] state;
     reg [0:127] mix_column_state;
+    reg [0:1407] key_schedule;
+    reg [0:31] temp_rot_word;
+    reg [0:31] temp_sub_word;
+    reg [0:31] temp;
     
-    always @(posedge clk)
+    always@(posedge clk)
     begin
+        //Generate the key schedule
+        $display("--------------------Generating key schedule--------------------");
+        key_schedule[0:127] = globals::cipher_key; // The first key is the original key.
+        for( i = 4; i < 44; i++)
+        begin
+            temp = key_schedule[(i-1)*32+:32];
+            if (i % 4 == 0)
+            begin
+                temp_rot_word = {key_schedule[((i-1)*32 + 8)+:24], key_schedule[(i-1)*32+:8]};    
+                for(j = 0; j < 32; j = j + 8)
+                begin
+                    temp_sub_word[j+:8] = globals::SBOX[temp_rot_word[j+:4] * 16 + temp_rot_word[j+4+:4]];
+                end
+                temp = temp_sub_word ^ {globals::rcon[i/4], 24'h000000};
+            end
+            key_schedule[32*i+:32] = key_schedule[(i-4)*32+:32] ^ temp;
+            $display("RotWord %h | SubWord %h | Rcon %h | After XOR %h | Final %h", temp_rot_word, temp_sub_word, globals::rcon[i/4], temp, key_schedule[32*i+:32]);
+        end
         state = in; // Starting with plain text
         $display("--------------------Input--------------------");
         $display("State: %h", state);
