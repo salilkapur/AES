@@ -207,6 +207,7 @@ module aes_encrypt(
     integer row;
     
     // To store intermediate states
+    reg [0:127] in_state;
     reg [0:127] state;
     reg [0:127] mix_column_state;
     reg [0:1407] key_schedule;
@@ -214,7 +215,10 @@ module aes_encrypt(
     reg [0:31] temp_sub_word;
     reg [0:31] temp;
     
-    always@(posedge clk)
+    always @(posedge clk)
+        in_state <= in;
+        
+    always_comb
     begin
         //Generate the key schedule
         $display("--------------------Generating key schedule--------------------");
@@ -234,12 +238,14 @@ module aes_encrypt(
             key_schedule[32*i+:32] = key_schedule[(i-4)*32+:32] ^ temp;
             $display("RotWord %h | SubWord %h | Rcon %h | After XOR %h | Final %h", temp_rot_word, temp_sub_word, globals::rcon[i/4], temp, key_schedule[32*i+:32]);
         end
-        state = in; // Starting with plain text
+        
+        //state = in; // Starting with plain text  <- This logic is moved to always @ (clk)
+        
         $display("--------------------Input--------------------");
-        $display("State: %h", state);
+        $display("State: %h", in_state);
         $display("Round Key Value: %h", key_schedule[0:127]);
         // Add the first round key. This happens outside of the loop
-        state = state ^ key_schedule[0:127];
+        state = in_state ^ key_schedule[0:127];
         $display("After AddRoundKey %h", state);
         
         // Loop for 9 rounds. Last round is different. No MixColumns operation for round = 10
@@ -286,7 +292,13 @@ module aes_encrypt(
             $display("RoundKey Value %h", key_schedule[round*128 +:128]);
             $display("After AddRoundKey %h", state);
         end
-        out = state;
+        // out = state; This logic has been moved to always @ (clk)
+    end
+    
+    always @(posedge clk)
+    begin
+        out <= state;
         $display("CIPHER TEXT: %h", out);
     end
+      
 endmodule

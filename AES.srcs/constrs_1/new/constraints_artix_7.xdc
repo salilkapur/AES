@@ -68,3 +68,5 @@ set_property IOSTANDARD LVCMOS33 [get_ports {an[3]}]
 
 
 
+
+set_input_delay -clock [get_clocks *] 1.000 [get_ports {{sw[0]} {sw[1]} {sw[2]} {sw[3]} {sw[4]} {sw[5]} {sw[6]} {sw[7]} {sw[8]} {sw[9]} {sw[10]} {sw[11]} {sw[12]} {sw[13]} {sw[14]} {sw[15]}}]

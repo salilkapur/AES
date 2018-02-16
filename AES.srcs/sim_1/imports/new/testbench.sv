@@ -73,10 +73,23 @@ module testbench(
                         .out(plain_text)
     );
     */
+    
     initial
     begin       
         #10 clk = ~clk;
         #10 clk = ~clk;
         #10 clk = ~clk;
+        #10 clk = ~clk;
+        #10 clk = ~clk;
     end
+    /*
+    initial
+    begin       
+        #20 clk = ~clk;
+        #20 clk = ~clk;
+        #20 clk = ~clk;
+        #20 clk = ~clk;
+        #20 clk = ~clk;
+    end
+    */
 endmodule
