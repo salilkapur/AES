@@ -208,7 +208,7 @@ module aes_encrypt(
     
     // To store intermediate states
     reg [0:127] in_state;
-    reg [0:127] state;
+    logic [0:127] state;
     reg [0:127] mix_column_state;
     reg [0:1407] key_schedule;
     reg [0:31] temp_rot_word;
@@ -218,7 +218,7 @@ module aes_encrypt(
     always @(posedge clk)
         in_state <= in;
         
-    always_comb
+    always @(in_state)
     begin
         //Generate the key schedule
         $display("--------------------Generating key schedule--------------------");
