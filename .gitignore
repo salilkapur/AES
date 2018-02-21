@@ -1,4 +1,7 @@
-AES.cache
-AES.sim
-AES.hw
-AES.runs
+*.cache
+*.sim
+*.hw
+*.runs
+.Xil
+
+*report*
