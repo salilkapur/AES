@@ -249,7 +249,7 @@ module aes_encrypt(
         $display("After AddRoundKey %h", state);
         
         // Loop for 9 rounds. Last round is different. No MixColumns operation for round = 10
-        for(round = 1; round <= 10; round = round + 1)
+        for(round = 1; round <= 9; round = round + 1)
         begin
             $display("-------------------- Round %0d --------------------", round);
             $display("State: %h", state);
@@ -273,26 +273,47 @@ module aes_encrypt(
             $display("After ShiftRows: %h", state);
             
             //Applying MixColumns operation on the states
-            if (round != 10)
+            for(c = 0; c < 4; c = c + 1)
             begin
-                for(c = 0; c < 4; c = c + 1)
-                begin
-                    mix_column_state[c*32+0  +:8]  = globals::gf_table_2[state[c*32+0+:8]] ^ globals::gf_table_3[state[c*32+8+:8]] ^ state[c*32+16+:8] ^ state[c*32+24+:8];
-                    mix_column_state[c*32+8  +:8]  = state[c*32+0+:8] ^ globals::gf_table_2[state[c*32+8+:8]] ^ globals::gf_table_3[state[c*32+16+:8]] ^ state[c*32+24+:8];
-                    mix_column_state[c*32+16 +:8]  = state[c*32+0+:8] ^ state[c*32+8+:8] ^ globals::gf_table_2[state[c*32+16+:8]] ^ globals::gf_table_3[state[c*32+24+:8]];
-                    mix_column_state[c*32+24 +:8]  = globals::gf_table_3[state[c*32+0+:8]] ^ state[c*32+8+:8] ^ state[c*32+16+:8] ^ globals::gf_table_2[state[c*32+24+:8]];
-                end
-                $display("After MixColumns: %h", mix_column_state);
+                mix_column_state[c*32+0  +:8]  = globals::gf_table_2[state[c*32+0+:8]] ^ globals::gf_table_3[state[c*32+8+:8]] ^ state[c*32+16+:8] ^ state[c*32+24+:8];
+                mix_column_state[c*32+8  +:8]  = state[c*32+0+:8] ^ globals::gf_table_2[state[c*32+8+:8]] ^ globals::gf_table_3[state[c*32+16+:8]] ^ state[c*32+24+:8];
+                mix_column_state[c*32+16 +:8]  = state[c*32+0+:8] ^ state[c*32+8+:8] ^ globals::gf_table_2[state[c*32+16+:8]] ^ globals::gf_table_3[state[c*32+24+:8]];
+                mix_column_state[c*32+24 +:8]  = globals::gf_table_3[state[c*32+0+:8]] ^ state[c*32+8+:8] ^ state[c*32+16+:8] ^ globals::gf_table_2[state[c*32+24+:8]];
             end
-            else
-                mix_column_state = state;
+            $display("After MixColumns: %h", mix_column_state);
             
             // Applying AddRoundKey operation to the state
             state = mix_column_state ^ key_schedule[round*128 +:128];
             $display("RoundKey Value %h", key_schedule[round*128 +:128]);
             $display("After AddRoundKey %h", state);
         end
-        // out = state; This logic has been moved to always @ (clk)
+
+        $display("-------------------- Round 10 --------------------");
+        $display("State: %h", state);
+        
+        // Applying SubBytes operation on the state
+        for(i = 0; i < 128; i = i + 8)
+        begin
+            state[i+:8] = globals::SBOX[state[i+:4] * 16 + state[i+4+:4]];
+        end
+        $display("After SubBytes: %h", state);
+        
+        // Applying ShiftRows operation on the state
+        {state[(0 * 8)+0 +:8], state[(0 * 8)+32 +:8], state[(0 * 8)+64 +:8], state[(0 * 8)+96 +:8]} =
+                            {state[(0 * 8)+0 +:8], state[(0 * 8)+32 +:8], state[(0 * 8)+64 +:8], state[(0 * 8)+96 +:8]};
+        {state[(1 * 8)+0 +:8], state[(1 * 8)+32 +:8], state[(1 * 8)+64 +:8], state[(1 * 8)+96 +:8]} =
+                            {state[(1 * 8)+32 +:8], state[(1 * 8)+64 +:8], state[(1 * 8)+96 +:8], state[(1 * 8)+0 +:8]};
+        {state[(2 * 8)+0 +:8], state[(2 * 8)+32 +:8], state[(2 * 8)+64 +:8], state[(2 * 8)+96 +:8]} =
+                            {state[(2 * 8)+64 +:8], state[(2 * 8)+96 +:8], state[(2 * 8)+0 +:8], state[(2 * 8)+32 +:8]};
+        {state[(3 * 8)+0 +:8], state[(3 * 8)+32 +:8], state[(3 * 8)+64 +:8], state[(3 * 8)+96 +:8]} =
+                            {state[(3 * 8)+96 +:8], state[(3 * 8)+0 +:8], state[(3 * 8)+32 +:8], state[(3 * 8)+64 +:8]};
+        $display("After ShiftRows: %h", state);
+        
+        // Applying AddRoundKey operation to the state
+        state = state ^ key_schedule[10*128 +:128]; // Round = 10
+        $display("RoundKey Value %h", key_schedule[10*128 +:128]); // Round = 10
+        $display("After AddRoundKey %h", state);
+
     end
     
     always @(posedge clk)
