@@ -178,9 +178,10 @@ endpackage
 module aes_encrypt_unroll(
     input [0:127] in,
     input clk,
-    output reg [0:127] out //out is used as the final output
-    );
-    
+    input  i__reset,
+    output reg [0:127] out,
+    output reg [0:31] o__count__next
+);
     //Helper variables
     integer i;
     integer j;
@@ -199,7 +200,6 @@ module aes_encrypt_unroll(
     logic [0:127]    state_9;
     logic [0:127]    state_10;
 
-    logic [0:127]    mix_column_state;
     logic [0:127]    mix_column_state_0;
     logic [0:127]    mix_column_state_1;
     logic [0:127]    mix_column_state_2;
@@ -215,15 +215,45 @@ module aes_encrypt_unroll(
     logic [0:31]     temp_rot_word;
     logic [0:31]     temp_sub_word;
     logic [0:31]     temp;
+     
+    logic [0:31]    r__count__pff;
+    reg reset;
     
-    always @(posedge clk)
+    // Counter Logic
+    /*
+    always_ff @(posedge clk)
     begin
-        in_state <= in; // Latch the input
-        out <= state_10; // Latch the output
+        reset <= i__reset;
+    end
+    */
+    always_ff @ (posedge clk)
+    begin
+        reset <= i__reset;
+        if (reset == 1'b1)
+        begin
+            r__count__pff <= 0;
+            in_state <= in;
+        end
+        else
+        begin
+            r__count__pff <= o__count__next;
+            in_state <= state_10;
+            out <= state_10;
+        end
         $display("CIPHER TEXT: %h", out);
     end
-   
-    always @(in_state)
+
+    always_comb
+    begin
+        o__count__next = r__count__pff;
+        
+        if(r__count__pff == 32'h3b9aca00 + 32'h3b9aca00)
+            o__count__next = '0;
+        else
+            o__count__next = r__count__pff + 1'b1;
+    end
+    
+    always_comb
     begin
         //Generate the key schedule
         $display("--------------------Generating key schedule--------------------");

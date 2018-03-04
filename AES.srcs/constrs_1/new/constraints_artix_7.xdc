@@ -1,7 +1,11 @@
 ## Clock signal
 set_property PACKAGE_PIN W5 [get_ports clk]
 set_property IOSTANDARD LVCMOS33 [get_ports clk]
-create_clock -period 20.000 -name sys_clk_pin -add [get_ports clk]
+create_clock -period 10.000 [get_ports clk]
+
+# Reset button (Center button being used as reset)
+set_property PACKAGE_PIN U18 [get_ports i_reset]
+set_property IOSTANDARD LVCMOS33 [get_ports i_reset]
 
 ## Switches
 set_property PACKAGE_PIN V17 [get_ports {sw[0]}]
@@ -64,9 +68,3 @@ set_property PACKAGE_PIN V4 [get_ports {an[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {an[2]}]
 set_property PACKAGE_PIN W4 [get_ports {an[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {an[3]}]
-
-
-
-
-
-set_input_delay -clock [get_clocks *] 1.000 [get_ports {{sw[0]} {sw[1]} {sw[2]} {sw[3]} {sw[4]} {sw[5]} {sw[6]} {sw[7]} {sw[8]} {sw[9]} {sw[10]} {sw[11]} {sw[12]} {sw[13]} {sw[14]} {sw[15]}}]
