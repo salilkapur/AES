@@ -81,6 +81,10 @@ module testbench(
         #10 clk = ~clk;
         #10 clk = ~clk;
         #10 clk = ~clk;
+        #10 clk = ~clk;
+        #10 clk = ~clk;
+        #10 clk = ~clk;
+        #10 clk = ~clk;
     end
     /*
     initial

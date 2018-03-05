@@ -191,6 +191,7 @@ package globals;
     };
     
     const bit [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;
+    const bit [0:1407] key_schedule = 1408'h2b7e151628aed2a6abf7158809cf4f3ca0fafe1788542cb123a339392a6c7605f2c295f27a96b9435935807a7359f67f3d80477d4716fe3e1e237e446d7a883bef44a541a8525b7fb671253bdb0bad00d4d1c6f87c839d87caf2b8bc11f915bc6d88a37a110b3efddbf98641ca0093fd4e54f70e5f5fc9f384a64fb24ea6dc4fead27321b58dbad2312bf5607f8d292fac7766f319fadc2128d12941575c006ed014f9a8c9ee2589e13f0cc8b6630ca6;
 endpackage
 
 module aes_encrypt(
@@ -214,38 +215,23 @@ module aes_encrypt(
     reg [0:31] temp_rot_word;
     reg [0:31] temp_sub_word;
     reg [0:31] temp;
+    logic [0:7] temp_sbox_val;
     
     always @(posedge clk)
+    begin
         in_state <= in;
-        
+        out <= state;
+        $display("CIPHER TEXT: %h", out);
+    end
+    
     always @(in_state)
     begin
-        //Generate the key schedule
-        $display("--------------------Generating key schedule--------------------");
-        key_schedule[0:127] = globals::cipher_key; // The first key is the original key.
-        for( i = 4; i < 44; i++)
-        begin
-            temp = key_schedule[(i-1)*32+:32];
-            if (i % 4 == 0)
-            begin
-                temp_rot_word = {key_schedule[((i-1)*32 + 8)+:24], key_schedule[(i-1)*32+:8]};    
-                for(j = 0; j < 32; j = j + 8)
-                begin
-                    temp_sub_word[j+:8] = globals::SBOX[temp_rot_word[j+:4] * 16 + temp_rot_word[j+4+:4]];
-                end
-                temp = temp_sub_word ^ {globals::rcon[i/4], 24'h000000};
-            end
-            key_schedule[32*i+:32] = key_schedule[(i-4)*32+:32] ^ temp;
-            $display("RotWord %h | SubWord %h | Rcon %h | After XOR %h | Final %h", temp_rot_word, temp_sub_word, globals::rcon[i/4], temp, key_schedule[32*i+:32]);
-        end
-        
-        //state = in; // Starting with plain text  <- This logic is moved to always @ (clk)
         
         $display("--------------------Input--------------------");
         $display("State: %h", in_state);
-        $display("Round Key Value: %h", key_schedule[0:127]);
+        $display("Round Key Value: %h", globals::key_schedule[0:127]);
         // Add the first round key. This happens outside of the loop
-        state = in_state ^ key_schedule[0:127];
+        state = in_state ^ globals::key_schedule[0:127];
         $display("After AddRoundKey %h", state);
         
         // Loop for 9 rounds. Last round is different. No MixColumns operation for round = 10
@@ -257,7 +243,7 @@ module aes_encrypt(
             // Applying SubBytes operation on the state
             for(i = 0; i < 128; i = i + 8)
             begin
-                state[i+:8] = globals::SBOX[state[i+:4] * 16 + state[i+4+:4]];
+                state[i+:8] = globals::SBOX[state[i+:8]];
             end
             $display("After SubBytes: %h", state);
             
@@ -283,8 +269,8 @@ module aes_encrypt(
             $display("After MixColumns: %h", mix_column_state);
             
             // Applying AddRoundKey operation to the state
-            state = mix_column_state ^ key_schedule[round*128 +:128];
-            $display("RoundKey Value %h", key_schedule[round*128 +:128]);
+            state = mix_column_state ^ globals::key_schedule[round*128 +:128];
+            $display("RoundKey Value %h", globals::key_schedule[round*128 +:128]);
             $display("After AddRoundKey %h", state);
         end
 
@@ -294,7 +280,7 @@ module aes_encrypt(
         // Applying SubBytes operation on the state
         for(i = 0; i < 128; i = i + 8)
         begin
-            state[i+:8] = globals::SBOX[state[i+:4] * 16 + state[i+4+:4]];
+            state[i+:8] = globals::SBOX[state[i+:8]];
         end
         $display("After SubBytes: %h", state);
         
@@ -310,16 +296,9 @@ module aes_encrypt(
         $display("After ShiftRows: %h", state);
         
         // Applying AddRoundKey operation to the state
-        state = state ^ key_schedule[10*128 +:128]; // Round = 10
-        $display("RoundKey Value %h", key_schedule[10*128 +:128]); // Round = 10
+        state = state ^ globals::key_schedule[10*128 +:128]; // Round = 10
+        $display("RoundKey Value %h", globals::key_schedule[10*128 +:128]); // Round = 10
         $display("After AddRoundKey %h", state);
 
     end
-    
-    always @(posedge clk)
-    begin
-        out <= state;
-        $display("CIPHER TEXT: %h", out);
-    end
-      
 endmodule
