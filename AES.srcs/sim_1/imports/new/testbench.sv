@@ -24,6 +24,8 @@ module testbench(
 
     );
     reg clk = 1'b0;
+    reg [0:127] cipher_text;
+    reg [0:127] tag;
     
     // Encryption Sample Test 1
     /*
@@ -46,7 +48,7 @@ module testbench(
     reg [0:127] plain_text;
     */
     
-    aes aes_top_module(.clk(clk));
+    //aes aes_top_module(.clk(clk));
     
     /*
     // Key expasion module
@@ -74,6 +76,13 @@ module testbench(
     );
     */
     
+    gcm_aes gcm_aes_instance(.clk(clk),
+                             .i_iv(0),
+                             .i_plain_text(0),
+                             .i_aad(0),
+                             .o_cipher_text(cipher_text),
+                             .o_tag(tag)
+                             );
     initial
     begin       
         #10 clk = ~clk;
