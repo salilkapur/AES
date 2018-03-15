@@ -220,7 +220,8 @@ module gcm_aes(
     end
 
     logic [0:127] H;
-    logic [0:127] J_0;    
+    logic [0:127] J_0;
+    int s; 
     always_comb
     begin
         //Step 1 - Computing H value
@@ -234,8 +235,11 @@ module gcm_aes(
         end
         else
         begin
-            int s = 
-            J_0 = fn_ghash({iv, 
+            s = IV_SIZE / 128;
+            if (IV_SIZE % 128 > 0)
+                s = s + 1;
+            s = s - IV_SIZE;
+            J_0 = fn_ghash({iv, {s{1'b0}}, 1'b1});
         end
     end
     
