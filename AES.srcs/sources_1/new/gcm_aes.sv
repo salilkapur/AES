@@ -172,11 +172,13 @@ package globals;
         8'h61, 8'hc2, 8'h9f, 8'h25, 8'h4a, 8'h94, 8'h33, 8'h66, 8'hcc, 8'h83, 8'h1d, 8'h3a, 8'h74, 8'he8, 8'hcb, 8'h8d
     };
     
-    const bit [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;
-    const bit [0:1407] key_schedule = 1408'h2b7e151628aed2a6abf7158809cf4f3ca0fafe1788542cb123a339392a6c7605f2c295f27a96b9435935807a7359f67f3d80477d4716fe3e1e237e446d7a883bef44a541a8525b7fb671253bdb0bad00d4d1c6f87c839d87caf2b8bc11f915bc6d88a37a110b3efddbf98641ca0093fd4e54f70e5f5fc9f384a64fb24ea6dc4fead27321b58dbad2312bf5607f8d292fac7766f319fadc2128d12941575c006ed014f9a8c9ee2589e13f0cc8b6630ca6;
-
+    //const bit [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;
+    //const bit [0:1407] key_schedule = 1408'h2b7e151628aed2a6abf7158809cf4f3ca0fafe1788542cb123a339392a6c7605f2c295f27a96b9435935807a7359f67f3d80477d4716fe3e1e237e446d7a883bef44a541a8525b7fb671253bdb0bad00d4d1c6f87c839d87caf2b8bc11f915bc6d88a37a110b3efddbf98641ca0093fd4e54f70e5f5fc9f384a64fb24ea6dc4fead27321b58dbad2312bf5607f8d292fac7766f319fadc2128d12941575c006ed014f9a8c9ee2589e13f0cc8b6630ca6;
+    const bit [0:127] cipher_key = 128'hFEFFE9928665731C6D6A8F9467308308;
+    const bit [0:1407] key_schedule = 1408'hfeffe9928665731c6d6a8f9467308308fb13d9177d76aa0b101c259f772ca697883751e2f541fbe9e55dde76927178e12f8ba9addaca52443f978c32ade6f4d3a934cf3873fe9d7c4c69114ee18fe59dcaed91c0b9130cbcf57a1df214f5f86f0cac393ab5bf358640c528745430d01b48dc961afd63a39cbda68be8e9965bf358e59b04a58638981820b370f1b6e8830d7e77a5a8f84f3db0d8fc4d416e14cea484fc260c7cb31bbca44f56fdca5b98;
+    
     parameter IV_SIZE           = 96;
-    parameter PLAIN_TEXT_SIZE   = 128;
+    parameter PLAIN_TEXT_SIZE   = 512;
     parameter AAD_SIZE          = 128;
     parameter TAG_SIZE          = 128;
     
@@ -224,7 +226,11 @@ module gcm_aes(
     //Helper variables
     logic [0:127] H;
     logic [0:127] J_0;
+    logic [0:127] CB;
+    logic [0:127] encrypted_cb;
+    int n;
     int s; 
+    int i;
 
     always_comb
     begin
@@ -237,21 +243,26 @@ module gcm_aes(
         $display("J_0: %h", J_0);
         
         //Step 3a - Incrementing right-most 32 bits of  J_0
-        J_0 = {J_0[0:63], J_0[64:95] + 1'b1}
+        J_0 = {J_0[0:95], J_0[96:127] + 1'b1};
         $display("inc32(J_0): %h", J_0);
         
-        //Step 3b - Calling GCTR 
-        cipher_text = fn_gctr(J_0, plain_text);
+        //Step 3b - GCTR operation
+        n = globals::PLAIN_TEXT_SIZE / 128;
+        CB = J_0; // Setting the initial counter block
+        for(i = 1; i < n; i++)
+        begin
+            encrypted_cb = fn_aes_encrypt_unroll(CB);
+            cipher_text[(i-1)*128+:128] =  plain_text[(i-1)*128+:128] ^ encrypted_cb;
+            CB = {CB[0:95], CB[96:127] + 1'b1};
+        end
+
+        encrypted_cb = fn_aes_encrypt_unroll(CB);
+        cipher_text[(n-1)*128+:128] =  plain_text[(n-1)*128+:128] ^ encrypted_cb;
+        $display("CIPHER TEXT: %h", cipher_text);
+
     end
     
 endmodule
-
-function logic [0:globals::PLAIN_TEXT_SIZE] fn_gctr(
-    input logic [0:globals::PLAIN_TEXT_SIZE] plain_text,
-    input logic [0:127] key
-);
-
-endfunction
 
 function logic [0:128] fn_aes_encrypt_unroll(
     input logic [0:127] in_state
