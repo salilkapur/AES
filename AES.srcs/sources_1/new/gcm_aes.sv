@@ -174,7 +174,13 @@ package globals;
     
     const bit [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;
     const bit [0:1407] key_schedule = 1408'h2b7e151628aed2a6abf7158809cf4f3ca0fafe1788542cb123a339392a6c7605f2c295f27a96b9435935807a7359f67f3d80477d4716fe3e1e237e446d7a883bef44a541a8525b7fb671253bdb0bad00d4d1c6f87c839d87caf2b8bc11f915bc6d88a37a110b3efddbf98641ca0093fd4e54f70e5f5fc9f384a64fb24ea6dc4fead27321b58dbad2312bf5607f8d292fac7766f319fadc2128d12941575c006ed014f9a8c9ee2589e13f0cc8b6630ca6;
+
+    parameter IV_SIZE           = 96;
+    parameter PLAIN_TEXT_SIZE   = 128;
+    parameter AAD_SIZE          = 128;
+    parameter TAG_SIZE          = 128;
     
+
 endpackage
 
 module gcm_aes(
@@ -186,27 +192,23 @@ module gcm_aes(
         o_tag
     );
 
-    parameter IV_SIZE           = 96;
-    parameter PLAIN_TEXT_SIZE   = 128;
-    parameter AAD_SIZE          = 128;
-    parameter TAG_SIZE          = 128;
-    
-    input                            clk;
-    input  [0:IV_SIZE - 1]           i_iv;
-    input  [0:PLAIN_TEXT_SIZE - 1]   i_plain_text;
-    input  [0:AAD_SIZE - 1]          i_aad;
+    input  clk;
 
-    output reg [0:PLAIN_TEXT_SIZE - 1]   o_cipher_text;
-    output reg [0:TAG_SIZE - 1]          o_tag;
+    input  [0:globals::IV_SIZE - 1]           i_iv;
+    input  [0:globals::PLAIN_TEXT_SIZE - 1]   i_plain_text;
+    input  [0:globals::AAD_SIZE - 1]          i_aad;
+
+    output reg [0:globals::PLAIN_TEXT_SIZE - 1]   o_cipher_text;
+    output reg [0:globals::TAG_SIZE - 1]          o_tag;
 
     //Local input registers
-    logic [0:IV_SIZE - 1]           iv;
-    logic [0:PLAIN_TEXT_SIZE - 1]   plain_text;
-    logic [0:AAD_SIZE - 1]          aad;
+    logic [0:globals::IV_SIZE - 1]           iv;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   plain_text;
+    logic [0:globals::AAD_SIZE - 1]          aad;
 
     //Local output registers
-    logic [0:TAG_SIZE - 1]          tag;
-    logic [0:PLAIN_TEXT_SIZE - 1]   cipher_text;
+    logic [0:globals::TAG_SIZE - 1]          tag;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   cipher_text;
 
     //Latching the inputs
     always_ff @(posedge clk)
@@ -218,10 +220,12 @@ module gcm_aes(
         o_tag <= tag;
         o_cipher_text <= cipher_text;
     end
-
+    
+    //Helper variables
     logic [0:127] H;
     logic [0:127] J_0;
     int s; 
+
     always_comb
     begin
         //Step 1 - Computing H value
@@ -229,25 +233,29 @@ module gcm_aes(
         $display("H: %h", H);
 
         //Step 2 - Compute J_0
-        if (IV_SIZE == 96)
-        begin
-            J_0 = {iv, 31'b0000000000000000000000000000000, 1'b1};
-        end
-        else
-        begin
-            s = IV_SIZE / 128;
-            if (IV_SIZE % 128 > 0)
-                s = s + 1;
-            s = s - IV_SIZE;
-            J_0 = fn_ghash({iv, {s{1'b0}}, 1'b1});
-        end
+        J_0 = {iv, 31'b0000000000000000000000000000000, 1'b1};
+        $display("J_0: %h", J_0);
+        
+        //Step 3a - Incrementing right-most 32 bits of  J_0
+        J_0 = {J_0[0:63], J_0[64:95] + 1'b1}
+        $display("inc32(J_0): %h", J_0);
+        
+        //Step 3b - Calling GCTR 
+        cipher_text = fn_gctr(J_0, plain_text);
     end
     
 endmodule
 
+function logic [0:globals::PLAIN_TEXT_SIZE] fn_gctr(
+    input logic [0:globals::PLAIN_TEXT_SIZE] plain_text,
+    input logic [0:127] key
+);
+
+endfunction
+
 function logic [0:128] fn_aes_encrypt_unroll(
-        input logic [0:127] in_state
-    );
+    input logic [0:127] in_state
+);
     
     //Helper variables
     integer i;
