@@ -179,9 +179,9 @@ package globals;
     
     parameter IV_SIZE           = 96;
     parameter PLAIN_TEXT_SIZE   = 512;
-    parameter AAD_SIZE          = 128;
+    parameter AAD_SIZE          = 512;
     parameter TAG_SIZE          = 128;
-    
+    parameter AUTH_INPUT_SIZE   = 1152; //AAD_SIZE + PLAIN_TEXT_SIZE + 64 + 64
 
 endpackage
 
@@ -197,7 +197,7 @@ module gcm_aes(
     input  clk;
 
     input  [0:globals::IV_SIZE - 1]           i_iv;
-    input  [0:globals::PLAIN_TEXT_SIZE - 1]   i_plain_text;
+    input  [0:globals::PLAIN_TEXT_SIZE - 1]   i_plain_text; 
     input  [0:globals::AAD_SIZE - 1]          i_aad;
 
     output reg [0:globals::PLAIN_TEXT_SIZE - 1]   o_cipher_text;
@@ -227,10 +227,16 @@ module gcm_aes(
     logic [0:127] H;
     logic [0:127] J_0;
     logic [0:127] CB;
+    logic [0: globals::AUTH_INPUT_SIZE - 1] auth_input;
+    logic [0:127] S_block;
     logic [0:127] encrypted_cb;
-    int n;
-    int s; 
+    logic [0:127] pre_tag;
+    
     int i;
+    // Following variables have the same meaning as in the NIST document
+    int n;
+    int m;
+    int s; 
 
     always_comb
     begin
@@ -243,13 +249,12 @@ module gcm_aes(
         $display("J_0: %h", J_0);
         
         //Step 3a - Incrementing right-most 32 bits of  J_0
-        J_0 = {J_0[0:95], J_0[96:127] + 1'b1};
-        $display("inc32(J_0): %h", J_0);
-        
+        $display("inc32(J_0): %h", {J_0[0:95], J_0[96:127] + 1'b1});
+
         //Step 3b - GCTR operation
         n = globals::PLAIN_TEXT_SIZE / 128;
-        CB = J_0; // Setting the initial counter block
-        for(i = 1; i < n; i++)
+        CB = {J_0[0:95], J_0[96:127] + 1'b1};; // Setting the initial counter block to inc(J_0)
+        for(i = 1; i < n; i++) // Loop runs for n-1 iterations
         begin
             encrypted_cb = fn_aes_encrypt_unroll(CB);
             cipher_text[(i-1)*128+:128] =  plain_text[(i-1)*128+:128] ^ encrypted_cb;
@@ -259,10 +264,58 @@ module gcm_aes(
         encrypted_cb = fn_aes_encrypt_unroll(CB);
         cipher_text[(n-1)*128+:128] =  plain_text[(n-1)*128+:128] ^ encrypted_cb;
         $display("CIPHER TEXT: %h", cipher_text);
+        
+        // Step 4 - Computing constants is not necessary since we are assuming
+        // the inputs are multiples of 128. Zero padding is done to align the
+        // size with 128
 
+        // Step 5 - Computing GHASH of the S block
+        m = globals::AUTH_INPUT_SIZE / 128;
+        auth_input = {aad, cipher_text, 64'd512, 64'd512};
+        $display("AUTH INPUT: %h", auth_input);
+        
+        S_block = 128'b0;
+        for(i = 0; i < m; i++) // Loop runs for n iterations
+        begin
+            S_block = (S_block ^ auth_input[i*128+:128]);
+            S_block = fn_product(S_block, H);
+        end
+        $display("S: %h", S_block);
+        
+        // Step 6 - Computing the authentication tag
+        encrypted_cb = fn_aes_encrypt_unroll(J_0);
+        pre_tag =  S_block ^ encrypted_cb;
+        $display("AUTH TAG: %h", pre_tag[0:globals::TAG_SIZE-1]);
     end
-    
 endmodule
+
+function logic[0:127] fn_product(
+    input [0:127] X,
+    input [0:127] Y
+);
+    logic [0:127] Z;
+    logic [0:127] V;
+    integer idx;
+        
+    Z = 128'b0;
+    V = Y;
+    
+    for(idx = 0; idx <= 127; idx++)
+    begin
+        if (X[idx] == 1'b1)
+            Z = Z ^ V;
+        
+        if (V[127] == 1'b0)
+            V = V >> 1;
+        else
+        begin
+            V = V >> 1;
+            V = V ^ {8'b11100001, 120'd0};
+        end
+    end
+
+    return Z;
+endfunction
 
 function logic [0:128] fn_aes_encrypt_unroll(
     input logic [0:127] in_state
