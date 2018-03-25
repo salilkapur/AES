@@ -204,26 +204,22 @@ module gcm_aes(
     output reg [0:globals::TAG_SIZE - 1]          o_tag;
 
     //Local input registers
-    logic [0:globals::IV_SIZE - 1]           iv;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]   plain_text;
-    logic [0:globals::AAD_SIZE - 1]          aad;
+    logic [0:globals::IV_SIZE - 1]           r_s1_iv;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   r_s1_plain_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   r_s2_plain_text;
+    logic [0:globals::AAD_SIZE - 1]          r_s1_aad;
+    logic [0:globals::AAD_SIZE - 1]          r_s2_aad;
+    logic [0:globals::AAD_SIZE - 1]          r_s3_aad;
 
     //Local output registers
-    logic [0:globals::TAG_SIZE - 1]          tag;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]   cipher_text;
-
-    //Latching the inputs
-    always_ff @(posedge clk)
-    begin
-        iv <= i_iv;
-        plain_text <= i_plain_text;
-        aad <= i_aad;
-
-        o_tag <= tag;
-        o_cipher_text <= cipher_text;
-    end
+    logic [0:globals::TAG_SIZE - 1]          r_tag;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   r_cipher_text;
     
-    //Helper variables
+    // Pipeline stage variables
+    logic [0:127] r_J_0;
+    logic [0:127] r_H;
+    logic [0:127] r_auth_input;
+
     logic [0:127] H;
     logic [0:127] J_0;
     logic [0:127] CB;
@@ -231,6 +227,11 @@ module gcm_aes(
     logic [0:127] S_block;
     logic [0:127] encrypted_cb;
     logic [0:127] pre_tag;
+    logic [0:globals::TAG_SIZE - 1]          tag;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   w_plain_text;
+    logic [0:globals::AAD_SIZE - 1]          w_s1_aad;
+    logic [0:globals::AAD_SIZE - 1]          w_s2_aad;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]   cipher_text;
     
     int i;
     // Following variables have the same meaning as in the NIST document
@@ -238,40 +239,77 @@ module gcm_aes(
     int m;
     int s; 
 
+    always_ff @(posedge clk)
+    begin
+        //Latch input
+        r_s1_iv <= i_iv;
+        r_s1_plain_text <= i_plain_text;
+        r_s1_aad <= i_aad;
+ 
+        //Latch State 1 outputs
+        r_H <= H;
+        r_J_0 <= J_0;
+        r_s2_plain_text <= w_plain_text; 
+        r_s2_aad <= w_s1_aad;
+
+        //Latch Stage 2 outputs
+        r_cipher_text <= cipher_text;
+        r_s3_aad <= w_s2_aad;
+
+        //Latch Stage 3 outputs (Final outputs)
+        o_tag <= tag;
+        o_cipher_text <= r_cipher_text;
+    end
+    
+    //Helper variables
+    
     always_comb
     begin
+        /* PIPELINE STAGE - 1 [BEGIN] */
+
         //Step 1 - Computing H value
         H = fn_aes_encrypt_unroll(128'h0000000000000000);
         $display("H: %h", H);
 
         //Step 2 - Compute J_0
-        J_0 = {iv, 31'b0000000000000000000000000000000, 1'b1};
+        J_0 = {r_s1_iv, 31'b0000000000000000000000000000000, 1'b1};
         $display("J_0: %h", J_0);
         
+        w_plain_text = r_s1_plain_text;
+        w_s1_aad = r_s1_aad;
+        /* PIPELINE STAGE - 1 [END] */
+
+        /* PIPELINE STAGE - 2 [START] */
+
         //Step 3a - Incrementing right-most 32 bits of  J_0
-        $display("inc32(J_0): %h", {J_0[0:95], J_0[96:127] + 1'b1});
+        $display("inc32(J_0): %h", {r_J_0[0:95], r_J_0[96:127] + 1'b1});
 
         //Step 3b - GCTR operation
         n = globals::PLAIN_TEXT_SIZE / 128;
-        CB = {J_0[0:95], J_0[96:127] + 1'b1};; // Setting the initial counter block to inc(J_0)
+        CB = {r_J_0[0:95], r_J_0[96:127] + 1'b1};; // Setting the initial counter block to inc(J_0)
         for(i = 1; i < n; i++) // Loop runs for n-1 iterations
         begin
             encrypted_cb = fn_aes_encrypt_unroll(CB);
-            cipher_text[(i-1)*128+:128] =  plain_text[(i-1)*128+:128] ^ encrypted_cb;
+            cipher_text[(i-1)*128+:128] =  r_s2_plain_text[(i-1)*128+:128] ^ encrypted_cb;
             CB = {CB[0:95], CB[96:127] + 1'b1};
         end
 
         encrypted_cb = fn_aes_encrypt_unroll(CB);
-        cipher_text[(n-1)*128+:128] =  plain_text[(n-1)*128+:128] ^ encrypted_cb;
+        cipher_text[(n-1)*128+:128] =  r_s2_plain_text[(n-1)*128+:128] ^ encrypted_cb;
         $display("CIPHER TEXT: %h", cipher_text);
         
         // Step 4 - Computing constants is not necessary since we are assuming
         // the inputs are multiples of 128. Zero padding is done to align the
         // size with 128
+        
+        w_s2_aad = r_s1_aad;
+        /* PIPELINE STAGE - 2 [END] */
+        
+        /* PIPELINE STAGE - 3 [START] */
 
         // Step 5 - Computing GHASH of the S block
         m = globals::AUTH_INPUT_SIZE / 128;
-        auth_input = {aad, cipher_text, 64'd512, 64'd512};
+        auth_input = {r_s3_aad, r_cipher_text, 64'd512, 64'd512};
         $display("AUTH INPUT: %h", auth_input);
         
         S_block = 128'b0;
@@ -285,7 +323,9 @@ module gcm_aes(
         // Step 6 - Computing the authentication tag
         encrypted_cb = fn_aes_encrypt_unroll(J_0);
         pre_tag =  S_block ^ encrypted_cb;
-        $display("AUTH TAG: %h", pre_tag[0:globals::TAG_SIZE-1]);
+        tag = pre_tag[0:globals::TAG_SIZE-1];
+        $display("AUTH TAG: %h", tag);
+        /* PIPELINE STAGE - 3 [END] */
     end
 endmodule
 
@@ -348,16 +388,16 @@ function logic [0:128] fn_aes_encrypt_unroll(
     logic [0:127]    mix_column_state_7;
     logic [0:127]    mix_column_state_8;
     
-    $display("--------------------Input--------------------");
-    $display("State: %h", in_state);
-    $display("Round Key Value: %h", globals::key_schedule[0:127]);
+    //$display("--------------------Input--------------------");
+    //$display("State: %h", in_state);
+    //$display("Round Key Value: %h", globals::key_schedule[0:127]);
 
-    $display("-------------------- Round 0 --------------------");
+    //$display("-------------------- Round 0 --------------------");
     state_0 = in_state ^ globals::key_schedule[0:127]; // Adding the first round key
-    $display("After AddRoundKey %h", state_0);
+    //$display("After AddRoundKey %h", state_0);
     
-    $display("-------------------- Round 1 --------------------");
-    $display("State: %h", state_0);
+    //$display("-------------------- Round 1 --------------------");
+    //$display("State: %h", state_0);
 
     // Applying SubBytes operation
     state_0[0+:8]   = globals::SBOX[state_0[0+:8]];
@@ -377,7 +417,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_0[112+:8] = globals::SBOX[state_0[112+:8]];
     state_0[120+:8] = globals::SBOX[state_0[120+:8]];
 
-    $display("After SubBytes: %h", state_0);
+    //$display("After SubBytes: %h", state_0);
 
     // Applying ShiftRows operation on the state_0
     {state_0[(0 * 8)+0 +:8], state_0[(0 * 8)+32 +:8], state_0[(0 * 8)+64 +:8], state_0[(0 * 8)+96 +:8]} =
@@ -389,7 +429,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_0[(3 * 8)+0 +:8], state_0[(3 * 8)+32 +:8], state_0[(3 * 8)+64 +:8], state_0[(3 * 8)+96 +:8]} =
                         {state_0[(3 * 8)+96 +:8], state_0[(3 * 8)+0 +:8], state_0[(3 * 8)+32 +:8], state_0[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_0);
+    //$display("After ShiftRows: %h", state_0);
 
     // Applying MixColumns operation
     mix_column_state_0[0*32+0  +:8]  = globals::gf_table_2[state_0[0*32+0+:8]] ^ globals::gf_table_3[state_0[0*32+8+:8]] ^ state_0[0*32+16+:8] ^ state_0[0*32+24+:8];
@@ -412,15 +452,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_0[3*32+16 +:8]  = state_0[3*32+0+:8] ^ state_0[3*32+8+:8] ^ globals::gf_table_2[state_0[3*32+16+:8]] ^ globals::gf_table_3[state_0[3*32+24+:8]];
     mix_column_state_0[3*32+24 +:8]  = globals::gf_table_3[state_0[3*32+0+:8]] ^ state_0[3*32+8+:8] ^ state_0[3*32+16+:8] ^ globals::gf_table_2[state_0[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_0);
+    //$display("After MixColumns: %h", mix_column_state_0);
 
     // Applying AddRoundKey operation to the state
     state_1 = mix_column_state_0 ^ globals::key_schedule[1*128 +:128];
-    $display("RoundKey Value %h", globals::key_schedule[1*128 +:128]);
-    $display("After AddRoundKey %h", state_0);
+    //$display("RoundKey Value %h", globals::key_schedule[1*128 +:128]);
+    //$display("After AddRoundKey %h", state_0);
 
-    $display("-------------------- Round 2 --------------------");
-    $display("State: %h", state_1);
+    //$display("-------------------- Round 2 --------------------");
+    //$display("State: %h", state_1);
 
     // Applying SubBytes operation
     state_1[0+:8]   = globals::SBOX[state_1[0+:8]];
@@ -440,7 +480,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_1[112+:8] = globals::SBOX[state_1[112+:8]];
     state_1[120+:8] = globals::SBOX[state_1[120+:8]];
 
-    $display("After SubBytes: %h", state_1);
+    //$display("After SubBytes: %h", state_1);
 
     // Applying ShiftRows operation on the state_1
     {state_1[(0 * 8)+0 +:8], state_1[(0 * 8)+32 +:8], state_1[(0 * 8)+64 +:8], state_1[(0 * 8)+96 +:8]} =
@@ -452,7 +492,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_1[(3 * 8)+0 +:8], state_1[(3 * 8)+32 +:8], state_1[(3 * 8)+64 +:8], state_1[(3 * 8)+96 +:8]} =
                         {state_1[(3 * 8)+96 +:8], state_1[(3 * 8)+0 +:8], state_1[(3 * 8)+32 +:8], state_1[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_1);
+    //$display("After ShiftRows: %h", state_1);
 
     // Applying MixColumns operation
     mix_column_state_1[0*32+0  +:8]  = globals::gf_table_2[state_1[0*32+0+:8]] ^ globals::gf_table_3[state_1[0*32+8+:8]] ^ state_1[0*32+16+:8] ^ state_1[0*32+24+:8];
@@ -475,15 +515,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_1[3*32+16 +:8]  = state_1[3*32+0+:8] ^ state_1[3*32+8+:8] ^ globals::gf_table_2[state_1[3*32+16+:8]] ^ globals::gf_table_3[state_1[3*32+24+:8]];
     mix_column_state_1[3*32+24 +:8]  = globals::gf_table_3[state_1[3*32+0+:8]] ^ state_1[3*32+8+:8] ^ state_1[3*32+16+:8] ^ globals::gf_table_2[state_1[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_1);
+    //$display("After MixColumns: %h", mix_column_state_1);
 
     // Applying AddRoundKey operation to the state
     state_2 = mix_column_state_1 ^ globals::key_schedule[2*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[2*128 +:128]);
-    $display("After AddRoundKey %h", state_2);
+    //$display("RoundKey Value %h", globals::key_schedule[2*128 +:128]);
+    //$display("After AddRoundKey %h", state_2);
 
-    $display("-------------------- Round 3 --------------------");
-    $display("State: %h", state_2);
+    //$display("-------------------- Round 3 --------------------");
+    //$display("State: %h", state_2);
 
     // Applying SubBytes operation
     state_2[0+:8]   = globals::SBOX[state_2[0+:8]];
@@ -503,7 +543,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_2[112+:8] = globals::SBOX[state_2[112+:8]];
     state_2[120+:8] = globals::SBOX[state_2[120+:8]];
 
-    $display("After SubBytes: %h", state_2);
+    //$display("After SubBytes: %h", state_2);
 
     // Applying ShiftRows operation on the state_2
     {state_2[(0 * 8)+0 +:8], state_2[(0 * 8)+32 +:8], state_2[(0 * 8)+64 +:8], state_2[(0 * 8)+96 +:8]} =
@@ -515,7 +555,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_2[(3 * 8)+0 +:8], state_2[(3 * 8)+32 +:8], state_2[(3 * 8)+64 +:8], state_2[(3 * 8)+96 +:8]} =
                         {state_2[(3 * 8)+96 +:8], state_2[(3 * 8)+0 +:8], state_2[(3 * 8)+32 +:8], state_2[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_2);
+    //$display("After ShiftRows: %h", state_2);
 
     // Applying MixColumns operation
     mix_column_state_2[0*32+0  +:8]  = globals::gf_table_2[state_2[0*32+0+:8]] ^ globals::gf_table_3[state_2[0*32+8+:8]] ^ state_2[0*32+16+:8] ^ state_2[0*32+24+:8];
@@ -538,15 +578,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_2[3*32+16 +:8]  = state_2[3*32+0+:8] ^ state_2[3*32+8+:8] ^ globals::gf_table_2[state_2[3*32+16+:8]] ^ globals::gf_table_3[state_2[3*32+24+:8]];
     mix_column_state_2[3*32+24 +:8]  = globals::gf_table_3[state_2[3*32+0+:8]] ^ state_2[3*32+8+:8] ^ state_2[3*32+16+:8] ^ globals::gf_table_2[state_2[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_2);
+    //$display("After MixColumns: %h", mix_column_state_2);
 
     // Applying AddRoundKey operation to the state
     state_3 = mix_column_state_2 ^ globals::key_schedule[3*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[3*128 +:128]);
-    $display("After AddRoundKey %h", state_3);
+    //$display("RoundKey Value %h", globals::key_schedule[3*128 +:128]);
+    //$display("After AddRoundKey %h", state_3);
 
-    $display("-------------------- Round 4 --------------------");
-    $display("State: %h", state_3);
+    //$display("-------------------- Round 4 --------------------");
+    //$display("State: %h", state_3);
 
     // Applying SubBytes operation
     state_3[0+:8]   = globals::SBOX[state_3[0+:8]];
@@ -566,7 +606,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_3[112+:8] = globals::SBOX[state_3[112+:8]];
     state_3[120+:8] = globals::SBOX[state_3[120+:8]];
 
-    $display("After SubBytes: %h", state_3);
+    //$display("After SubBytes: %h", state_3);
 
     // Applying ShiftRows operation on the state_3
     {state_3[(0 * 8)+0 +:8], state_3[(0 * 8)+32 +:8], state_3[(0 * 8)+64 +:8], state_3[(0 * 8)+96 +:8]} =
@@ -578,7 +618,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_3[(3 * 8)+0 +:8], state_3[(3 * 8)+32 +:8], state_3[(3 * 8)+64 +:8], state_3[(3 * 8)+96 +:8]} =
                         {state_3[(3 * 8)+96 +:8], state_3[(3 * 8)+0 +:8], state_3[(3 * 8)+32 +:8], state_3[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_3);
+    //$display("After ShiftRows: %h", state_3);
 
     // Applying MixColumns operation
     mix_column_state_3[0*32+0  +:8]  = globals::gf_table_2[state_3[0*32+0+:8]] ^ globals::gf_table_3[state_3[0*32+8+:8]] ^ state_3[0*32+16+:8] ^ state_3[0*32+24+:8];
@@ -601,15 +641,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_3[3*32+16 +:8]  = state_3[3*32+0+:8] ^ state_3[3*32+8+:8] ^ globals::gf_table_2[state_3[3*32+16+:8]] ^ globals::gf_table_3[state_3[3*32+24+:8]];
     mix_column_state_3[3*32+24 +:8]  = globals::gf_table_3[state_3[3*32+0+:8]] ^ state_3[3*32+8+:8] ^ state_3[3*32+16+:8] ^ globals::gf_table_2[state_3[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_3);
+    //$display("After MixColumns: %h", mix_column_state_3);
 
     // Applying AddRoundKey operation to the state
     state_4 = mix_column_state_3 ^ globals::key_schedule[4*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[4*128 +:128]);
-    $display("After AddRoundKey %h", state_4);
+    //$display("RoundKey Value %h", globals::key_schedule[4*128 +:128]);
+    //$display("After AddRoundKey %h", state_4);
 
-    $display("-------------------- Round 5 --------------------");
-    $display("State: %h", state_4);
+    //$display("-------------------- Round 5 --------------------");
+    //$display("State: %h", state_4);
 
     // Applying SubBytes operation
     state_4[0+:8]   = globals::SBOX[state_4[0+:8]];
@@ -629,7 +669,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_4[112+:8] = globals::SBOX[state_4[112+:8]];
     state_4[120+:8] = globals::SBOX[state_4[120+:8]];
 
-    $display("After SubBytes: %h", state_4);
+    //$display("After SubBytes: %h", state_4);
 
     // Applying ShiftRows operation on the state_4
     {state_4[(0 * 8)+0 +:8], state_4[(0 * 8)+32 +:8], state_4[(0 * 8)+64 +:8], state_4[(0 * 8)+96 +:8]} =
@@ -641,7 +681,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_4[(3 * 8)+0 +:8], state_4[(3 * 8)+32 +:8], state_4[(3 * 8)+64 +:8], state_4[(3 * 8)+96 +:8]} =
                         {state_4[(3 * 8)+96 +:8], state_4[(3 * 8)+0 +:8], state_4[(3 * 8)+32 +:8], state_4[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_4);
+    //$display("After ShiftRows: %h", state_4);
 
     // Applying MixColumns operation
     mix_column_state_4[0*32+0  +:8]  = globals::gf_table_2[state_4[0*32+0+:8]] ^ globals::gf_table_3[state_4[0*32+8+:8]] ^ state_4[0*32+16+:8] ^ state_4[0*32+24+:8];
@@ -664,15 +704,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_4[3*32+16 +:8]  = state_4[3*32+0+:8] ^ state_4[3*32+8+:8] ^ globals::gf_table_2[state_4[3*32+16+:8]] ^ globals::gf_table_3[state_4[3*32+24+:8]];
     mix_column_state_4[3*32+24 +:8]  = globals::gf_table_3[state_4[3*32+0+:8]] ^ state_4[3*32+8+:8] ^ state_4[3*32+16+:8] ^ globals::gf_table_2[state_4[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_4);
+    //$display("After MixColumns: %h", mix_column_state_4);
 
     // Applying AddRoundKey operation to the state
     state_5 = mix_column_state_4 ^ globals::key_schedule[5*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[5*128 +:128]);
-    $display("After AddRoundKey %h", state_5);
+    //$display("RoundKey Value %h", globals::key_schedule[5*128 +:128]);
+    //$display("After AddRoundKey %h", state_5);
 
-    $display("-------------------- Round 6 --------------------");
-    $display("State: %h", state_5);
+    //$display("-------------------- Round 6 --------------------");
+    //$display("State: %h", state_5);
 
     // Applying SubBytes operation
     state_5[0+:8]   = globals::SBOX[state_5[0+:8]];
@@ -692,7 +732,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_5[112+:8] = globals::SBOX[state_5[112+:8]];
     state_5[120+:8] = globals::SBOX[state_5[120+:8]];
 
-    $display("After SubBytes: %h", state_5);
+    //$display("After SubBytes: %h", state_5);
 
     // Applying ShiftRows operation on the state_5
     {state_5[(0 * 8)+0 +:8], state_5[(0 * 8)+32 +:8], state_5[(0 * 8)+64 +:8], state_5[(0 * 8)+96 +:8]} =
@@ -704,7 +744,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_5[(3 * 8)+0 +:8], state_5[(3 * 8)+32 +:8], state_5[(3 * 8)+64 +:8], state_5[(3 * 8)+96 +:8]} =
                         {state_5[(3 * 8)+96 +:8], state_5[(3 * 8)+0 +:8], state_5[(3 * 8)+32 +:8], state_5[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_5);
+    //$display("After ShiftRows: %h", state_5);
 
     // Applying MixColumns operation
     mix_column_state_5[0*32+0  +:8]  = globals::gf_table_2[state_5[0*32+0+:8]] ^ globals::gf_table_3[state_5[0*32+8+:8]] ^ state_5[0*32+16+:8] ^ state_5[0*32+24+:8];
@@ -727,15 +767,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_5[3*32+16 +:8]  = state_5[3*32+0+:8] ^ state_5[3*32+8+:8] ^ globals::gf_table_2[state_5[3*32+16+:8]] ^ globals::gf_table_3[state_5[3*32+24+:8]];
     mix_column_state_5[3*32+24 +:8]  = globals::gf_table_3[state_5[3*32+0+:8]] ^ state_5[3*32+8+:8] ^ state_5[3*32+16+:8] ^ globals::gf_table_2[state_5[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_5);
+    //$display("After MixColumns: %h", mix_column_state_5);
 
     // Applying AddRoundKey operation to the state
     state_6 = mix_column_state_5 ^ globals::key_schedule[6*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[6*128 +:128]);
-    $display("After AddRoundKey %h", state_6);
+    //$display("RoundKey Value %h", globals::key_schedule[6*128 +:128]);
+    //$display("After AddRoundKey %h", state_6);
 
-    $display("-------------------- Round 7 --------------------");
-    $display("State: %h", state_6);
+    //$display("-------------------- Round 7 --------------------");
+    //$display("State: %h", state_6);
 
     // Applying SubBytes operation
     state_6[0+:8]   = globals::SBOX[state_6[0+:8]];
@@ -755,7 +795,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_6[112+:8] = globals::SBOX[state_6[112+:8]];
     state_6[120+:8] = globals::SBOX[state_6[120+:8]];
 
-    $display("After SubBytes: %h", state_6);
+    //$display("After SubBytes: %h", state_6);
 
     // Applying ShiftRows operation on the state_6
     {state_6[(0 * 8)+0 +:8], state_6[(0 * 8)+32 +:8], state_6[(0 * 8)+64 +:8], state_6[(0 * 8)+96 +:8]} =
@@ -767,7 +807,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_6[(3 * 8)+0 +:8], state_6[(3 * 8)+32 +:8], state_6[(3 * 8)+64 +:8], state_6[(3 * 8)+96 +:8]} =
                         {state_6[(3 * 8)+96 +:8], state_6[(3 * 8)+0 +:8], state_6[(3 * 8)+32 +:8], state_6[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_6);
+    //$display("After ShiftRows: %h", state_6);
 
     // Applying MixColumns operation
     mix_column_state_6[0*32+0  +:8]  = globals::gf_table_2[state_6[0*32+0+:8]] ^ globals::gf_table_3[state_6[0*32+8+:8]] ^ state_6[0*32+16+:8] ^ state_6[0*32+24+:8];
@@ -790,15 +830,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_6[3*32+16 +:8]  = state_6[3*32+0+:8] ^ state_6[3*32+8+:8] ^ globals::gf_table_2[state_6[3*32+16+:8]] ^ globals::gf_table_3[state_6[3*32+24+:8]];
     mix_column_state_6[3*32+24 +:8]  = globals::gf_table_3[state_6[3*32+0+:8]] ^ state_6[3*32+8+:8] ^ state_6[3*32+16+:8] ^ globals::gf_table_2[state_6[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_6);
+    //$display("After MixColumns: %h", mix_column_state_6);
 
     // Applying AddRoundKey operation to the state
     state_7 = mix_column_state_6 ^ globals::key_schedule[7*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[7*128 +:128]);
-    $display("After AddRoundKey %h", state_7);
+    //$display("RoundKey Value %h", globals::key_schedule[7*128 +:128]);
+    //$display("After AddRoundKey %h", state_7);
 
-    $display("-------------------- Round 8 --------------------");
-    $display("State: %h", state_7);
+    //$display("-------------------- Round 8 --------------------");
+    //$display("State: %h", state_7);
 
     // Applying SubBytes operation
     state_7[0+:8]   = globals::SBOX[state_7[0+:8]];
@@ -818,7 +858,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_7[112+:8] = globals::SBOX[state_7[112+:8]];
     state_7[120+:8] = globals::SBOX[state_7[120+:8]];
 
-    $display("After SubBytes: %h", state_7);
+    //$display("After SubBytes: %h", state_7);
 
     // Applying ShiftRows operation on the state_7
     {state_7[(0 * 8)+0 +:8], state_7[(0 * 8)+32 +:8], state_7[(0 * 8)+64 +:8], state_7[(0 * 8)+96 +:8]} =
@@ -830,7 +870,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_7[(3 * 8)+0 +:8], state_7[(3 * 8)+32 +:8], state_7[(3 * 8)+64 +:8], state_7[(3 * 8)+96 +:8]} =
                         {state_7[(3 * 8)+96 +:8], state_7[(3 * 8)+0 +:8], state_7[(3 * 8)+32 +:8], state_7[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_7);
+    //$display("After ShiftRows: %h", state_7);
 
     // Applying MixColumns operation
     mix_column_state_7[0*32+0  +:8]  = globals::gf_table_2[state_7[0*32+0+:8]] ^ globals::gf_table_3[state_7[0*32+8+:8]] ^ state_7[0*32+16+:8] ^ state_7[0*32+24+:8];
@@ -853,15 +893,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_7[3*32+16 +:8]  = state_7[3*32+0+:8] ^ state_7[3*32+8+:8] ^ globals::gf_table_2[state_7[3*32+16+:8]] ^ globals::gf_table_3[state_7[3*32+24+:8]];
     mix_column_state_7[3*32+24 +:8]  = globals::gf_table_3[state_7[3*32+0+:8]] ^ state_7[3*32+8+:8] ^ state_7[3*32+16+:8] ^ globals::gf_table_2[state_7[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_7);
+    //$display("After MixColumns: %h", mix_column_state_7);
 
     // Applying AddRoundKey operation to the state
     state_8 = mix_column_state_7 ^ globals::key_schedule[8*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[8*128 +:128]);
-    $display("After AddRoundKey %h", state_8);
+    //$display("RoundKey Value %h", globals::key_schedule[8*128 +:128]);
+    //$display("After AddRoundKey %h", state_8);
 
-    $display("-------------------- Round 9 --------------------");
-    $display("State: %h", state_8);
+    //$display("-------------------- Round 9 --------------------");
+    //$display("State: %h", state_8);
 
     // Applying SubBytes operation
     state_8[0+:8]   = globals::SBOX[state_8[0+:8]];
@@ -881,7 +921,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_8[112+:8] = globals::SBOX[state_8[112+:8]];
     state_8[120+:8] = globals::SBOX[state_8[120+:8]];
 
-    $display("After SubBytes: %h", state_8);
+    //$display("After SubBytes: %h", state_8);
 
     // Applying ShiftRows operation on the state_8
     {state_8[(0 * 8)+0 +:8], state_8[(0 * 8)+32 +:8], state_8[(0 * 8)+64 +:8], state_8[(0 * 8)+96 +:8]} =
@@ -893,7 +933,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_8[(3 * 8)+0 +:8], state_8[(3 * 8)+32 +:8], state_8[(3 * 8)+64 +:8], state_8[(3 * 8)+96 +:8]} =
                         {state_8[(3 * 8)+96 +:8], state_8[(3 * 8)+0 +:8], state_8[(3 * 8)+32 +:8], state_8[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_8);
+    //$display("After ShiftRows: %h", state_8);
 
     // Applying MixColumns operation
     mix_column_state_8[0*32+0  +:8]  = globals::gf_table_2[state_8[0*32+0+:8]] ^ globals::gf_table_3[state_8[0*32+8+:8]] ^ state_8[0*32+16+:8] ^ state_8[0*32+24+:8];
@@ -916,15 +956,15 @@ function logic [0:128] fn_aes_encrypt_unroll(
     mix_column_state_8[3*32+16 +:8]  = state_8[3*32+0+:8] ^ state_8[3*32+8+:8] ^ globals::gf_table_2[state_8[3*32+16+:8]] ^ globals::gf_table_3[state_8[3*32+24+:8]];
     mix_column_state_8[3*32+24 +:8]  = globals::gf_table_3[state_8[3*32+0+:8]] ^ state_8[3*32+8+:8] ^ state_8[3*32+16+:8] ^ globals::gf_table_2[state_8[3*32+24+:8]];
 
-    $display("After MixColumns: %h", mix_column_state_8);
+    //$display("After MixColumns: %h", mix_column_state_8);
 
     // Applying AddRoundKey operation to the state
     state_9 = mix_column_state_8 ^ globals::key_schedule[9*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[9*128 +:128]);
-    $display("After AddRoundKey %h", state_9);
+    //$display("RoundKey Value %h", globals::key_schedule[9*128 +:128]);
+    //$display("After AddRoundKey %h", state_9);
 
-    $display("-------------------- Round 10 --------------------");
-    $display("State: %h", state_9);
+    //$display("-------------------- Round 10 --------------------");
+    //$display("State: %h", state_9);
 
     // Applying SubBytes operation
     state_9[0+:8]   = globals::SBOX[state_9[0+:8]];
@@ -944,7 +984,7 @@ function logic [0:128] fn_aes_encrypt_unroll(
     state_9[112+:8] = globals::SBOX[state_9[112+:8]];
     state_9[120+:8] = globals::SBOX[state_9[120+:8]];
 
-    $display("After SubBytes: %h", state_9);
+    //$display("After SubBytes: %h", state_9);
 
     // Applying ShiftRows operation on the state_9
     {state_9[(0 * 8)+0 +:8], state_9[(0 * 8)+32 +:8], state_9[(0 * 8)+64 +:8], state_9[(0 * 8)+96 +:8]} =
@@ -956,12 +996,12 @@ function logic [0:128] fn_aes_encrypt_unroll(
     {state_9[(3 * 8)+0 +:8], state_9[(3 * 8)+32 +:8], state_9[(3 * 8)+64 +:8], state_9[(3 * 8)+96 +:8]} =
                         {state_9[(3 * 8)+96 +:8], state_9[(3 * 8)+0 +:8], state_9[(3 * 8)+32 +:8], state_9[(3 * 8)+64 +:8]};
 
-    $display("After ShiftRows: %h", state_9);
+    //$display("After ShiftRows: %h", state_9);
 
     // Applying AddRoundKey operation to the state
     state_10 = state_9 ^ globals::key_schedule[10*128 +:128]; // round*128
-    $display("RoundKey Value %h", globals::key_schedule[10*128 +:128]);
-    $display("After AddRoundKey %h", state_10);
+    //$display("RoundKey Value %h", globals::key_schedule[10*128 +:128]);
+    //$display("After AddRoundKey %h", state_10);
     
     return state_10;
 endfunction
