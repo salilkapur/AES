@@ -3,5 +3,6 @@
 *.hw
 *.runs
 .Xil
+*.sdf
 
 *report*
