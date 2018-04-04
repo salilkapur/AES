@@ -90,21 +90,30 @@ module testbench(
     
     //GCM Sample Test 1
     reg [0:127] tag;
+    /*
     reg [0:95]  iv         = 96'hCAFEBABEFACEDBADDECAF888;
-    //reg [0:511] aad        = 512'h3AD77BB40D7A3660A89ECAF32466EF97F5D3D58503B9699DE785895A96FDBAAF43B1CD7F598ECE23881B00E3ED0306887B0C785E27E8AD3F8223207104725DD4;
-    reg [0:511] aad        = 512'hffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
-    //reg [0:511] aad        = 512'h0;
-    //reg [0:511] plain_text = 512'hD9313225F88406E5A55909C5AFF5269A86A7A9531534F7DA2E4C303D8A318A721C3C0C95956809532FCF0E2449A6B525B16AEDF5AA0DE657BA637B391AAFD255;
-    reg [0:511] plain_text = 512'hffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
-    //reg [0:511] plain_text = 512'h0;
-    reg [0:511] cipher_text;
+    reg [0:511] plain_text = 512'hD9313225F88406E5A55909C5AFF5269A86A7A9531534F7DA2E4C303D8A318A721C3C0C95956809532FCF0E2449A6B525B16AEDF5AA0DE657BA637B391AAFD255;
+    reg [0:511] aad        = 512'h3AD77BB40D7A3660A89ECAF32466EF97F5D3D58503B9699DE785895A96FDBAAF43B1CD7F598ECE23881B00E3ED0306887B0C785E27E8AD3F8223207104725DD4;
+    */
+    
+    //reg [0:511] aad        = 512'hffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    //reg [0:511] plain_text = 512'hffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+    
+    reg [0:5] i_iv = 6'b000000;
+    //reg [0:95]  iv = 128'd0;
+    reg [0:4] i_aad = 5'b00000;
+    //reg [0:127] aad        = 127'd0;
+    reg [0:4] i_plain_text = 5'b00000;
+    //reg [0:127] plain_text = {i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text[0:2]};
+    
+    reg [0:255] cipher_text;
     
     gcm_aes gcm_aes_instance(
             .clk(clk),
-            .i_iv(iv),
-            .i_plain_text(plain_text),
-            .i_aad(aad),
-            .o_cipher_text(cipher_text),
+            .i_iv(i_iv),
+            .i_plain_text(i_plain_text),
+            .i_aad(i_aad),
+            .o_cipher_text(cipher_text),  
             .o_tag(tag)
         );
 
