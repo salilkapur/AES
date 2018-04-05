@@ -949,20 +949,20 @@ module gcm_aes(
         r_H <= w_h;
         
         //Latch Sw_tage 2 outputs
-        r_w_cipher_text <= w_cipher_text;
+        r_cipher_text <= w_cipher_text;
         r_s3_aad <= w_s2_aad;
         r_s3_J_0 <= w_s2_J_0;
         
         //Latch Sw_tage 3 outputs (Final outputs)
-        o_w_tag <= w_tag;
-        o_w_cipher_text <= r_w_cipher_text;
+        o_tag <= w_tag;
+        o_cipher_text <= r_cipher_text;
     end
     
     //Helper variables
     
     always_comb
     begin
-        /* PIPELINE Sw_tagE - 1 [BEGIN] */
+        /* PIPELINE STAGE - 1 [BEGIN] */
         $display("Sw_tage 1 - START");
         //Step 1 - Computing H value
         w_h = fn_aes_encrypt_unroll(128'd0);
@@ -1017,7 +1017,7 @@ module gcm_aes(
         $display("Sw_tage 3 - START");
         // Step 5 - Computing GHASH of the S block
         m = globals::AUTH_INPUT_SIZE / 128;
-        w_auth_input = {r_s3_aad, r_w_cipher_text, 64'd128, 64'd128};
+        w_auth_input = {r_s3_aad, r_cipher_text, 64'd128, 64'd128};
         $display("AUTH INPUT: %h", w_auth_input);
         
         w_s_block = 128'd0;
@@ -1031,8 +1031,8 @@ module gcm_aes(
         
         // Step 6 - Computing the authentication w_tag
         w_encrypted_cb_s3 = fn_aes_encrypt_unroll(r_s3_J_0);
-        w_pre_w_tag =  w_s_block ^ w_encrypted_cb_s3;
-        w_tag = w_pre_w_tag[0:globals::w_tag_SIZE-1];
+        w_pre_tag =  w_s_block ^ w_encrypted_cb_s3;
+        w_tag = w_pre_tag[0:globals::TAG_SIZE-1];
         $display("AUTH w_tag: %h", w_tag);
         $display("Sw_tage 3 - END");
         /* PIPELINE Sw_tagE - 3 [END] */
