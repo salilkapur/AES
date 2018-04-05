@@ -963,7 +963,7 @@ module gcm_aes(
     always_comb
     begin
         /* PIPELINE STAGE - 1 [BEGIN] */
-        $display("Sw_tage 1 - START");
+        $display("Stage 1 - START");
         //Step 1 - Computing H value
         w_h = fn_aes_encrypt_unroll(128'd0);
         $display("H: %h", H);
@@ -975,11 +975,11 @@ module gcm_aes(
         
         w_plain_text = r_s1_plain_text;
         w_s1_aad = r_s1_aad;
-        $display("Sw_tage 1 - END");
+        $display("Stage 1 - END");
         /* PIPELINE STAGE - 1 [END] */
 
         /* PIPELINE STAGE - 2 [START] */
-        $display("Sw_tage 2 - START");
+        $display("Stage 2 - START");
         //Step 3a - Incrementing right-most 32 bits of  J_0
         $display("inc32(J_0): %h", {r_J_0[0:95], r_J_0[96:127] + 1'b1});
 
@@ -1010,11 +1010,11 @@ module gcm_aes(
         
         w_s2_aad = r_s1_aad;
         w_s2_J_0 = r_J_0;
-        $display("Sw_tage 2 - END");
+        $display("Stage 2 - END");
         /* PIPELINE STAGE - 2 [END] */
         
         /* PIPELINE STAGE - 3 [START] */
-        $display("Sw_tage 3 - START");
+        $display("Stage 3 - START");
         // Step 5 - Computing GHASH of the S block
         m = globals::AUTH_INPUT_SIZE / 128;
         w_auth_input = {r_s3_aad, r_cipher_text, 64'd128, 64'd128};
@@ -1033,8 +1033,8 @@ module gcm_aes(
         w_encrypted_cb_s3 = fn_aes_encrypt_unroll(r_s3_J_0);
         w_pre_tag =  w_s_block ^ w_encrypted_cb_s3;
         w_tag = w_pre_tag[0:globals::TAG_SIZE-1];
-        $display("AUTH w_tag: %h", w_tag);
-        $display("Sw_tage 3 - END");
+        $display("AUTH TAG: %h", w_tag);
+        $display("Stage 3 - END");
         /* PIPELINE STAGE - 3 [END] */
     end
 endmodule
