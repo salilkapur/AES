@@ -867,6 +867,7 @@ endfunction
 
 module gcm_aes(
         clk,
+        i_reset,
         i_iv,
         i_plain_text,
         i_aad,
@@ -875,7 +876,8 @@ module gcm_aes(
     );
 
     input   clk;
-
+    input   i_reset;
+    
     /*
     input  [0:globals::IV_SIZE - 1]           i_iv;
     input  [0:globals::PLAIN_TEXT_SIZE - 1]   i_plain_text; 
@@ -890,37 +892,47 @@ module gcm_aes(
     output reg [0:globals::PLAIN_TEXT_SIZE - 1]   o_cipher_text;
     output reg [0:globals::TAG_SIZE - 1]          o_tag;
 
+    
     //Local input registers
-    logic [0:globals::PLAIN_TEXT_SIZE-1]    r_in_plain_text;
-    logic [0:globals::AAD_SIZE - 1]         r_in_aad;
+    logic                                   r_reset;
+    logic [0:3]                             r_s2_counter;
+    logic [0:3]                             r_s3_counter;
     logic [0:globals::IV_SIZE - 1]          r_s1_iv;
+    logic [0:globals::PLAIN_TEXT_SIZE-1]    r_in_plain_text;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s1_plain_text;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s2_plain_text;
+    logic [0:globals::AAD_SIZE - 1]         r_in_aad;
     logic [0:globals::AAD_SIZE - 1]         r_s1_aad;
     logic [0:globals::AAD_SIZE - 1]         r_s2_aad;
     logic [0:globals::AAD_SIZE - 1]         r_s3_aad;
-
+    logic [0:127]                           r_s1_cb;
+    logic [0:127]                           r_s2_j_0;
+    logic [0:127]                           r_s3_j_0;
+    logic [0:127]                           r_s2_h;
+    logic [0:127]                           r_s3_h;
+    logic [0:127]                           r_auth_input;
+    logic [0:127]                           r_s3_sblock;
+    
     //Local output registers
     logic [0:globals::TAG_SIZE - 1]         r_tag;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_cipher_text;
     
-    // Pipeline stage variables
-    logic [0:127]                           r_J_0;
-    logic [0:127]                           r_s3_J_0;
-    logic [0:127]                           r_H;
-    logic [0:127]                           r_auth_input;
-    
-    logic [0:127]                           w_j_0;
-    logic [0:127]                           w_h;
+    logic [0:3]                             w_s2_counter;
+    logic [0:3]                             w_s3_counter;
+    logic [0:127]                           w_s1_j_0;
+    logic [0:127]                           w_s2_j_0;
+    logic [0:127]                           w_s1_h;
+    logic [0:127]                           w_s2_h;
     logic [0:127]                           w_cb;
+    logic [0:127]                           w_s1_cb;
+    logic [0:127]                           w_s2_cb;
     logic [0: globals::AUTH_INPUT_SIZE - 1] w_auth_input;
-    logic [0:127]                           w_s_block;
-    logic [0:127]                           w_encrypted_cb_s2;
-    logic [0:127]                           w_encrypted_cb_s3;
+    logic [0:127]                           w_s3_sblock;
+    logic [0:127]                           w_s2_encrypted_cb;
+    logic [0:127]                           w_s3_encrypted_cb;
     logic [0:127]                           w_pre_tag;
     logic [0:globals::TAG_SIZE - 1]         w_tag;
-    logic [0:127]                           w_s2_J_0;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_plain_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s1_plain_text;
     logic [0:globals::AAD_SIZE - 1]         w_s1_aad;
     logic [0:globals::AAD_SIZE - 1]         w_s2_aad;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_cipher_text;
@@ -934,6 +946,7 @@ module gcm_aes(
     always_ff @(posedge clk)
     begin
         //Latch input
+        r_reset <= i_reset;
         r_s1_iv <= {i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv};
         r_s1_plain_text <= {i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text[0]};
         r_s1_aad <= {i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad[0]};
@@ -943,17 +956,23 @@ module gcm_aes(
         //r_s1_aad <= i_aad;
         
         //Latch State 1 outputs
-        r_s2_plain_text <= w_plain_text; 
+        r_s2_plain_text <= w_s1_plain_text; 
         r_s2_aad <= w_s1_aad;
-        r_J_0 <= w_j_0;
-        r_H <= w_h;
+        r_s2_j_0 <= w_s1_j_0;
+        r_s2_h <= w_s1_h;
         
-        //Latch Sw_tage 2 outputs
+        //Latch Stage 2 outputs
         r_cipher_text <= w_cipher_text;
         r_s3_aad <= w_s2_aad;
-        r_s3_J_0 <= w_s2_J_0;
+        r_s3_j_0 <= w_s2_j_0;
+        r_s2_counter <= w_s2_counter;
         
-        //Latch Sw_tage 3 outputs (Final outputs)
+        
+        //Latch Stage 3 outputs
+        r_s3_counter <= w_s3_counter;
+        r_s3_sblock <= w_s3_sblock;
+        
+        //Latch final outputs
         o_tag <= w_tag;
         o_cipher_text <= r_cipher_text;
     end
@@ -965,27 +984,40 @@ module gcm_aes(
         /* PIPELINE STAGE - 1 [BEGIN] */
         $display("Stage 1 - START");
         //Step 1 - Computing H value
-        w_h = fn_aes_encrypt_unroll(128'd0);
-        $display("H: %h", H);
+        w_s1_h = fn_aes_encrypt_unroll(128'd0);
+        $display("H: %h", w_s1_h);
 
         //Step 2 - Compute J_0
-        w_j_0 = {r_s1_iv, 31'd0, 1'b1};
+        w_s1_j_0 = {r_s1_iv, 31'd0, 1'b1};
         $display("J_0: %h", J_0);
         $display("IV: %h", r_s1_iv);
         
-        w_plain_text = r_s1_plain_text;
+        // Carrying forward register values for subsequent stages
+        w_s1_plain_text = r_s1_plain_text;
         w_s1_aad = r_s1_aad;
+        
         $display("Stage 1 - END");
         /* PIPELINE STAGE - 1 [END] */
 
         /* PIPELINE STAGE - 2 [START] */
         $display("Stage 2 - START");
-        //Step 3a - Incrementing right-most 32 bits of  J_0
-        $display("inc32(J_0): %h", {r_J_0[0:95], r_J_0[96:127] + 1'b1});
-
+        //Increment the counter
+        if (r_reset == 1)
+        begin
+            w_s2_counter = 0;
+        end
+        else
+        begin
+            w_s2_counter = r_s2_counter + 1;
+        end
+        
+        // Incrementing J0 with the block number being processed
+        w_s2_cb = {r_s2_j_0[0:95], r_s2_j_0[96:127] + w_s2_counter}; 
+        
         //Step 3b - GCTR operation
-        n = globals::PLAIN_TEXT_SIZE / 128;
-        w_cb = {r_J_0[0:95], r_J_0[96:127] + 1'b1}; // Setting the initial counter block to inc(J_0)
+        //n = globals::PLAIN_TEXT_SIZE / 128;
+        
+        /*
         for(i = 1; i < n; i++) // Loop runs for n-1 iterations
         begin
             $display("CB: %h", w_cb);
@@ -996,42 +1028,64 @@ module gcm_aes(
             $display("Cipher block: %h", w_cipher_text[(i-1)*128+:128]);
             w_cb = {w_cb[0:95], w_cb[96:127] + 1'b1};
         end
+        */
         
-        $display("CB: %h", w_cb);
-        $display("PT: %h", r_s2_plain_text[(i-1)*128+:128]);
-        w_encrypted_cb_s2 = fn_aes_encrypt_unroll(w_cb);
-        $display("Encrypted CB: %h", w_encrypted_cb_s2);
-        w_cipher_text[(n-1)*128+:128] =  r_s2_plain_text[(n-1)*128+:128] ^ w_encrypted_cb_s2;
+        $display("CB: %h", w_s2_cb);
+        $display("PT: %h", r_s2_plain_text[(w_s2_counter-1)*128+:128]);
+        w_s2_encrypted_cb = fn_aes_encrypt_unroll(w_s2_cb);
+        $display("Encrypted CB: %h", w_s2_encrypted_cb);
+        w_cipher_text[(w_s2_counter-1)*128+:128] =  r_s2_plain_text[(n-1)*128+:128] ^ w_s2_encrypted_cb;
         $display("CIPHER TEXT: %h", w_cipher_text);
         
         // Step 4 - Computing constants is not necessary since we are assuming
         // the inputs are multiples of 128. Zero padding is done to align the
         // size with 128
         
+        // Carrying forward register values for subsequent stages
+        w_s2_h = r_s2_h;
         w_s2_aad = r_s1_aad;
-        w_s2_J_0 = r_J_0;
+        w_s2_j_0 = r_s2_j_0;
         $display("Stage 2 - END");
         /* PIPELINE STAGE - 2 [END] */
         
         /* PIPELINE STAGE - 3 [START] */
         $display("Stage 3 - START");
+        if (r_reset == 1)
+        begin
+            w_s3_counter = 0;
+        end
+        else
+        begin
+            w_s3_counter = r_s3_counter + 1;
+        end
+        
         // Step 5 - Computing GHASH of the S block
         m = globals::AUTH_INPUT_SIZE / 128;
-        w_auth_input = {r_s3_aad, r_cipher_text, 64'd128, 64'd128};
-        $display("AUTH INPUT: %h", w_auth_input);
-        
-        w_s_block = 128'd0;
+        if (w_s3_counter == 1)
+        begin
+            w_auth_input = {r_s3_aad, r_cipher_text, 64'd128, 64'd128};
+            $display("AUTH INPUT: %h", w_auth_input);
+            w_s3_sblock = 128'd0;
+        end
+        else
+        begin
+            w_s3_sblock = r_s3_sblock;
+        end
+        /*
         for(i = 0; i < m; i++) // Loop runs for n iterations
         begin
             w_s_block = (w_s_block ^ w_auth_input[i*128+:128]);
-            w_s_block = fn_product(w_s_block, r_H);
+            w_s_block = fn_product(w_s_block, r_s1_h);
             $display("S: %h", w_s_block);
         end
-        $display("S: %h", w_s_block);
+        */
+        w_s3_sblock = (w_s3_sblock ^ w_auth_input[(w_s3_counter-1)*128+:128]);
+        w_s3_sblock = fn_product(w_s3_sblock, r_s3_h);
+        $display("S: %h", w_s3_block);
         
         // Step 6 - Computing the authentication tag
-        w_encrypted_cb_s3 = fn_aes_encrypt_unroll(r_s3_J_0);
-        w_pre_tag =  w_s_block ^ w_encrypted_cb_s3;
+        w_s3_encrypted_cb = fn_aes_encrypt_unroll(r_s3_j_0);
+        w_pre_tag =  w_s3_sblock ^ w_s3_encrypted_cb;
         w_tag = w_pre_tag[0:globals::TAG_SIZE-1];
         $display("AUTH TAG: %h", w_tag);
         $display("Stage 3 - END");
