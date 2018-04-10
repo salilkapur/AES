@@ -182,9 +182,9 @@ package globals;
     parameter IV_SIZE           = 96;
     parameter BLOCK_SIZE        = 128;
     parameter PLAIN_TEXT_SIZE   = 128;
-    parameter AAD_SIZE          = 128;
+    parameter AAD_SIZE          = 128; // Ignoring AAD for now
     parameter TAG_SIZE          = 128;
-    parameter AUTH_INPUT_SIZE   = 384; //AAD_SIZE + PLAIN_TEXT_SIZE + 64 + 64
+    parameter AUTH_INPUT_SIZE   = 256; //AAD_SIZE + PLAIN_TEXT_SIZE + 64 + 64 (Ignoring AAD length for now)
     
 endpackage
 
@@ -868,55 +868,59 @@ endfunction
 module gcm_aes(
         clk,
         i_reset,
+        i_new_instance,
         i_iv,
         i_plain_text,
         i_aad,
         o_cipher_text,
-        o_tag
+        o_tag,
+        o_tag_ready
     );
 
     input   clk;
     input   i_reset;
+    input   i_new_instance;    
     
-    /*
     input  [0:globals::IV_SIZE - 1]           i_iv;
     input  [0:globals::PLAIN_TEXT_SIZE - 1]   i_plain_text; 
     input  [0:globals::AAD_SIZE - 1]          i_aad;
-    */
     
+    /*
     input  [0:5]        i_iv;
     input  [0:4]        i_plain_text; 
     input  [0:4]        i_aad;
-    
+    */ 
     
     output reg [0:globals::PLAIN_TEXT_SIZE - 1]   o_cipher_text;
     output reg [0:globals::TAG_SIZE - 1]          o_tag;
-
+    output reg                                    o_tag_ready;
     
     //Local input registers
     logic                                   r_reset;
+    logic                                   r_s1_new_instance;
+    logic                                   r_s2_new_instance;
+    logic                                   r_s3_new_instance;
     logic [0:3]                             r_s2_counter;
     logic [0:3]                             r_s3_counter;
     logic [0:globals::IV_SIZE - 1]          r_s1_iv;
     logic [0:globals::PLAIN_TEXT_SIZE-1]    r_in_plain_text;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s1_plain_text;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s2_plain_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s3_cipher_text;
     logic [0:globals::AAD_SIZE - 1]         r_in_aad;
     logic [0:globals::AAD_SIZE - 1]         r_s1_aad;
     logic [0:globals::AAD_SIZE - 1]         r_s2_aad;
     logic [0:globals::AAD_SIZE - 1]         r_s3_aad;
-    logic [0:127]                           r_s1_cb;
+    logic [0:127]                           r_s2_cb;
     logic [0:127]                           r_s2_j_0;
     logic [0:127]                           r_s3_j_0;
     logic [0:127]                           r_s2_h;
     logic [0:127]                           r_s3_h;
-    logic [0:127]                           r_auth_input;
     logic [0:127]                           r_s3_sblock;
+    logic [0:127]                           r_s3_encrypted_j0;
     
-    //Local output registers
-    logic [0:globals::TAG_SIZE - 1]         r_tag;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_cipher_text;
-    
+    logic                                   w_s1_new_instance;
+    logic                                   w_s2_new_instance;
     logic [0:3]                             w_s2_counter;
     logic [0:3]                             w_s3_counter;
     logic [0:127]                           w_s1_j_0;
@@ -926,16 +930,18 @@ module gcm_aes(
     logic [0:127]                           w_cb;
     logic [0:127]                           w_s1_cb;
     logic [0:127]                           w_s2_cb;
-    logic [0: globals::AUTH_INPUT_SIZE - 1] w_auth_input;
+    logic [0: globals::AUTH_INPUT_SIZE - 1] w_s3_auth_input;
     logic [0:127]                           w_s3_sblock;
     logic [0:127]                           w_s2_encrypted_cb;
     logic [0:127]                           w_s3_encrypted_cb;
+    logic [0:127]                           w_s3_encrypted_j0;
     logic [0:127]                           w_pre_tag;
-    logic [0:globals::TAG_SIZE - 1]         w_tag;
+    logic [0:globals::TAG_SIZE - 1]         w_s3_tag;
+    logic                                   w_s3_tag_ready;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s1_plain_text;
     logic [0:globals::AAD_SIZE - 1]         w_s1_aad;
     logic [0:globals::AAD_SIZE - 1]         w_s2_aad;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_cipher_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s2_cipher_text;
     
     int i;
     // Following variables have the same meaning as in the NIST document
@@ -947,34 +953,40 @@ module gcm_aes(
     begin
         //Latch input
         r_reset <= i_reset;
-        r_s1_iv <= {i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv};
-        r_s1_plain_text <= {i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text[0]};
-        r_s1_aad <= {i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad[0]};
 
-        //r_s1_iv <= i_iv;
-        //r_s1_plain_text <= i_plain_text;
+        //r_s1_iv <= {i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv, i_iv};
+        //r_s1_plain_text <= {i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text, i_plain_text[0]};
+        //r_s1_aad <= {i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad, i_aad[0]};
+
+        r_s1_iv <= i_iv;
+        r_s1_plain_text <= i_plain_text;
+        r_s1_new_instance <= i_new_instance;
         //r_s1_aad <= i_aad;
         
         //Latch State 1 outputs
         r_s2_plain_text <= w_s1_plain_text; 
-        r_s2_aad <= w_s1_aad;
+        //r_s2_aad <= w_s1_aad;
         r_s2_j_0 <= w_s1_j_0;
         r_s2_h <= w_s1_h;
-        
+        r_s2_new_instance <= w_s1_new_instance;
+
         //Latch Stage 2 outputs
-        r_cipher_text <= w_cipher_text;
-        r_s3_aad <= w_s2_aad;
+        r_s3_cipher_text <= w_s2_cipher_text;
+        //r_s3_aad <= w_s2_aad;
         r_s3_j_0 <= w_s2_j_0;
-        r_s2_counter <= w_s2_counter;
-        
+        r_s3_new_instance <= w_s2_new_instance;
+        r_s2_counter <= w_s2_counter; // Cycle
+        r_s2_cb <= w_s2_cb; // Cycle
         
         //Latch Stage 3 outputs
-        r_s3_counter <= w_s3_counter;
-        r_s3_sblock <= w_s3_sblock;
-        
+        r_s3_counter <= w_s3_counter; // Cycle
+        r_s3_sblock <= w_s3_sblock; // Cycle
+        r_s3_encrypted_j0 <= w_s3_encrypted_j0;
+
         //Latch final outputs
-        o_tag <= w_tag;
-        o_cipher_text <= r_cipher_text;
+        o_tag <= w_s3_tag;
+        o_tag_ready <= w_s3_tag_ready;
+        o_cipher_text <= r_s3_cipher_text;
     end
     
     //Helper variables
@@ -989,30 +1001,31 @@ module gcm_aes(
 
         //Step 2 - Compute J_0
         w_s1_j_0 = {r_s1_iv, 31'd0, 1'b1};
-        $display("J_0: %h", J_0);
+        $display("J_0: %h", w_s1_j_0);
         $display("IV: %h", r_s1_iv);
         
         // Carrying forward register values for subsequent stages
         w_s1_plain_text = r_s1_plain_text;
-        w_s1_aad = r_s1_aad;
-        
+        //w_s1_aad = r_s1_aad;
+        w_s1_new_instance = r_s1_new_instance;
+
         $display("Stage 1 - END");
         /* PIPELINE STAGE - 1 [END] */
 
         /* PIPELINE STAGE - 2 [START] */
         $display("Stage 2 - START");
         //Increment the counter
-        if (r_reset == 1)
+        if (r_s2_new_instance == 1)
         begin
-            w_s2_counter = 0;
+            // If it is a new instance then use J0 to compute a fresh CB
+            w_s2_cb = {r_s2_j_0[0:95], r_s2_j_0[96:127] + 1'b1};
         end
         else
         begin
-            w_s2_counter = r_s2_counter + 1;
+            // If this is not a new plain text instance then use the
+            // CB from the last round and increment it by one
+            w_s2_cb = {r_s2_cb[0:95], r_s2_cb[96:127] + 1'b1};
         end
-        
-        // Incrementing J0 with the block number being processed
-        w_s2_cb = {r_s2_j_0[0:95], r_s2_j_0[96:127] + w_s2_counter}; 
         
         //Step 3b - GCTR operation
         //n = globals::PLAIN_TEXT_SIZE / 128;
@@ -1031,11 +1044,11 @@ module gcm_aes(
         */
         
         $display("CB: %h", w_s2_cb);
-        $display("PT: %h", r_s2_plain_text[(w_s2_counter-1)*128+:128]);
+        $display("PT: %h", r_s2_plain_text);
         w_s2_encrypted_cb = fn_aes_encrypt_unroll(w_s2_cb);
         $display("Encrypted CB: %h", w_s2_encrypted_cb);
-        w_cipher_text[(w_s2_counter-1)*128+:128] =  r_s2_plain_text[(n-1)*128+:128] ^ w_s2_encrypted_cb;
-        $display("CIPHER TEXT: %h", w_cipher_text);
+        w_s2_cipher_text =  r_s2_plain_text ^ w_s2_encrypted_cb;
+        $display("CIPHER TEXT: %h", w_s2_cipher_text);
         
         // Step 4 - Computing constants is not necessary since we are assuming
         // the inputs are multiples of 128. Zero padding is done to align the
@@ -1043,27 +1056,55 @@ module gcm_aes(
         
         // Carrying forward register values for subsequent stages
         w_s2_h = r_s2_h;
-        w_s2_aad = r_s1_aad;
+        w_s2_new_instance = r_s2_new_instance;
+        //w_s2_aad = r_s1_aad;
         w_s2_j_0 = r_s2_j_0;
         $display("Stage 2 - END");
         /* PIPELINE STAGE - 2 [END] */
         
         /* PIPELINE STAGE - 3 [START] */
         $display("Stage 3 - START");
-        if (r_reset == 1)
+        if (r_s3_new_instance == 1)
         begin
+            w_s3_sblock = 128'd0;
+            w_s3_auth_input = {r_s3_cipher_text, 64'd0, 64'd128};
             w_s3_counter = 0;
+            // Following computation is for the new plain text instance
+            w_s3_encrypted_j0 = fn_aes_encrypt_unroll(r_s3_j_0);
         end
         else
         begin
+            w_s3_sblock = r_s3_sblock;
             w_s3_counter = r_s3_counter + 1;
         end
-        
+    
+        w_s3_sblock = (w_s3_sblock ^ w_s3_auth_input[w_s3_counter*128+:128]);
+        w_s3_sblock = fn_product(w_s3_sblock, r_s3_h);
+        $display("S: %h", w_s3_sblock);
+
+        m = (globals::AUTH_INPUT_SIZE / 128) - 1; // Total blocks minus one
+
+        if (w_s3_counter == m)
+        begin
+            // Following computation is for the previous plain text instance
+            // This logic is to accomodate the last 128 bits of zeros in
+            // authentication input
+            w_pre_tag = w_s3_sblock ^ r_s3_encrypted_j0;
+            w_s3_tag = w_pre_tag[0:globals::TAG_SIZE-1];
+            w_s3_tag_ready = 1'b1;
+        end
+        else
+        begin
+            w_s3_tag_ready = 1'b0;
+            w_s3_encrypted_j0 = r_s3_encrypted_j0;
+        end
+
         // Step 5 - Computing GHASH of the S block
-        m = globals::AUTH_INPUT_SIZE / 128;
+        /*
         if (w_s3_counter == 1)
         begin
-            w_auth_input = {r_s3_aad, r_cipher_text, 64'd128, 64'd128};
+            //w_auth_input = {r_s3_aad, r_cipher_text, 64'd128, 64'd128};
+            w_auth_input = {r_s3_cipher_text, 64'd0, 64'd128}; // Ignoring AAD for now
             $display("AUTH INPUT: %h", w_auth_input);
             w_s3_sblock = 128'd0;
         end
@@ -1071,7 +1112,7 @@ module gcm_aes(
         begin
             w_s3_sblock = r_s3_sblock;
         end
-        /*
+        
         for(i = 0; i < m; i++) // Loop runs for n iterations
         begin
             w_s_block = (w_s_block ^ w_auth_input[i*128+:128]);
@@ -1079,15 +1120,10 @@ module gcm_aes(
             $display("S: %h", w_s_block);
         end
         */
-        w_s3_sblock = (w_s3_sblock ^ w_auth_input[(w_s3_counter-1)*128+:128]);
-        w_s3_sblock = fn_product(w_s3_sblock, r_s3_h);
-        $display("S: %h", w_s3_block);
+
         
-        // Step 6 - Computing the authentication tag
-        w_s3_encrypted_cb = fn_aes_encrypt_unroll(r_s3_j_0);
-        w_pre_tag =  w_s3_sblock ^ w_s3_encrypted_cb;
-        w_tag = w_pre_tag[0:globals::TAG_SIZE-1];
-        $display("AUTH TAG: %h", w_tag);
+        $display("AUTH TAG: %h", o_tag);
+        $display("AUTH TAG READY: %d", w_s3_tag_ready);
         $display("Stage 3 - END");
         /* PIPELINE STAGE - 3 [END] */
     end
