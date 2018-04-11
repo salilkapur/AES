@@ -1091,7 +1091,7 @@ module gcm_aes(
             // Following computation is for the previous plain text instance
             // This logic is to accomodate the last 128 bits of zeros in
             // authentication input
-            w_s3_auth_input = 128'd0;
+            w_s3_auth_input = {64'd0, 64'd128};
             w_s3_tag_ready = 1'b1;
         end
         else
