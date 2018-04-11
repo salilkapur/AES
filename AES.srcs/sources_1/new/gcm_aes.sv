@@ -184,7 +184,7 @@ package globals;
     parameter PLAIN_TEXT_SIZE   = 128;
     parameter AAD_SIZE          = 128; // Ignoring AAD for now
     parameter TAG_SIZE          = 128;
-    parameter AUTH_INPUT_SIZE   = 256; //AAD_SIZE + PLAIN_TEXT_SIZE + 64 + 64 (Ignoring AAD length for now)
+    parameter AUTH_INPUT_SIZE   = 640; //AAD_SIZE + PLAIN_TEXT_SIZE + 64 + 64 (Ignoring AAD length for now)
     
 endpackage
 
@@ -930,7 +930,7 @@ module gcm_aes(
     logic [0:127]                           w_cb;
     logic [0:127]                           w_s1_cb;
     logic [0:127]                           w_s2_cb;
-    logic [0: globals::AUTH_INPUT_SIZE - 1] w_s3_auth_input;
+    logic [0:127]                           w_s3_auth_input;
     logic [0:127]                           w_s3_sblock;
     logic [0:127]                           w_s2_encrypted_cb;
     logic [0:127]                           w_s3_encrypted_cb;
@@ -942,6 +942,7 @@ module gcm_aes(
     logic [0:globals::AAD_SIZE - 1]         w_s1_aad;
     logic [0:globals::AAD_SIZE - 1]         w_s2_aad;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s2_cipher_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s3_cipher_text;
     
     int i;
     // Following variables have the same meaning as in the NIST document
@@ -975,6 +976,7 @@ module gcm_aes(
         //r_s3_aad <= w_s2_aad;
         r_s3_j_0 <= w_s2_j_0;
         r_s3_new_instance <= w_s2_new_instance;
+        r_s3_h <= w_s2_h;
         r_s2_counter <= w_s2_counter; // Cycle
         r_s2_cb <= w_s2_cb; // Cycle
         
@@ -986,7 +988,7 @@ module gcm_aes(
         //Latch final outputs
         o_tag <= w_s3_tag;
         o_tag_ready <= w_s3_tag_ready;
-        o_cipher_text <= r_s3_cipher_text;
+        o_cipher_text <= w_s3_cipher_text;
     end
     
     //Helper variables
@@ -997,24 +999,25 @@ module gcm_aes(
         $display("Stage 1 - START");
         //Step 1 - Computing H value
         w_s1_h = fn_aes_encrypt_unroll(128'd0);
-        $display("H: %h", w_s1_h);
+        $display("\t\tH: %h", w_s1_h);
 
         //Step 2 - Compute J_0
         w_s1_j_0 = {r_s1_iv, 31'd0, 1'b1};
-        $display("J_0: %h", w_s1_j_0);
-        $display("IV: %h", r_s1_iv);
+        $display("\t\tJ_0: %h", w_s1_j_0);
+        $display("\t\tIV: %h", r_s1_iv);
         
         // Carrying forward register values for subsequent stages
         w_s1_plain_text = r_s1_plain_text;
         //w_s1_aad = r_s1_aad;
         w_s1_new_instance = r_s1_new_instance;
-
+        $display("\t\tNEW INSTANCE: %d", r_s1_new_instance);
         $display("Stage 1 - END");
         /* PIPELINE STAGE - 1 [END] */
 
         /* PIPELINE STAGE - 2 [START] */
         $display("Stage 2 - START");
         //Increment the counter
+        $display("\t\tNEW INSTANCE: %d", r_s2_new_instance);
         if (r_s2_new_instance == 1)
         begin
             // If it is a new instance then use J0 to compute a fresh CB
@@ -1043,12 +1046,12 @@ module gcm_aes(
         end
         */
         
-        $display("CB: %h", w_s2_cb);
-        $display("PT: %h", r_s2_plain_text);
+        $display("\t\tCB: %h", w_s2_cb);
+        $display("\t\tPT: %h", r_s2_plain_text);
         w_s2_encrypted_cb = fn_aes_encrypt_unroll(w_s2_cb);
-        $display("Encrypted CB: %h", w_s2_encrypted_cb);
+        $display("\t\tEncrypted CB: %h", w_s2_encrypted_cb);
         w_s2_cipher_text =  r_s2_plain_text ^ w_s2_encrypted_cb;
-        $display("CIPHER TEXT: %h", w_s2_cipher_text);
+        $display("\t\tCIPHER TEXT: %h", w_s2_cipher_text);
         
         // Step 4 - Computing constants is not necessary since we are assuming
         // the inputs are multiples of 128. Zero padding is done to align the
@@ -1064,10 +1067,11 @@ module gcm_aes(
         
         /* PIPELINE STAGE - 3 [START] */
         $display("Stage 3 - START");
+        $display("\t\tNEW INSTANCE: %d", r_s3_new_instance);
         if (r_s3_new_instance == 1)
         begin
+            $display("\t\tInitializing S Block");
             w_s3_sblock = 128'd0;
-            w_s3_auth_input = {r_s3_cipher_text, 64'd0, 64'd128};
             w_s3_counter = 0;
             // Following computation is for the new plain text instance
             w_s3_encrypted_j0 = fn_aes_encrypt_unroll(r_s3_j_0);
@@ -1076,11 +1080,9 @@ module gcm_aes(
         begin
             w_s3_sblock = r_s3_sblock;
             w_s3_counter = r_s3_counter + 1;
+            w_s3_encrypted_j0 = r_s3_encrypted_j0;
         end
-    
-        w_s3_sblock = (w_s3_sblock ^ w_s3_auth_input[w_s3_counter*128+:128]);
-        w_s3_sblock = fn_product(w_s3_sblock, r_s3_h);
-        $display("S: %h", w_s3_sblock);
+        
 
         m = (globals::AUTH_INPUT_SIZE / 128) - 1; // Total blocks minus one
 
@@ -1089,15 +1091,25 @@ module gcm_aes(
             // Following computation is for the previous plain text instance
             // This logic is to accomodate the last 128 bits of zeros in
             // authentication input
-            w_pre_tag = w_s3_sblock ^ r_s3_encrypted_j0;
-            w_s3_tag = w_pre_tag[0:globals::TAG_SIZE-1];
+            w_s3_auth_input = 128'd0;
             w_s3_tag_ready = 1'b1;
         end
         else
         begin
+            w_s3_auth_input = r_s3_cipher_text;
             w_s3_tag_ready = 1'b0;
-            w_s3_encrypted_j0 = r_s3_encrypted_j0;
         end
+
+        w_s3_sblock = (w_s3_sblock ^ w_s3_auth_input);
+        w_s3_sblock = fn_product(w_s3_sblock, r_s3_h);
+        w_pre_tag = w_s3_sblock ^ r_s3_encrypted_j0;
+        w_s3_tag = w_pre_tag[0:globals::TAG_SIZE-1];
+    
+        $display("\t\tS3 H: %h", r_s3_h);
+        $display("\t\tS3 Encrypted J0: %h", r_s3_encrypted_j0);
+        $display("\t\tPRE TAG: %h", w_pre_tag);
+        $display("\t\tAUTH INPUT: %h", w_s3_auth_input);
+        $display("\t\tS: %h", w_s3_sblock);
 
         // Step 5 - Computing GHASH of the S block
         /*
@@ -1122,8 +1134,11 @@ module gcm_aes(
         */
 
         
-        $display("AUTH TAG: %h", o_tag);
-        $display("AUTH TAG READY: %d", w_s3_tag_ready);
+        $display("\t\tAUTH TAG: %h", o_tag);
+        $display("\t\tAUTH TAG READY: %d", w_s3_tag_ready);
+        
+        w_s3_cipher_text = r_s3_cipher_text;
+        
         $display("Stage 3 - END");
         /* PIPELINE STAGE - 3 [END] */
     end

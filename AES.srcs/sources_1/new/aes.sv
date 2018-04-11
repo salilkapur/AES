@@ -30,16 +30,21 @@ module aes(
     //reg [0:95]  iv         = 96'hCAFEBABEFACEDBADDECAF888;
     reg [0:511] plain_text = 512'hD9313225F88406E5A55909C5AFF5269A86A7A9531534F7DA2E4C303D8A318A721C3C0C95956809532FCF0E2449A6B525B16AEDF5AA0DE657BA637B391AAFD255;
     reg [0:511] aad        = 512'h3AD77BB40D7A3660A89ECAF32466EF97F5D3D58503B9699DE785895A96FDBAAF43B1CD7F598ECE23881B00E3ED0306887B0C785E27E8AD3F8223207104725DD4;
-    reg [0:255] cipher_text;
+    reg [0:127] cipher_text;
     reg [0:127] tag;
+    reg [0:95] iv_sw = {sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7]};
+    reg [0:127] plain_text_sw = {sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15]};
+    reg tag_ready;
     
     gcm_aes gcm_aes_instance(
         .clk(clk_out),
-        .i_iv(sw[0:5]),
-        .i_plain_text(sw[6:10]),
-        .i_aad(sw[11:15]),
+        .i_iv(iv_sw),
+        .i_new_instance(i_reset),
+        .i_plain_text(plain_text_sw),
+        .i_aad(128'd0),
         .o_cipher_text(cipher_text),
-        .o_tag(tag)
+        .o_tag(tag),
+        .o_tag_ready(tag_ready)
     );
     
     display u (
