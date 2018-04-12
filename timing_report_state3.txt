@@ -1,0 +1,1856 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
+| Date         : Wed Apr 11 23:42:18 2018
+| Host         : salil running 64-bit Ubuntu 17.10
+| Command      : report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose -max_paths 10 -input_pins -cell [get_cells {gcm_aes_instance/r_s3_cipher_text_reg[45]}] -name timing_2 -file /home/salil/HDD/Work/ProgrammingModel/AES/timing_report_state3.txt
+| Design       : aes
+| Device       : 7a35t-cpg236
+| Speed File   : -1  PRODUCTION 1.16 2016-11-09
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  false
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+      1.900        0.000                      0                   72        1.225        0.000                      0                   72       21.239        0.000                       0                     1  
+
+
+All user specified timing constraints are met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock                     Waveform(ns)       Period(ns)      Frequency(MHz)
+-----                     ------------       ----------      --------------
+clk                       {0.000 5.000}      10.000          100.000         
+  w_clk_out_clk_wiz_gen   {0.000 21.739}     43.478          23.000          
+  w_clkfbout_clk_wiz_gen  {0.000 10.000}     20.000          50.000          
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock                        WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----                        -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+  w_clk_out_clk_wiz_gen        1.900        0.000                      0                   72        1.225        0.000                      0                   72       21.239        0.000                       0                     1  
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| User Ignored Path Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock    
+----------    ----------    --------    
+
+
+------------------------------------------------------------------------------------------------
+| Unconstrained Path Table
+| ------------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock    
+----------    ----------    --------    
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  w_clk_out_clk_wiz_gen
+  To Clock:  w_clk_out_clk_wiz_gen
+
+Setup :            0  Failing Endpoints,  Worst Slack        1.900ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        1.225ns,  Total Violation        0.000ns
+PW    :            0  Failing Endpoints,  Worst Slack       21.239ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             1.900ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s2_cb_reg[126]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_cipher_text_reg[45]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        41.400ns  (logic 7.125ns (17.210%)  route 34.275ns (82.790%))
+  Logic Levels:           43  (CARRY4=5 LUT2=1 LUT3=5 LUT4=2 LUT5=8 LUT6=20 MUXF7=1 MUXF8=1)
+  Clock Path Skew:        -0.101ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.498ns = ( 41.980 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.906ns
+    Clock Pessimism Removal (CPR):    0.491ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.606    -0.906    gcm_aes_instance/clk
+    SLICE_X7Y72          FDRE                                         r  gcm_aes_instance/r_s2_cb_reg[126]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X7Y72          FDRE (Prop_fdre_C_Q)         0.456    -0.450 r  gcm_aes_instance/r_s2_cb_reg[126]/Q
+                         net (fo=1, routed)           0.544     0.094    gcm_aes_instance/r_s2_cb_reg_n_0_[126]
+    SLICE_X7Y71                                                       r  gcm_aes_instance/g0_b0__158_i_7/S[0]
+    SLICE_X7Y71          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.656     0.750 r  gcm_aes_instance/g0_b0__158_i_7/CO[3]
+                         net (fo=1, routed)           0.000     0.750    gcm_aes_instance/g0_b0__158_i_7_n_0
+    SLICE_X7Y72                                                       r  gcm_aes_instance/g0_b0__157_i_7/CI
+    SLICE_X7Y72          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     0.864 r  gcm_aes_instance/g0_b0__157_i_7/CO[3]
+                         net (fo=1, routed)           0.000     0.864    gcm_aes_instance/g0_b0__157_i_7_n_0
+    SLICE_X7Y73                                                       r  gcm_aes_instance/g0_b0__157_i_8/CI
+    SLICE_X7Y73          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     0.978 r  gcm_aes_instance/g0_b0__157_i_8/CO[3]
+                         net (fo=1, routed)           0.000     0.978    gcm_aes_instance/g0_b0__157_i_8_n_0
+    SLICE_X7Y74                                                       r  gcm_aes_instance/g0_b0_i_7__84/CI
+    SLICE_X7Y74          CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     1.092 r  gcm_aes_instance/g0_b0_i_7__84/CO[3]
+                         net (fo=1, routed)           0.009     1.101    gcm_aes_instance/g0_b0_i_7__84_n_0
+    SLICE_X7Y75                                                       r  gcm_aes_instance/g0_b0_i_8__84/CI
+    SLICE_X7Y75          CARRY4 (Prop_carry4_CI_O[2])
+                                                      0.239     1.340 r  gcm_aes_instance/g0_b0_i_8__84/O[2]
+                         net (fo=1, routed)           0.903     2.244    gcm_aes_instance/g0_b0_i_8__84_n_5
+    SLICE_X6Y75                                                       r  gcm_aes_instance/g0_b0_i_4__52/I0
+    SLICE_X6Y75          LUT2 (Prop_lut2_I0_O)        0.327     2.571 r  gcm_aes_instance/g0_b0_i_4__52/O
+                         net (fo=33, routed)          1.225     3.796    gcm_aes_instance/g0_b0_i_4__52_n_0
+    SLICE_X7Y79                                                       r  gcm_aes_instance/g0_b5__100/I3
+    SLICE_X7Y79          LUT6 (Prop_lut6_I3_O)        0.355     4.151 r  gcm_aes_instance/g0_b5__100/O
+                         net (fo=3, routed)           0.891     5.042    gcm_aes_instance/g0_b5__100_n_0
+    SLICE_X9Y79                                                       r  gcm_aes_instance/g0_b0__0_i_25/I0
+    SLICE_X9Y79          LUT6 (Prop_lut6_I0_O)        0.124     5.166 r  gcm_aes_instance/g0_b0__0_i_25/O
+                         net (fo=3, routed)           0.768     5.934    gcm_aes_instance/p_7_in574_in[5]
+    SLICE_X12Y80                                                      r  gcm_aes_instance/g0_b0__13_i_6/I4
+    SLICE_X12Y80         LUT5 (Prop_lut5_I4_O)        0.124     6.058 r  gcm_aes_instance/g0_b0__13_i_6/O
+                         net (fo=32, routed)          1.442     7.499    gcm_aes_instance/g0_b0__13_i_6_n_0
+    SLICE_X15Y86                                                      r  gcm_aes_instance/g0_b1__13__0/I5
+    SLICE_X15Y86         LUT6 (Prop_lut6_I5_O)        0.124     7.623 r  gcm_aes_instance/g0_b1__13__0/O
+                         net (fo=1, routed)           0.000     7.623    gcm_aes_instance/g0_b1__13__0_n_0
+    SLICE_X15Y86                                                      r  gcm_aes_instance/g0_b0__24_i_44/I0
+    SLICE_X15Y86         MUXF7 (Prop_muxf7_I0_O)      0.238     7.861 r  gcm_aes_instance/g0_b0__24_i_44/O
+                         net (fo=1, routed)           0.000     7.861    gcm_aes_instance/g0_b0__24_i_44_n_0
+    SLICE_X15Y86                                                      r  gcm_aes_instance/g0_b0__24_i_16/I0
+    SLICE_X15Y86         MUXF8 (Prop_muxf8_I0_O)      0.104     7.965 r  gcm_aes_instance/g0_b0__24_i_16/O
+                         net (fo=5, routed)           1.021     8.987    gcm_aes_instance/g0_b0__24_i_16_n_0
+    SLICE_X28Y92                                                      r  gcm_aes_instance/g0_b0__27_i_7/I1
+    SLICE_X28Y92         LUT5 (Prop_lut5_I1_O)        0.316     9.303 r  gcm_aes_instance/g0_b0__27_i_7/O
+                         net (fo=1, routed)           0.488     9.791    gcm_aes_instance/g0_b0__27_i_7_n_0
+    SLICE_X28Y92                                                      r  gcm_aes_instance/g0_b0__27_i_2/I0
+    SLICE_X28Y92         LUT3 (Prop_lut3_I0_O)        0.124     9.915 r  gcm_aes_instance/g0_b0__27_i_2/O
+                         net (fo=32, routed)          1.482    11.396    gcm_aes_instance/g0_b0__27_i_2_n_0
+    SLICE_X30Y100                                                     r  gcm_aes_instance/g2_b7__27__0/I1
+    SLICE_X30Y100        LUT6 (Prop_lut6_I1_O)        0.124    11.520 r  gcm_aes_instance/g2_b7__27__0/O
+                         net (fo=1, routed)           0.549    12.070    gcm_aes_instance/g2_b7__27__0_n_0
+    SLICE_X29Y101                                                     r  gcm_aes_instance/g0_b0__39_i_7/I1
+    SLICE_X29Y101        LUT6 (Prop_lut6_I1_O)        0.124    12.194 r  gcm_aes_instance/g0_b0__39_i_7/O
+                         net (fo=11, routed)          1.175    13.369    gcm_aes_instance/p_2_in693_in[7]
+    SLICE_X28Y104                                                     r  gcm_aes_instance/g0_b0__39_i_9/I3
+    SLICE_X28Y104        LUT5 (Prop_lut5_I3_O)        0.124    13.493 r  gcm_aes_instance/g0_b0__39_i_9/O
+                         net (fo=1, routed)           0.561    14.055    gcm_aes_instance/g0_b0__39_i_9_n_0
+    SLICE_X27Y105                                                     r  gcm_aes_instance/g0_b0__39_i_2/I0
+    SLICE_X27Y105        LUT3 (Prop_lut3_I0_O)        0.124    14.179 r  gcm_aes_instance/g0_b0__39_i_2/O
+                         net (fo=32, routed)          1.262    15.440    gcm_aes_instance/g0_b0__39_i_2_n_0
+    SLICE_X25Y109                                                     r  gcm_aes_instance/g3_b7__39__0/I1
+    SLICE_X25Y109        LUT6 (Prop_lut6_I1_O)        0.124    15.564 r  gcm_aes_instance/g3_b7__39__0/O
+                         net (fo=1, routed)           0.665    16.229    gcm_aes_instance/g3_b7__39__0_n_0
+    SLICE_X25Y109                                                     r  gcm_aes_instance/g0_b0__65_i_7/I0
+    SLICE_X25Y109        LUT6 (Prop_lut6_I0_O)        0.124    16.353 r  gcm_aes_instance/g0_b0__65_i_7/O
+                         net (fo=11, routed)          1.107    17.460    gcm_aes_instance/p_45_in809_in[7]
+    SLICE_X18Y119                                                     r  gcm_aes_instance/g0_b0__66_i_11/I2
+    SLICE_X18Y119        LUT4 (Prop_lut4_I2_O)        0.124    17.584 r  gcm_aes_instance/g0_b0__66_i_11/O
+                         net (fo=1, routed)           0.642    18.226    gcm_aes_instance/g0_b0__66_i_11_n_0
+    SLICE_X18Y119                                                     r  gcm_aes_instance/g0_b0__66_i_4/I0
+    SLICE_X18Y119        LUT4 (Prop_lut4_I0_O)        0.124    18.350 r  gcm_aes_instance/g0_b0__66_i_4/O
+                         net (fo=32, routed)          0.849    19.199    gcm_aes_instance/g0_b0__66_i_4_n_0
+    SLICE_X22Y120                                                     r  gcm_aes_instance/g0_b7__66__0/I3
+    SLICE_X22Y120        LUT6 (Prop_lut6_I3_O)        0.124    19.323 r  gcm_aes_instance/g0_b7__66__0/O
+                         net (fo=1, routed)           0.656    19.978    gcm_aes_instance/g0_b7__66__0_n_0
+    SLICE_X23Y120                                                     r  gcm_aes_instance/g0_b0__74_i_7/I0
+    SLICE_X23Y120        LUT6 (Prop_lut6_I0_O)        0.124    20.102 r  gcm_aes_instance/g0_b0__74_i_7/O
+                         net (fo=11, routed)          1.576    21.678    gcm_aes_instance/p_9_in831_in[7]
+    SLICE_X40Y116                                                     r  gcm_aes_instance/g0_b0__75_i_10/I3
+    SLICE_X40Y116        LUT5 (Prop_lut5_I3_O)        0.124    21.802 r  gcm_aes_instance/g0_b0__75_i_10/O
+                         net (fo=1, routed)           0.737    22.539    gcm_aes_instance/g0_b0__75_i_10_n_0
+    SLICE_X48Y113                                                     r  gcm_aes_instance/g0_b0__75_i_4/I0
+    SLICE_X48Y113        LUT3 (Prop_lut3_I0_O)        0.124    22.663 r  gcm_aes_instance/g0_b0__75_i_4/O
+                         net (fo=32, routed)          1.004    23.667    gcm_aes_instance/g0_b0__75_i_4_n_0
+    SLICE_X52Y108                                                     r  gcm_aes_instance/g2_b7__75__0/I3
+    SLICE_X52Y108        LUT6 (Prop_lut6_I3_O)        0.124    23.791 r  gcm_aes_instance/g2_b7__75__0/O
+                         net (fo=1, routed)           0.924    24.715    gcm_aes_instance/g2_b7__75__0_n_0
+    SLICE_X52Y104                                                     r  gcm_aes_instance/g0_b0__94_i_7/I1
+    SLICE_X52Y104        LUT6 (Prop_lut6_I1_O)        0.124    24.839 r  gcm_aes_instance/g0_b0__94_i_7/O
+                         net (fo=11, routed)          1.223    26.062    gcm_aes_instance/p_16_in910_in[7]
+    SLICE_X52Y98                                                      r  gcm_aes_instance/g0_b0__95_i_8/I3
+    SLICE_X52Y98         LUT5 (Prop_lut5_I3_O)        0.124    26.186 r  gcm_aes_instance/g0_b0__95_i_8/O
+                         net (fo=1, routed)           0.642    26.828    gcm_aes_instance/g0_b0__95_i_8_n_0
+    SLICE_X51Y97                                                      r  gcm_aes_instance/g0_b0__95_i_4/I0
+    SLICE_X51Y97         LUT3 (Prop_lut3_I0_O)        0.124    26.952 r  gcm_aes_instance/g0_b0__95_i_4/O
+                         net (fo=32, routed)          1.185    28.137    gcm_aes_instance/g0_b0__95_i_4_n_0
+    SLICE_X46Y87                                                      r  gcm_aes_instance/g3_b7__95__0/I3
+    SLICE_X46Y87         LUT6 (Prop_lut6_I3_O)        0.124    28.261 r  gcm_aes_instance/g3_b7__95__0/O
+                         net (fo=1, routed)           0.680    28.941    gcm_aes_instance/g3_b7__95__0_n_0
+    SLICE_X46Y87                                                      r  gcm_aes_instance/g0_b0__107_i_7/I0
+    SLICE_X46Y87         LUT6 (Prop_lut6_I0_O)        0.124    29.065 r  gcm_aes_instance/g0_b0__107_i_7/O
+                         net (fo=11, routed)          0.991    30.057    gcm_aes_instance/p_19_in981_in[7]
+    SLICE_X45Y86                                                      r  gcm_aes_instance/g0_b0__109_i_1/I0
+    SLICE_X45Y86         LUT5 (Prop_lut5_I0_O)        0.124    30.181 r  gcm_aes_instance/g0_b0__109_i_1/O
+                         net (fo=32, routed)          1.220    31.400    gcm_aes_instance/g0_b0__109_i_1_n_0
+    SLICE_X45Y83                                                      r  gcm_aes_instance/g3_b7__109/I0
+    SLICE_X45Y83         LUT6 (Prop_lut6_I0_O)        0.124    31.524 r  gcm_aes_instance/g3_b7__109/O
+                         net (fo=1, routed)           0.665    32.189    gcm_aes_instance/g3_b7__109_n_0
+    SLICE_X45Y83                                                      r  gcm_aes_instance/g0_b0__121_i_7/I0
+    SLICE_X45Y83         LUT6 (Prop_lut6_I0_O)        0.124    32.313 r  gcm_aes_instance/g0_b0__121_i_7/O
+                         net (fo=11, routed)          1.273    33.586    gcm_aes_instance/p_19_in1045_in[7]
+    SLICE_X53Y81                                                      r  gcm_aes_instance/g0_b0__121_i_12/I3
+    SLICE_X53Y81         LUT5 (Prop_lut5_I3_O)        0.124    33.710 r  gcm_aes_instance/g0_b0__121_i_12/O
+                         net (fo=1, routed)           0.787    34.497    gcm_aes_instance/g0_b0__121_i_12_n_0
+    SLICE_X55Y78                                                      r  gcm_aes_instance/g0_b0__121_i_2/I0
+    SLICE_X55Y78         LUT3 (Prop_lut3_I0_O)        0.124    34.621 r  gcm_aes_instance/g0_b0__121_i_2/O
+                         net (fo=32, routed)          1.129    35.750    gcm_aes_instance/g0_b0__121_i_2_n_0
+    SLICE_X60Y77                                                      r  gcm_aes_instance/g3_b5__121/I1
+    SLICE_X60Y77         LUT6 (Prop_lut6_I1_O)        0.124    35.874 r  gcm_aes_instance/g3_b5__121/O
+                         net (fo=2, routed)           0.841    36.715    gcm_aes_instance/g3_b5__121_n_0
+    SLICE_X60Y76                                                      r  gcm_aes_instance/g0_b0__8_i_29/I0
+    SLICE_X60Y76         LUT6 (Prop_lut6_I0_O)        0.124    36.839 r  gcm_aes_instance/g0_b0__8_i_29/O
+                         net (fo=13, routed)          1.315    38.154    gcm_aes_instance/p_39_in1097_in[5]
+    SLICE_X60Y70                                                      r  gcm_aes_instance/g0_b0__135_i_6/I0
+    SLICE_X60Y70         LUT5 (Prop_lut5_I0_O)        0.124    38.278 r  gcm_aes_instance/g0_b0__135_i_6/O
+                         net (fo=32, routed)          0.615    38.893    gcm_aes_instance/g0_b0__135_i_6_n_0
+    SLICE_X58Y69                                                      r  gcm_aes_instance/g0_b2__135/I5
+    SLICE_X58Y69         LUT6 (Prop_lut6_I5_O)        0.124    39.017 r  gcm_aes_instance/g0_b2__135/O
+                         net (fo=1, routed)           0.670    39.687    gcm_aes_instance/g0_b2__135_n_0
+    SLICE_X58Y69                                                      r  gcm_aes_instance/r_s3_cipher_text[45]_i_2/I5
+    SLICE_X58Y69         LUT6 (Prop_lut6_I5_O)        0.124    39.811 r  gcm_aes_instance/r_s3_cipher_text[45]_i_2/O
+                         net (fo=1, routed)           0.559    40.370    gcm_aes_instance/r_s3_cipher_text[45]_i_2_n_0
+    SLICE_X58Y68                                                      r  gcm_aes_instance/r_s3_cipher_text[45]_i_1/I1
+    SLICE_X58Y68         LUT6 (Prop_lut6_I1_O)        0.124    40.494 r  gcm_aes_instance/r_s3_cipher_text[45]_i_1/O
+                         net (fo=1, routed)           0.000    40.494    gcm_aes_instance/r_s3_cipher_text[45]_i_1_n_0
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.498    41.980    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                         clock pessimism              0.491    42.471    
+                         clock uncertainty           -0.106    42.365    
+    SLICE_X58Y68         FDRE (Setup_fdre_C_D)        0.029    42.394    gcm_aes_instance/r_s3_cipher_text_reg[45]
+  -------------------------------------------------------------------
+                         required time                         42.394    
+                         arrival time                         -40.494    
+  -------------------------------------------------------------------
+                         slack                                  1.900    
+
+Slack (MET) :             33.785ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[113]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        9.451ns  (logic 1.550ns (16.400%)  route 7.901ns (83.600%))
+  Logic Levels:           7  (LUT4=1 LUT5=1 LUT6=5)
+  Clock Path Skew:        -0.166ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.547ns = ( 41.931 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.598     1.559    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X61Y54                                                      r  gcm_aes_instance/r_s3_sblock[14]_i_9/I2
+    SLICE_X61Y54         LUT5 (Prop_lut5_I2_O)        0.124     1.683 r  gcm_aes_instance/r_s3_sblock[14]_i_9/O
+                         net (fo=17, routed)          1.596     3.279    gcm_aes_instance/r_s3_sblock[14]_i_9_n_0
+    SLICE_X56Y52                                                      r  gcm_aes_instance/r_s3_sblock[20]_i_16/I0
+    SLICE_X56Y52         LUT4 (Prop_lut4_I0_O)        0.146     3.425 r  gcm_aes_instance/r_s3_sblock[20]_i_16/O
+                         net (fo=4, routed)           1.400     4.826    gcm_aes_instance/r_s3_sblock[20]_i_16_n_0
+    SLICE_X56Y47                                                      r  gcm_aes_instance/r_s3_sblock[113]_i_6/I4
+    SLICE_X56Y47         LUT6 (Prop_lut6_I4_O)        0.328     5.154 r  gcm_aes_instance/r_s3_sblock[113]_i_6/O
+                         net (fo=1, routed)           0.452     5.605    gcm_aes_instance/r_s3_sblock[113]_i_6_n_0
+    SLICE_X56Y47                                                      r  gcm_aes_instance/r_s3_sblock[113]_i_5/I0
+    SLICE_X56Y47         LUT6 (Prop_lut6_I0_O)        0.124     5.729 r  gcm_aes_instance/r_s3_sblock[113]_i_5/O
+                         net (fo=1, routed)           1.364     7.093    gcm_aes_instance/r_s3_sblock[113]_i_5_n_0
+    SLICE_X51Y46                                                      r  gcm_aes_instance/r_s3_sblock[113]_i_2/I3
+    SLICE_X51Y46         LUT6 (Prop_lut6_I3_O)        0.124     7.217 r  gcm_aes_instance/r_s3_sblock[113]_i_2/O
+                         net (fo=1, routed)           1.212     8.429    gcm_aes_instance/r_s3_sblock[113]_i_2_n_0
+    SLICE_X40Y47                                                      r  gcm_aes_instance/r_s3_sblock[113]_i_1/I2
+    SLICE_X40Y47         LUT6 (Prop_lut6_I2_O)        0.124     8.553 r  gcm_aes_instance/r_s3_sblock[113]_i_1/O
+                         net (fo=1, routed)           0.000     8.553    gcm_aes_instance/r_s3_sblock[113]_i_1_n_0
+    SLICE_X40Y47         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[113]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.448    41.931    gcm_aes_instance/clk
+    SLICE_X40Y47         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[113]/C
+                         clock pessimism              0.484    42.415    
+                         clock uncertainty           -0.106    42.309    
+    SLICE_X40Y47         FDRE (Setup_fdre_C_D)        0.029    42.338    gcm_aes_instance/r_s3_sblock_reg[113]
+  -------------------------------------------------------------------
+                         required time                         42.338    
+                         arrival time                          -8.553    
+  -------------------------------------------------------------------
+                         slack                                 33.785    
+
+Slack (MET) :             33.939ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/o_tag_reg[7]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        9.369ns  (logic 1.430ns (15.263%)  route 7.939ns (84.737%))
+  Logic Levels:           6  (LUT2=1 LUT3=1 LUT6=4)
+  Clock Path Skew:        -0.096ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.477ns = ( 42.001 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.962     1.923    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X59Y54                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_18/I2
+    SLICE_X59Y54         LUT3 (Prop_lut3_I2_O)        0.152     2.075 r  gcm_aes_instance/r_s3_sblock[7]_i_18/O
+                         net (fo=7, routed)           2.176     4.251    gcm_aes_instance/r_s3_sblock[7]_i_18_n_0
+    SLICE_X56Y44                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_8/I3
+    SLICE_X56Y44         LUT6 (Prop_lut6_I3_O)        0.326     4.577 r  gcm_aes_instance/r_s3_sblock[7]_i_8/O
+                         net (fo=1, routed)           0.746     5.323    gcm_aes_instance/r_s3_sblock[7]_i_8_n_0
+    SLICE_X51Y44                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_4/I1
+    SLICE_X51Y44         LUT6 (Prop_lut6_I1_O)        0.124     5.447 r  gcm_aes_instance/r_s3_sblock[7]_i_4/O
+                         net (fo=1, routed)           1.012     6.459    gcm_aes_instance/r_s3_sblock[7]_i_4_n_0
+    SLICE_X44Y44                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_1/I4
+    SLICE_X44Y44         LUT6 (Prop_lut6_I4_O)        0.124     6.583 r  gcm_aes_instance/r_s3_sblock[7]_i_1/O
+                         net (fo=2, routed)           1.765     8.347    gcm_aes_instance/fn_product_return[7]
+    SLICE_X63Y42                                                      r  gcm_aes_instance/o_tag[7]_i_1/I0
+    SLICE_X63Y42         LUT2 (Prop_lut2_I0_O)        0.124     8.471 r  gcm_aes_instance/o_tag[7]_i_1/O
+                         net (fo=1, routed)           0.000     8.471    gcm_aes_instance/o_tag0[120]
+    SLICE_X63Y42         FDRE                                         r  gcm_aes_instance/o_tag_reg[7]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.518    42.001    gcm_aes_instance/clk
+    SLICE_X63Y42         FDRE                                         r  gcm_aes_instance/o_tag_reg[7]/C
+                         clock pessimism              0.484    42.485    
+                         clock uncertainty           -0.106    42.379    
+    SLICE_X63Y42         FDRE (Setup_fdre_C_D)        0.031    42.410    gcm_aes_instance/o_tag_reg[7]
+  -------------------------------------------------------------------
+                         required time                         42.410    
+                         arrival time                          -8.471    
+  -------------------------------------------------------------------
+                         slack                                 33.939    
+
+Slack (MET) :             34.025ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[74]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        9.213ns  (logic 1.324ns (14.371%)  route 7.889ns (85.629%))
+  Logic Levels:           7  (LUT5=1 LUT6=6)
+  Clock Path Skew:        -0.166ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.547ns = ( 41.931 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.598     1.559    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X61Y54                                                      r  gcm_aes_instance/r_s3_sblock[14]_i_9/I2
+    SLICE_X61Y54         LUT5 (Prop_lut5_I2_O)        0.124     1.683 r  gcm_aes_instance/r_s3_sblock[14]_i_9/O
+                         net (fo=17, routed)          1.997     3.680    gcm_aes_instance/r_s3_sblock[14]_i_9_n_0
+    SLICE_X55Y55                                                      r  gcm_aes_instance/r_s3_sblock[60]_i_10/I5
+    SLICE_X55Y55         LUT6 (Prop_lut6_I5_O)        0.124     3.804 r  gcm_aes_instance/r_s3_sblock[60]_i_10/O
+                         net (fo=4, routed)           1.930     5.734    gcm_aes_instance/r_s3_sblock[60]_i_10_n_0
+    SLICE_X59Y43                                                      r  gcm_aes_instance/r_s3_sblock[74]_i_5/I1
+    SLICE_X59Y43         LUT6 (Prop_lut6_I1_O)        0.124     5.858 r  gcm_aes_instance/r_s3_sblock[74]_i_5/O
+                         net (fo=1, routed)           0.296     6.154    gcm_aes_instance/r_s3_sblock[74]_i_5_n_0
+    SLICE_X59Y44                                                      r  gcm_aes_instance/r_s3_sblock[74]_i_3/I3
+    SLICE_X59Y44         LUT6 (Prop_lut6_I3_O)        0.124     6.278 r  gcm_aes_instance/r_s3_sblock[74]_i_3/O
+                         net (fo=1, routed)           1.122     7.400    gcm_aes_instance/r_s3_sblock[74]_i_3_n_0
+    SLICE_X45Y44                                                      r  gcm_aes_instance/r_s3_sblock[74]_i_2/I5
+    SLICE_X45Y44         LUT6 (Prop_lut6_I5_O)        0.124     7.524 r  gcm_aes_instance/r_s3_sblock[74]_i_2/O
+                         net (fo=1, routed)           0.667     8.191    gcm_aes_instance/r_s3_sblock[74]_i_2_n_0
+    SLICE_X45Y44                                                      r  gcm_aes_instance/r_s3_sblock[74]_i_1/I5
+    SLICE_X45Y44         LUT6 (Prop_lut6_I5_O)        0.124     8.315 r  gcm_aes_instance/r_s3_sblock[74]_i_1/O
+                         net (fo=1, routed)           0.000     8.315    gcm_aes_instance/r_s3_sblock[74]_i_1_n_0
+    SLICE_X45Y44         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[74]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.448    41.931    gcm_aes_instance/clk
+    SLICE_X45Y44         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[74]/C
+                         clock pessimism              0.484    42.415    
+                         clock uncertainty           -0.106    42.309    
+    SLICE_X45Y44         FDRE (Setup_fdre_C_D)        0.031    42.340    gcm_aes_instance/r_s3_sblock_reg[74]
+  -------------------------------------------------------------------
+                         required time                         42.340    
+                         arrival time                          -8.315    
+  -------------------------------------------------------------------
+                         slack                                 34.025    
+
+Slack (MET) :             34.092ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[6]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        9.120ns  (logic 1.430ns (15.679%)  route 7.690ns (84.321%))
+  Logic Levels:           6  (LUT3=1 LUT6=5)
+  Clock Path Skew:        -0.094ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.475ns = ( 42.003 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.962     1.923    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X59Y54                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_18/I2
+    SLICE_X59Y54         LUT3 (Prop_lut3_I2_O)        0.152     2.075 r  gcm_aes_instance/r_s3_sblock[7]_i_18/O
+                         net (fo=7, routed)           1.968     4.043    gcm_aes_instance/r_s3_sblock[7]_i_18_n_0
+    SLICE_X57Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_21/I3
+    SLICE_X57Y49         LUT6 (Prop_lut6_I3_O)        0.326     4.369 r  gcm_aes_instance/r_s3_sblock[6]_i_21/O
+                         net (fo=1, routed)           0.263     4.632    gcm_aes_instance/r_s3_sblock[6]_i_21_n_0
+    SLICE_X57Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_13/I0
+    SLICE_X57Y49         LUT6 (Prop_lut6_I0_O)        0.124     4.756 r  gcm_aes_instance/r_s3_sblock[6]_i_13/O
+                         net (fo=1, routed)           0.729     5.486    gcm_aes_instance/r_s3_sblock[6]_i_13_n_0
+    SLICE_X53Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_4/I3
+    SLICE_X53Y49         LUT6 (Prop_lut6_I3_O)        0.124     5.610 r  gcm_aes_instance/r_s3_sblock[6]_i_4/O
+                         net (fo=1, routed)           1.004     6.614    gcm_aes_instance/Z298_in[121]
+    SLICE_X43Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_1/I2
+    SLICE_X43Y49         LUT6 (Prop_lut6_I2_O)        0.124     6.738 r  gcm_aes_instance/r_s3_sblock[6]_i_1/O
+                         net (fo=2, routed)           1.484     8.222    gcm_aes_instance/r_s3_sblock[6]_i_1_n_0
+    SLICE_X63Y49         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.520    42.003    gcm_aes_instance/clk
+    SLICE_X63Y49         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[6]/C
+                         clock pessimism              0.484    42.487    
+                         clock uncertainty           -0.106    42.381    
+    SLICE_X63Y49         FDRE (Setup_fdre_C_D)       -0.067    42.314    gcm_aes_instance/r_s3_sblock_reg[6]
+  -------------------------------------------------------------------
+                         required time                         42.314    
+                         arrival time                          -8.222    
+  -------------------------------------------------------------------
+                         slack                                 34.092    
+
+Slack (MET) :             34.093ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/o_tag_reg[6]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        9.214ns  (logic 1.554ns (16.866%)  route 7.660ns (83.134%))
+  Logic Levels:           7  (LUT2=1 LUT3=1 LUT6=5)
+  Clock Path Skew:        -0.097ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.478ns = ( 42.000 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.962     1.923    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X59Y54                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_18/I2
+    SLICE_X59Y54         LUT3 (Prop_lut3_I2_O)        0.152     2.075 r  gcm_aes_instance/r_s3_sblock[7]_i_18/O
+                         net (fo=7, routed)           1.968     4.043    gcm_aes_instance/r_s3_sblock[7]_i_18_n_0
+    SLICE_X57Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_21/I3
+    SLICE_X57Y49         LUT6 (Prop_lut6_I3_O)        0.326     4.369 r  gcm_aes_instance/r_s3_sblock[6]_i_21/O
+                         net (fo=1, routed)           0.263     4.632    gcm_aes_instance/r_s3_sblock[6]_i_21_n_0
+    SLICE_X57Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_13/I0
+    SLICE_X57Y49         LUT6 (Prop_lut6_I0_O)        0.124     4.756 r  gcm_aes_instance/r_s3_sblock[6]_i_13/O
+                         net (fo=1, routed)           0.729     5.486    gcm_aes_instance/r_s3_sblock[6]_i_13_n_0
+    SLICE_X53Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_4/I3
+    SLICE_X53Y49         LUT6 (Prop_lut6_I3_O)        0.124     5.610 r  gcm_aes_instance/r_s3_sblock[6]_i_4/O
+                         net (fo=1, routed)           1.004     6.614    gcm_aes_instance/Z298_in[121]
+    SLICE_X43Y49                                                      r  gcm_aes_instance/r_s3_sblock[6]_i_1/I2
+    SLICE_X43Y49         LUT6 (Prop_lut6_I2_O)        0.124     6.738 r  gcm_aes_instance/r_s3_sblock[6]_i_1/O
+                         net (fo=2, routed)           1.454     8.192    gcm_aes_instance/r_s3_sblock[6]_i_1_n_0
+    SLICE_X61Y42                                                      r  gcm_aes_instance/o_tag[6]_i_1/I0
+    SLICE_X61Y42         LUT2 (Prop_lut2_I0_O)        0.124     8.316 r  gcm_aes_instance/o_tag[6]_i_1/O
+                         net (fo=1, routed)           0.000     8.316    gcm_aes_instance/o_tag0[121]
+    SLICE_X61Y42         FDRE                                         r  gcm_aes_instance/o_tag_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.517    42.000    gcm_aes_instance/clk
+    SLICE_X61Y42         FDRE                                         r  gcm_aes_instance/o_tag_reg[6]/C
+                         clock pessimism              0.484    42.484    
+                         clock uncertainty           -0.106    42.378    
+    SLICE_X61Y42         FDRE (Setup_fdre_C_D)        0.031    42.409    gcm_aes_instance/o_tag_reg[6]
+  -------------------------------------------------------------------
+                         required time                         42.409    
+                         arrival time                          -8.316    
+  -------------------------------------------------------------------
+                         slack                                 34.093    
+
+Slack (MET) :             34.354ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[117]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        8.949ns  (logic 1.324ns (14.794%)  route 7.625ns (85.206%))
+  Logic Levels:           7  (LUT5=1 LUT6=6)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.560ns = ( 41.918 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.562ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.598     1.559    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X61Y54                                                      r  gcm_aes_instance/r_s3_sblock[14]_i_9/I2
+    SLICE_X61Y54         LUT5 (Prop_lut5_I2_O)        0.124     1.683 r  gcm_aes_instance/r_s3_sblock[14]_i_9/O
+                         net (fo=17, routed)          0.923     2.606    gcm_aes_instance/r_s3_sblock[14]_i_9_n_0
+    SLICE_X58Y52                                                      r  gcm_aes_instance/r_s3_sblock[67]_i_5/I2
+    SLICE_X58Y52         LUT6 (Prop_lut6_I2_O)        0.124     2.730 r  gcm_aes_instance/r_s3_sblock[67]_i_5/O
+                         net (fo=4, routed)           2.256     4.985    gcm_aes_instance/r_s3_sblock[67]_i_5_n_0
+    SLICE_X49Y50                                                      r  gcm_aes_instance/r_s3_sblock[117]_i_4/I2
+    SLICE_X49Y50         LUT6 (Prop_lut6_I2_O)        0.124     5.109 r  gcm_aes_instance/r_s3_sblock[117]_i_4/O
+                         net (fo=1, routed)           0.706     5.815    gcm_aes_instance/r_s3_sblock[117]_i_4_n_0
+    SLICE_X48Y50                                                      r  gcm_aes_instance/r_s3_sblock[117]_i_3/I2
+    SLICE_X48Y50         LUT6 (Prop_lut6_I2_O)        0.124     5.939 r  gcm_aes_instance/r_s3_sblock[117]_i_3/O
+                         net (fo=1, routed)           1.046     6.986    gcm_aes_instance/r_s3_sblock[117]_i_3_n_0
+    SLICE_X41Y50                                                      r  gcm_aes_instance/r_s3_sblock[117]_i_2/I2
+    SLICE_X41Y50         LUT6 (Prop_lut6_I2_O)        0.124     7.110 r  gcm_aes_instance/r_s3_sblock[117]_i_2/O
+                         net (fo=1, routed)           0.818     7.928    gcm_aes_instance/r_s3_sblock[117]_i_2_n_0
+    SLICE_X39Y50                                                      r  gcm_aes_instance/r_s3_sblock[117]_i_1/I5
+    SLICE_X39Y50         LUT6 (Prop_lut6_I5_O)        0.124     8.052 r  gcm_aes_instance/r_s3_sblock[117]_i_1/O
+                         net (fo=1, routed)           0.000     8.052    gcm_aes_instance/r_s3_sblock[117]_i_1_n_0
+    SLICE_X39Y50         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[117]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.436    41.918    gcm_aes_instance/clk
+    SLICE_X39Y50         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[117]/C
+                         clock pessimism              0.562    42.480    
+                         clock uncertainty           -0.106    42.374    
+    SLICE_X39Y50         FDRE (Setup_fdre_C_D)        0.031    42.405    gcm_aes_instance/r_s3_sblock_reg[117]
+  -------------------------------------------------------------------
+                         required time                         42.405    
+                         arrival time                          -8.052    
+  -------------------------------------------------------------------
+                         slack                                 34.354    
+
+Slack (MET) :             34.426ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[15]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        8.809ns  (logic 1.324ns (15.030%)  route 7.485ns (84.970%))
+  Logic Levels:           7  (LUT5=1 LUT6=6)
+  Clock Path Skew:        -0.167ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.548ns = ( 41.930 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.598     1.559    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X61Y54                                                      r  gcm_aes_instance/r_s3_sblock[14]_i_9/I2
+    SLICE_X61Y54         LUT5 (Prop_lut5_I2_O)        0.124     1.683 r  gcm_aes_instance/r_s3_sblock[14]_i_9/O
+                         net (fo=17, routed)          1.997     3.680    gcm_aes_instance/r_s3_sblock[14]_i_9_n_0
+    SLICE_X55Y55                                                      r  gcm_aes_instance/r_s3_sblock[60]_i_10/I5
+    SLICE_X55Y55         LUT6 (Prop_lut6_I5_O)        0.124     3.804 r  gcm_aes_instance/r_s3_sblock[60]_i_10/O
+                         net (fo=4, routed)           1.544     5.349    gcm_aes_instance/r_s3_sblock[60]_i_10_n_0
+    SLICE_X54Y49                                                      r  gcm_aes_instance/r_s3_sblock[15]_i_6/I0
+    SLICE_X54Y49         LUT6 (Prop_lut6_I0_O)        0.124     5.473 r  gcm_aes_instance/r_s3_sblock[15]_i_6/O
+                         net (fo=1, routed)           0.452     5.925    gcm_aes_instance/r_s3_sblock[15]_i_6_n_0
+    SLICE_X54Y49                                                      r  gcm_aes_instance/r_s3_sblock[15]_i_5/I0
+    SLICE_X54Y49         LUT6 (Prop_lut6_I0_O)        0.124     6.049 r  gcm_aes_instance/r_s3_sblock[15]_i_5/O
+                         net (fo=1, routed)           1.453     7.501    gcm_aes_instance/Z298_in[112]
+    SLICE_X40Y46                                                      r  gcm_aes_instance/r_s3_sblock[15]_i_4/I2
+    SLICE_X40Y46         LUT6 (Prop_lut6_I2_O)        0.124     7.625 r  gcm_aes_instance/r_s3_sblock[15]_i_4/O
+                         net (fo=1, routed)           0.162     7.787    gcm_aes_instance/r_s3_sblock[15]_i_4_n_0
+    SLICE_X40Y46                                                      r  gcm_aes_instance/r_s3_sblock[15]_i_1/I5
+    SLICE_X40Y46         LUT6 (Prop_lut6_I5_O)        0.124     7.911 r  gcm_aes_instance/r_s3_sblock[15]_i_1/O
+                         net (fo=1, routed)           0.000     7.911    gcm_aes_instance/r_s3_sblock[15]_i_1_n_0
+    SLICE_X40Y46         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[15]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.447    41.930    gcm_aes_instance/clk
+    SLICE_X40Y46         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[15]/C
+                         clock pessimism              0.484    42.414    
+                         clock uncertainty           -0.106    42.308    
+    SLICE_X40Y46         FDRE (Setup_fdre_C_D)        0.029    42.337    gcm_aes_instance/r_s3_sblock_reg[15]
+  -------------------------------------------------------------------
+                         required time                         42.337    
+                         arrival time                          -7.911    
+  -------------------------------------------------------------------
+                         slack                                 34.426    
+
+Slack (MET) :             34.504ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[122]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        8.801ns  (logic 1.324ns (15.043%)  route 7.477ns (84.957%))
+  Logic Levels:           7  (LUT5=1 LUT6=6)
+  Clock Path Skew:        -0.098ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.558ns = ( 41.920 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.562ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.598     1.559    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X61Y54                                                      r  gcm_aes_instance/r_s3_sblock[14]_i_9/I2
+    SLICE_X61Y54         LUT5 (Prop_lut5_I2_O)        0.124     1.683 r  gcm_aes_instance/r_s3_sblock[14]_i_9/O
+                         net (fo=17, routed)          1.997     3.680    gcm_aes_instance/r_s3_sblock[14]_i_9_n_0
+    SLICE_X55Y55                                                      r  gcm_aes_instance/r_s3_sblock[60]_i_10/I5
+    SLICE_X55Y55         LUT6 (Prop_lut6_I5_O)        0.124     3.804 r  gcm_aes_instance/r_s3_sblock[60]_i_10/O
+                         net (fo=4, routed)           1.265     5.069    gcm_aes_instance/r_s3_sblock[60]_i_10_n_0
+    SLICE_X54Y51                                                      r  gcm_aes_instance/r_s3_sblock[122]_i_6/I2
+    SLICE_X54Y51         LUT6 (Prop_lut6_I2_O)        0.124     5.193 r  gcm_aes_instance/r_s3_sblock[122]_i_6/O
+                         net (fo=1, routed)           0.282     5.476    gcm_aes_instance/r_s3_sblock[122]_i_6_n_0
+    SLICE_X54Y51                                                      r  gcm_aes_instance/r_s3_sblock[122]_i_4/I3
+    SLICE_X54Y51         LUT6 (Prop_lut6_I3_O)        0.124     5.600 r  gcm_aes_instance/r_s3_sblock[122]_i_4/O
+                         net (fo=1, routed)           1.771     7.370    gcm_aes_instance/Z298_in[5]
+    SLICE_X42Y51                                                      r  gcm_aes_instance/r_s3_sblock[122]_i_2/I0
+    SLICE_X42Y51         LUT6 (Prop_lut6_I0_O)        0.124     7.494 r  gcm_aes_instance/r_s3_sblock[122]_i_2/O
+                         net (fo=1, routed)           0.285     7.779    gcm_aes_instance/r_s3_sblock[122]_i_2_n_0
+    SLICE_X41Y51                                                      r  gcm_aes_instance/r_s3_sblock[122]_i_1/I0
+    SLICE_X41Y51         LUT6 (Prop_lut6_I0_O)        0.124     7.903 r  gcm_aes_instance/r_s3_sblock[122]_i_1/O
+                         net (fo=1, routed)           0.000     7.903    gcm_aes_instance/r_s3_sblock[122]_i_1_n_0
+    SLICE_X41Y51         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[122]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.438    41.920    gcm_aes_instance/clk
+    SLICE_X41Y51         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[122]/C
+                         clock pessimism              0.562    42.482    
+                         clock uncertainty           -0.106    42.376    
+    SLICE_X41Y51         FDRE (Setup_fdre_C_D)        0.031    42.407    gcm_aes_instance/r_s3_sblock_reg[122]
+  -------------------------------------------------------------------
+                         required time                         42.407    
+                         arrival time                          -7.903    
+  -------------------------------------------------------------------
+                         slack                                 34.504    
+
+Slack (MET) :             34.566ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[7]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            43.478ns  (w_clk_out_clk_wiz_gen rise@43.478ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        8.680ns  (logic 1.306ns (15.046%)  route 7.374ns (84.954%))
+  Logic Levels:           5  (LUT3=1 LUT6=4)
+  Clock Path Skew:        -0.096ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -1.477ns = ( 42.001 - 43.478 ) 
+    Source Clock Delay      (SCD):    -0.898ns
+    Clock Pessimism Removal (CPR):    0.484ns
+  Clock Uncertainty:      0.106ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.200ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.233     2.691    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -6.961    -4.269 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.661    -2.608    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096    -2.512 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.614    -0.898    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.456    -0.442 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           1.279     0.837    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.124     0.961 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.962     1.923    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X59Y54                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_18/I2
+    SLICE_X59Y54         LUT3 (Prop_lut3_I2_O)        0.152     2.075 r  gcm_aes_instance/r_s3_sblock[7]_i_18/O
+                         net (fo=7, routed)           2.176     4.251    gcm_aes_instance/r_s3_sblock[7]_i_18_n_0
+    SLICE_X56Y44                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_8/I3
+    SLICE_X56Y44         LUT6 (Prop_lut6_I3_O)        0.326     4.577 r  gcm_aes_instance/r_s3_sblock[7]_i_8/O
+                         net (fo=1, routed)           0.746     5.323    gcm_aes_instance/r_s3_sblock[7]_i_8_n_0
+    SLICE_X51Y44                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_4/I1
+    SLICE_X51Y44         LUT6 (Prop_lut6_I1_O)        0.124     5.447 r  gcm_aes_instance/r_s3_sblock[7]_i_4/O
+                         net (fo=1, routed)           1.012     6.459    gcm_aes_instance/r_s3_sblock[7]_i_4_n_0
+    SLICE_X44Y44                                                      r  gcm_aes_instance/r_s3_sblock[7]_i_1/I4
+    SLICE_X44Y44         LUT6 (Prop_lut6_I4_O)        0.124     6.583 r  gcm_aes_instance/r_s3_sblock[7]_i_1/O
+                         net (fo=2, routed)           1.200     7.782    gcm_aes_instance/fn_product_return[7]
+    SLICE_X60Y44         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[7]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     43.478    43.478 r  
+    W5                                                0.000    43.478 r  clk (IN)
+                         net (fo=0)                   0.000    43.478    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    44.866 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           1.162    46.028    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -7.217    38.811 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           1.581    40.392    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    40.483 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         1.518    42.001    gcm_aes_instance/clk
+    SLICE_X60Y44         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[7]/C
+                         clock pessimism              0.484    42.485    
+                         clock uncertainty           -0.106    42.379    
+    SLICE_X60Y44         FDRE (Setup_fdre_C_D)       -0.031    42.348    gcm_aes_instance/r_s3_sblock_reg[7]
+  -------------------------------------------------------------------
+                         required time                         42.348    
+                         arrival time                          -7.782    
+  -------------------------------------------------------------------
+                         slack                                 34.566    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             1.225ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s2_plain_text_reg[5]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_cipher_text_reg[45]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        1.343ns  (logic 0.209ns (15.568%)  route 1.134ns (84.432%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        0.027ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.837ns
+    Source Clock Delay      (SCD):    -0.589ns
+    Clock Pessimism Removal (CPR):    -0.275ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.592    -0.589    gcm_aes_instance/clk
+    SLICE_X64Y57         FDRE                                         r  gcm_aes_instance/r_s2_plain_text_reg[5]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X64Y57         FDRE (Prop_fdre_C_Q)         0.164    -0.425 r  gcm_aes_instance/r_s2_plain_text_reg[5]/Q
+                         net (fo=16, routed)          1.134     0.708    gcm_aes_instance/r_s2_plain_text[5]
+    SLICE_X58Y68                                                      r  gcm_aes_instance/r_s3_cipher_text[45]_i_1/I0
+    SLICE_X58Y68         LUT6 (Prop_lut6_I0_O)        0.045     0.753 r  gcm_aes_instance/r_s3_cipher_text[45]_i_1/O
+                         net (fo=1, routed)           0.000     0.753    gcm_aes_instance/r_s3_cipher_text[45]_i_1_n_0
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.853    -0.837    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                         clock pessimism              0.275    -0.562    
+    SLICE_X58Y68         FDRE (Hold_fdre_C_D)         0.091    -0.471    gcm_aes_instance/r_s3_cipher_text_reg[45]
+  -------------------------------------------------------------------
+                         required time                          0.471    
+                         arrival time                           0.753    
+  -------------------------------------------------------------------
+                         slack                                  1.225    
+
+Slack (MET) :             1.805ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[88]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        1.912ns  (logic 0.321ns (16.793%)  route 1.591ns (83.207%))
+  Logic Levels:           4  (LUT6=4)
+  Clock Path Skew:        0.015ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.856ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.275ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.574     0.768    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X55Y53                                                      r  gcm_aes_instance/r_s3_sblock[88]_i_6/I3
+    SLICE_X55Y53         LUT6 (Prop_lut6_I3_O)        0.045     0.813 r  gcm_aes_instance/r_s3_sblock[88]_i_6/O
+                         net (fo=4, routed)           0.248     1.061    gcm_aes_instance/r_s3_sblock[88]_i_6_n_0
+    SLICE_X53Y53                                                      r  gcm_aes_instance/r_s3_sblock[88]_i_2/I4
+    SLICE_X53Y53         LUT6 (Prop_lut6_I4_O)        0.045     1.106 r  gcm_aes_instance/r_s3_sblock[88]_i_2/O
+                         net (fo=1, routed)           0.164     1.270    gcm_aes_instance/r_s3_sblock[88]_i_2_n_0
+    SLICE_X48Y54                                                      r  gcm_aes_instance/r_s3_sblock[88]_i_1/I2
+    SLICE_X48Y54         LUT6 (Prop_lut6_I2_O)        0.045     1.315 r  gcm_aes_instance/r_s3_sblock[88]_i_1/O
+                         net (fo=1, routed)           0.000     1.315    gcm_aes_instance/r_s3_sblock[88]_i_1_n_0
+    SLICE_X48Y54         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[88]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.833    -0.856    gcm_aes_instance/clk
+    SLICE_X48Y54         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[88]/C
+                         clock pessimism              0.275    -0.581    
+    SLICE_X48Y54         FDRE (Hold_fdre_C_D)         0.092    -0.489    gcm_aes_instance/r_s3_sblock_reg[88]
+  -------------------------------------------------------------------
+                         required time                          0.489    
+                         arrival time                           1.315    
+  -------------------------------------------------------------------
+                         slack                                  1.805    
+
+Slack (MET) :             1.839ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[72]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        1.976ns  (logic 0.321ns (16.247%)  route 1.655ns (83.753%))
+  Logic Levels:           4  (LUT5=1 LUT6=3)
+  Clock Path Skew:        0.016ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.855ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.275ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.396     0.590    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X63Y53                                                      r  gcm_aes_instance/r_s3_sblock[72]_i_5/I2
+    SLICE_X63Y53         LUT5 (Prop_lut5_I2_O)        0.045     0.635 r  gcm_aes_instance/r_s3_sblock[72]_i_5/O
+                         net (fo=7, routed)           0.223     0.858    gcm_aes_instance/r_s3_sblock[72]_i_5_n_0
+    SLICE_X62Y53                                                      r  gcm_aes_instance/r_s3_sblock[72]_i_2/I4
+    SLICE_X62Y53         LUT6 (Prop_lut6_I4_O)        0.045     0.903 r  gcm_aes_instance/r_s3_sblock[72]_i_2/O
+                         net (fo=1, routed)           0.431     1.334    gcm_aes_instance/Z298_in[55]
+    SLICE_X56Y53                                                      r  gcm_aes_instance/r_s3_sblock[72]_i_1/I1
+    SLICE_X56Y53         LUT6 (Prop_lut6_I1_O)        0.045     1.379 r  gcm_aes_instance/r_s3_sblock[72]_i_1/O
+                         net (fo=1, routed)           0.000     1.379    gcm_aes_instance/r_s3_sblock[72]_i_1_n_0
+    SLICE_X56Y53         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[72]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.834    -0.855    gcm_aes_instance/clk
+    SLICE_X56Y53         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[72]/C
+                         clock pessimism              0.275    -0.580    
+    SLICE_X56Y53         FDRE (Hold_fdre_C_D)         0.121    -0.459    gcm_aes_instance/r_s3_sblock_reg[72]
+  -------------------------------------------------------------------
+                         required time                          0.459    
+                         arrival time                           1.379    
+  -------------------------------------------------------------------
+                         slack                                  1.839    
+
+Slack (MET) :             1.957ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[46]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.065ns  (logic 0.366ns (17.720%)  route 1.699ns (82.280%))
+  Logic Levels:           5  (LUT5=1 LUT6=4)
+  Clock Path Skew:        0.016ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.855ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.275ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.241     0.435    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X61Y54                                                      r  gcm_aes_instance/r_s3_sblock[14]_i_9/I2
+    SLICE_X61Y54         LUT5 (Prop_lut5_I2_O)        0.045     0.480 r  gcm_aes_instance/r_s3_sblock[14]_i_9/O
+                         net (fo=17, routed)          0.190     0.670    gcm_aes_instance/r_s3_sblock[14]_i_9_n_0
+    SLICE_X62Y52                                                      r  gcm_aes_instance/r_s3_sblock[46]_i_4/I5
+    SLICE_X62Y52         LUT6 (Prop_lut6_I5_O)        0.045     0.715 r  gcm_aes_instance/r_s3_sblock[46]_i_4/O
+                         net (fo=1, routed)           0.405     1.120    gcm_aes_instance/r_s3_sblock[46]_i_4_n_0
+    SLICE_X53Y51                                                      r  gcm_aes_instance/r_s3_sblock[46]_i_2/I2
+    SLICE_X53Y51         LUT6 (Prop_lut6_I2_O)        0.045     1.165 r  gcm_aes_instance/r_s3_sblock[46]_i_2/O
+                         net (fo=1, routed)           0.259     1.424    gcm_aes_instance/r_s3_sblock[46]_i_2_n_0
+    SLICE_X51Y53                                                      r  gcm_aes_instance/r_s3_sblock[46]_i_1/I2
+    SLICE_X51Y53         LUT6 (Prop_lut6_I2_O)        0.045     1.469 r  gcm_aes_instance/r_s3_sblock[46]_i_1/O
+                         net (fo=1, routed)           0.000     1.469    gcm_aes_instance/r_s3_sblock[46]_i_1_n_0
+    SLICE_X51Y53         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[46]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.834    -0.855    gcm_aes_instance/clk
+    SLICE_X51Y53         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[46]/C
+                         clock pessimism              0.275    -0.580    
+    SLICE_X51Y53         FDRE (Hold_fdre_C_D)         0.092    -0.488    gcm_aes_instance/r_s3_sblock_reg[46]
+  -------------------------------------------------------------------
+                         required time                          0.488    
+                         arrival time                           1.469    
+  -------------------------------------------------------------------
+                         slack                                  1.957    
+
+Slack (MET) :             2.026ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[12]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.367ns  (logic 0.321ns (13.559%)  route 2.046ns (86.441%))
+  Logic Levels:           4  (LUT6=4)
+  Clock Path Skew:        0.249ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.856ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.508ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.573     0.767    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X55Y53                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_5/I2
+    SLICE_X55Y53         LUT6 (Prop_lut6_I2_O)        0.045     0.812 r  gcm_aes_instance/r_s3_sblock[12]_i_5/O
+                         net (fo=2, routed)           0.626     1.438    gcm_aes_instance/r_s3_sblock[12]_i_5_n_0
+    SLICE_X49Y47                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_3/I0
+    SLICE_X49Y47         LUT6 (Prop_lut6_I0_O)        0.045     1.483 r  gcm_aes_instance/r_s3_sblock[12]_i_3/O
+                         net (fo=1, routed)           0.243     1.726    gcm_aes_instance/Z298_in[115]
+    SLICE_X41Y47                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_1/I3
+    SLICE_X41Y47         LUT6 (Prop_lut6_I3_O)        0.045     1.771 r  gcm_aes_instance/r_s3_sblock[12]_i_1/O
+                         net (fo=1, routed)           0.000     1.771    gcm_aes_instance/r_s3_sblock[12]_i_1_n_0
+    SLICE_X41Y47         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[12]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.834    -0.856    gcm_aes_instance/clk
+    SLICE_X41Y47         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[12]/C
+                         clock pessimism              0.508    -0.347    
+    SLICE_X41Y47         FDRE (Hold_fdre_C_D)         0.092    -0.255    gcm_aes_instance/r_s3_sblock_reg[12]
+  -------------------------------------------------------------------
+                         required time                          0.255    
+                         arrival time                           1.771    
+  -------------------------------------------------------------------
+                         slack                                  2.026    
+
+Slack (MET) :             2.044ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[27]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.384ns  (logic 0.366ns (15.350%)  route 2.018ns (84.650%))
+  Logic Levels:           5  (LUT5=1 LUT6=4)
+  Clock Path Skew:        0.249ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.856ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.508ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.622     0.816    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X50Y52                                                      r  gcm_aes_instance/r_s3_sblock[27]_i_4/I2
+    SLICE_X50Y52         LUT6 (Prop_lut6_I2_O)        0.045     0.861 r  gcm_aes_instance/r_s3_sblock[27]_i_4/O
+                         net (fo=1, routed)           0.347     1.209    gcm_aes_instance/r_s3_sblock[27]_i_4_n_0
+    SLICE_X50Y49                                                      r  gcm_aes_instance/r_s3_sblock[27]_i_3/I0
+    SLICE_X50Y49         LUT6 (Prop_lut6_I0_O)        0.045     1.254 r  gcm_aes_instance/r_s3_sblock[27]_i_3/O
+                         net (fo=1, routed)           0.393     1.647    gcm_aes_instance/Z298_in[100]
+    SLICE_X41Y49                                                      r  gcm_aes_instance/r_s3_sblock[27]_i_2/I3
+    SLICE_X41Y49         LUT6 (Prop_lut6_I3_O)        0.045     1.692 r  gcm_aes_instance/r_s3_sblock[27]_i_2/O
+                         net (fo=1, routed)           0.051     1.743    gcm_aes_instance/r_s3_sblock[27]_i_2_n_0
+    SLICE_X41Y49                                                      r  gcm_aes_instance/r_s3_sblock[27]_i_1/I3
+    SLICE_X41Y49         LUT5 (Prop_lut5_I3_O)        0.045     1.788 r  gcm_aes_instance/r_s3_sblock[27]_i_1/O
+                         net (fo=1, routed)           0.000     1.788    gcm_aes_instance/r_s3_sblock[27]_i_1_n_0
+    SLICE_X41Y49         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[27]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.834    -0.856    gcm_aes_instance/clk
+    SLICE_X41Y49         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[27]/C
+                         clock pessimism              0.508    -0.347    
+    SLICE_X41Y49         FDRE (Hold_fdre_C_D)         0.091    -0.256    gcm_aes_instance/r_s3_sblock_reg[27]
+  -------------------------------------------------------------------
+                         required time                          0.256    
+                         arrival time                           1.788    
+  -------------------------------------------------------------------
+                         slack                                  2.044    
+
+Slack (MET) :             2.149ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[102]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.256ns  (logic 0.366ns (16.223%)  route 1.890ns (83.777%))
+  Logic Levels:           5  (LUT5=1 LUT6=4)
+  Clock Path Skew:        0.016ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.855ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.275ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.355     0.549    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X59Y54                                                      r  gcm_aes_instance/r_s3_sblock[125]_i_5/I2
+    SLICE_X59Y54         LUT5 (Prop_lut5_I2_O)        0.045     0.594 r  gcm_aes_instance/r_s3_sblock[125]_i_5/O
+                         net (fo=4, routed)           0.572     1.165    gcm_aes_instance/r_s3_sblock[125]_i_5_n_0
+    SLICE_X51Y51                                                      r  gcm_aes_instance/r_s3_sblock[102]_i_3/I0
+    SLICE_X51Y51         LUT6 (Prop_lut6_I0_O)        0.045     1.210 r  gcm_aes_instance/r_s3_sblock[102]_i_3/O
+                         net (fo=1, routed)           0.201     1.411    gcm_aes_instance/r_s3_sblock[102]_i_3_n_0
+    SLICE_X50Y51                                                      r  gcm_aes_instance/r_s3_sblock[102]_i_2/I1
+    SLICE_X50Y51         LUT6 (Prop_lut6_I1_O)        0.045     1.456 r  gcm_aes_instance/r_s3_sblock[102]_i_2/O
+                         net (fo=1, routed)           0.159     1.615    gcm_aes_instance/r_s3_sblock[102]_i_2_n_0
+    SLICE_X48Y51                                                      r  gcm_aes_instance/r_s3_sblock[102]_i_1/I0
+    SLICE_X48Y51         LUT6 (Prop_lut6_I0_O)        0.045     1.660 r  gcm_aes_instance/r_s3_sblock[102]_i_1/O
+                         net (fo=1, routed)           0.000     1.660    gcm_aes_instance/r_s3_sblock[102]_i_1_n_0
+    SLICE_X48Y51         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[102]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.834    -0.855    gcm_aes_instance/clk
+    SLICE_X48Y51         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[102]/C
+                         clock pessimism              0.275    -0.580    
+    SLICE_X48Y51         FDRE (Hold_fdre_C_D)         0.091    -0.489    gcm_aes_instance/r_s3_sblock_reg[102]
+  -------------------------------------------------------------------
+                         required time                          0.489    
+                         arrival time                           1.660    
+  -------------------------------------------------------------------
+                         slack                                  2.149    
+
+Slack (MET) :             2.168ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[125]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.302ns  (logic 0.321ns (13.944%)  route 1.981ns (86.056%))
+  Logic Levels:           4  (LUT5=1 LUT6=3)
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.858ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.275ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.355     0.549    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X59Y54                                                      r  gcm_aes_instance/r_s3_sblock[125]_i_5/I2
+    SLICE_X59Y54         LUT5 (Prop_lut5_I2_O)        0.045     0.594 r  gcm_aes_instance/r_s3_sblock[125]_i_5/O
+                         net (fo=4, routed)           0.610     1.204    gcm_aes_instance/r_s3_sblock[125]_i_5_n_0
+    SLICE_X52Y53                                                      r  gcm_aes_instance/r_s3_sblock[125]_i_2/I3
+    SLICE_X52Y53         LUT6 (Prop_lut6_I3_O)        0.045     1.249 r  gcm_aes_instance/r_s3_sblock[125]_i_2/O
+                         net (fo=1, routed)           0.412     1.661    gcm_aes_instance/r_s3_sblock[125]_i_2_n_0
+    SLICE_X46Y54                                                      r  gcm_aes_instance/r_s3_sblock[125]_i_1/I3
+    SLICE_X46Y54         LUT6 (Prop_lut6_I3_O)        0.045     1.706 r  gcm_aes_instance/r_s3_sblock[125]_i_1/O
+                         net (fo=1, routed)           0.000     1.706    gcm_aes_instance/r_s3_sblock[125]_i_1_n_0
+    SLICE_X46Y54         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[125]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.831    -0.858    gcm_aes_instance/clk
+    SLICE_X46Y54         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[125]/C
+                         clock pessimism              0.275    -0.583    
+    SLICE_X46Y54         FDRE (Hold_fdre_C_D)         0.121    -0.462    gcm_aes_instance/r_s3_sblock_reg[125]
+  -------------------------------------------------------------------
+                         required time                          0.462    
+                         arrival time                           1.706    
+  -------------------------------------------------------------------
+                         slack                                  2.168    
+
+Slack (MET) :             2.178ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[71]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.546ns  (logic 0.366ns (14.373%)  route 2.180ns (85.627%))
+  Logic Levels:           5  (LUT6=5)
+  Clock Path Skew:        0.248ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.857ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.508ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.574     0.768    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X55Y53                                                      r  gcm_aes_instance/r_s3_sblock[88]_i_6/I3
+    SLICE_X55Y53         LUT6 (Prop_lut6_I3_O)        0.045     0.813 r  gcm_aes_instance/r_s3_sblock[88]_i_6/O
+                         net (fo=4, routed)           0.460     1.273    gcm_aes_instance/r_s3_sblock[88]_i_6_n_0
+    SLICE_X51Y45                                                      r  gcm_aes_instance/r_s3_sblock[71]_i_3/I1
+    SLICE_X51Y45         LUT6 (Prop_lut6_I1_O)        0.045     1.318 r  gcm_aes_instance/r_s3_sblock[71]_i_3/O
+                         net (fo=1, routed)           0.433     1.750    gcm_aes_instance/Z298_in[56]
+    SLICE_X42Y45                                                      r  gcm_aes_instance/r_s3_sblock[71]_i_2/I1
+    SLICE_X42Y45         LUT6 (Prop_lut6_I1_O)        0.045     1.795 r  gcm_aes_instance/r_s3_sblock[71]_i_2/O
+                         net (fo=1, routed)           0.110     1.905    gcm_aes_instance/r_s3_sblock[71]_i_2_n_0
+    SLICE_X42Y46                                                      r  gcm_aes_instance/r_s3_sblock[71]_i_1/I3
+    SLICE_X42Y46         LUT6 (Prop_lut6_I3_O)        0.045     1.950 r  gcm_aes_instance/r_s3_sblock[71]_i_1/O
+                         net (fo=1, routed)           0.000     1.950    gcm_aes_instance/r_s3_sblock[71]_i_1_n_0
+    SLICE_X42Y46         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[71]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.833    -0.857    gcm_aes_instance/clk
+    SLICE_X42Y46         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[71]/C
+                         clock pessimism              0.508    -0.348    
+    SLICE_X42Y46         FDRE (Hold_fdre_C_D)         0.121    -0.227    gcm_aes_instance/r_s3_sblock_reg[71]
+  -------------------------------------------------------------------
+                         required time                          0.227    
+                         arrival time                           1.950    
+  -------------------------------------------------------------------
+                         slack                                  2.178    
+
+Slack (MET) :             2.281ns  (arrival time - required time)
+  Source:                 gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Destination:            gcm_aes_instance/r_s3_sblock_reg[64]/D
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@21.739ns period=43.478ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (w_clk_out_clk_wiz_gen rise@0.000ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        2.621ns  (logic 0.366ns (13.961%)  route 2.255ns (86.039%))
+  Logic Levels:           5  (LUT5=2 LUT6=3)
+  Clock Path Skew:        0.249ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    -0.856ns
+    Source Clock Delay      (SCD):    -0.596ns
+    Clock Pessimism Removal (CPR):    -0.508ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.226     0.226 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.440     0.667    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -2.360    -1.693 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.486    -1.207    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026    -1.181 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.585    -0.596    gcm_aes_instance/clk
+    SLICE_X58Y68         FDRE                                         r  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X58Y68         FDRE (Prop_fdre_C_Q)         0.141    -0.455 r  gcm_aes_instance/r_s3_cipher_text_reg[45]/Q
+                         net (fo=1, routed)           0.604     0.149    gcm_aes_instance/r_s3_cipher_text[45]
+    SLICE_X58Y57                                                      r  gcm_aes_instance/r_s3_sblock[12]_i_11/I2
+    SLICE_X58Y57         LUT6 (Prop_lut6_I2_O)        0.045     0.194 r  gcm_aes_instance/r_s3_sblock[12]_i_11/O
+                         net (fo=9, routed)           0.396     0.590    gcm_aes_instance/w_s3_auth_input[82]
+    SLICE_X63Y53                                                      r  gcm_aes_instance/r_s3_sblock[72]_i_5/I2
+    SLICE_X63Y53         LUT5 (Prop_lut5_I2_O)        0.045     0.635 r  gcm_aes_instance/r_s3_sblock[72]_i_5/O
+                         net (fo=7, routed)           0.736     1.371    gcm_aes_instance/r_s3_sblock[72]_i_5_n_0
+    SLICE_X49Y45                                                      r  gcm_aes_instance/r_s3_sblock[64]_i_5/I5
+    SLICE_X49Y45         LUT6 (Prop_lut6_I5_O)        0.045     1.416 r  gcm_aes_instance/r_s3_sblock[64]_i_5/O
+                         net (fo=1, routed)           0.137     1.553    gcm_aes_instance/r_s3_sblock[64]_i_5_n_0
+    SLICE_X49Y45                                                      r  gcm_aes_instance/r_s3_sblock[64]_i_3/I1
+    SLICE_X49Y45         LUT5 (Prop_lut5_I1_O)        0.045     1.598 r  gcm_aes_instance/r_s3_sblock[64]_i_3/O
+                         net (fo=1, routed)           0.382     1.980    gcm_aes_instance/r_s3_sblock[64]_i_3_n_0
+    SLICE_X43Y49                                                      r  gcm_aes_instance/r_s3_sblock[64]_i_1/I5
+    SLICE_X43Y49         LUT6 (Prop_lut6_I5_O)        0.045     2.025 r  gcm_aes_instance/r_s3_sblock[64]_i_1/O
+                         net (fo=1, routed)           0.000     2.025    gcm_aes_instance/r_s3_sblock[64]_i_1_n_0
+    SLICE_X43Y49         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[64]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/i_clk_in
+    W5                                                                r  clk_gen_instance/clkin1_ibufg/I
+    W5                   IBUF (Prop_ibuf_I_O)         0.414     0.414 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, routed)           0.480     0.894    clk_gen_instance/w_clk_in_clk_wiz_gen
+    MMCME2_ADV_X1Y0                                                   r  clk_gen_instance/mmcm_adv_inst/CLKIN1
+    MMCME2_ADV_X1Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.142    -2.248 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, routed)           0.530    -1.718    clk_gen_instance/w_clk_out_clk_wiz_gen
+    BUFGCTRL_X0Y0                                                     r  clk_gen_instance/clkout1_buf/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029    -1.689 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=421, routed)         0.834    -0.856    gcm_aes_instance/clk
+    SLICE_X43Y49         FDRE                                         r  gcm_aes_instance/r_s3_sblock_reg[64]/C
+                         clock pessimism              0.508    -0.347    
+    SLICE_X43Y49         FDRE (Hold_fdre_C_D)         0.092    -0.255    gcm_aes_instance/r_s3_sblock_reg[64]
+  -------------------------------------------------------------------
+                         required time                          0.255    
+                         arrival time                           2.025    
+  -------------------------------------------------------------------
+                         slack                                  2.281    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         w_clk_out_clk_wiz_gen
+Waveform(ns):       { 0.000 21.739 }
+Period(ns):         43.478
+Sources:            { clk_gen_instance/mmcm_adv_inst/CLKOUT0 }
+
+Check Type        Corner  Lib Pin  Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location      Pin
+Min Period        n/a     FDRE/C   n/a            1.000         43.478      42.478     SLICE_X58Y68  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         21.739      21.239     SLICE_X58Y68  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+Low Pulse Width   Fast    FDRE/C   n/a            0.500         21.739      21.239     SLICE_X58Y68  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+High Pulse Width  Slow    FDRE/C   n/a            0.500         21.739      21.239     SLICE_X58Y68  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         21.739      21.239     SLICE_X58Y68  gcm_aes_instance/r_s3_cipher_text_reg[45]/C
+
+
+
