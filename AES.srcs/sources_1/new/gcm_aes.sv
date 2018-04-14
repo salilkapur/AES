@@ -231,21 +231,13 @@ function logic [0:128] fn_aes_encrypt_unroll_stage1(
     logic [0:127]    state_3;
     logic [0:127]    state_4;
     logic [0:127]    state_5;
-    logic [0:127]    state_6;
-    logic [0:127]    state_7;
-    logic [0:127]    state_8;
-    logic [0:127]    state_9;
-    logic [0:127]    state_10;
 
     logic [0:127]    mix_column_state_0;
     logic [0:127]    mix_column_state_1;
     logic [0:127]    mix_column_state_2;
     logic [0:127]    mix_column_state_3;
     logic [0:127]    mix_column_state_4;
-    logic [0:127]    mix_column_state_5;
-    logic [0:127]    mix_column_state_6;
-    logic [0:127]    mix_column_state_7;
-    logic [0:127]    mix_column_state_8;
+
     
     //$display("--------------------Input--------------------");
     //$display("State: %h", in_state);
