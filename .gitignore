@@ -4,5 +4,9 @@
 *.runs
 .Xil
 *.sdf
+*.log
+*.jou
 
 *report*
+AES.ip_user_files
+ip
