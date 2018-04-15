@@ -161,5 +161,17 @@ module testbench(
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        #10 clk = ~clk; // Posedge
     end
 endmodule
