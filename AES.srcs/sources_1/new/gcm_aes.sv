@@ -223,11 +223,7 @@ function logic [0:128] fn_aes_encrypt_unroll_stage1(
     // To store intermediate states
     logic [0:127]    state_0;
     logic [0:127]    state_1;
-    logic [0:127]    state_2;
-    
     logic [0:127]    mix_column_state_0;
-    logic [0:127]    mix_column_state_1;
-    logic [0:127]    mix_column_state_2;
     
     
     //$display("--------------------Input--------------------");
@@ -300,27 +296,38 @@ function logic [0:128] fn_aes_encrypt_unroll_stage1(
     state_1 = mix_column_state_0 ^ globals::key_schedule[1*128 +:128];
     //$display("RoundKey Value %h", globals::key_schedule[1*128 +:128]);
     //$display("After AddRoundKey %h", state_0);
+    
+    return state_1;
+endfunction
+
+function logic [0:128] fn_aes_encrypt_unroll_stage2(
+    input logic [0:127] in_state_1
+);
+    
+    logic [0:127]   state_1;
+    logic [0:127]   state_2;
+    logic [0:127] mix_column_state_1;
 
     //$display("-------------------- Round 2 --------------------");
     //$display("State: %h", state_1);
 
     // Applying SubBytes operation
-    state_1[0+:8]   = globals::SBOX[state_1[0+:8]];
-    state_1[8+:8]   = globals::SBOX[state_1[8+:8]];
-    state_1[16+:8]  = globals::SBOX[state_1[16+:8]];
-    state_1[24+:8]  = globals::SBOX[state_1[24+:8]];
-    state_1[32+:8]  = globals::SBOX[state_1[32+:8]];
-    state_1[40+:8]  = globals::SBOX[state_1[40+:8]];
-    state_1[48+:8]  = globals::SBOX[state_1[48+:8]];
-    state_1[56+:8]  = globals::SBOX[state_1[56+:8]];
-    state_1[64+:8]  = globals::SBOX[state_1[64+:8]];
-    state_1[72+:8]  = globals::SBOX[state_1[72+:8]];
-    state_1[80+:8]  = globals::SBOX[state_1[80+:8]];
-    state_1[88+:8]  = globals::SBOX[state_1[88+:8]];
-    state_1[96+:8]  = globals::SBOX[state_1[96+:8]];
-    state_1[104+:8] = globals::SBOX[state_1[104+:8]];
-    state_1[112+:8] = globals::SBOX[state_1[112+:8]];
-    state_1[120+:8] = globals::SBOX[state_1[120+:8]];
+    state_1[0+:8]   = globals::SBOX[in_state_1[0+:8]];
+    state_1[8+:8]   = globals::SBOX[in_state_1[8+:8]];
+    state_1[16+:8]  = globals::SBOX[in_state_1[16+:8]];
+    state_1[24+:8]  = globals::SBOX[in_state_1[24+:8]];
+    state_1[32+:8]  = globals::SBOX[in_state_1[32+:8]];
+    state_1[40+:8]  = globals::SBOX[in_state_1[40+:8]];
+    state_1[48+:8]  = globals::SBOX[in_state_1[48+:8]];
+    state_1[56+:8]  = globals::SBOX[in_state_1[56+:8]];
+    state_1[64+:8]  = globals::SBOX[in_state_1[64+:8]];
+    state_1[72+:8]  = globals::SBOX[in_state_1[72+:8]];
+    state_1[80+:8]  = globals::SBOX[in_state_1[80+:8]];
+    state_1[88+:8]  = globals::SBOX[in_state_1[88+:8]];
+    state_1[96+:8]  = globals::SBOX[in_state_1[96+:8]];
+    state_1[104+:8] = globals::SBOX[in_state_1[104+:8]];
+    state_1[112+:8] = globals::SBOX[in_state_1[112+:8]];
+    state_1[120+:8] = globals::SBOX[in_state_1[120+:8]];
 
     //$display("After SubBytes: %h", state_1);
 
@@ -367,16 +374,13 @@ function logic [0:128] fn_aes_encrypt_unroll_stage1(
     return state_2;
 endfunction
 
-function logic [0:128] fn_aes_encrypt_unroll_stage2(
+function logic [0:128] fn_aes_encrypt_unroll_stage3(
     input logic [0:127] in_state_2
 );
 
     logic [0:127]    state_2;
     logic [0:127]    state_3;
-    logic [0:127]    state_4;
-
     logic [0:127]    mix_column_state_2;
-    logic [0:127]    mix_column_state_3;
 
     //$display("-------------------- Round 3 --------------------");
     //$display("State: %h", state_2);
@@ -440,27 +444,38 @@ function logic [0:128] fn_aes_encrypt_unroll_stage2(
     state_3 = mix_column_state_2 ^ globals::key_schedule[3*128 +:128]; // round*128
     //$display("RoundKey Value %h", globals::key_schedule[3*128 +:128]);
     //$display("After AddRoundKey %h", state_3);
+    
+    return state_3;
+endfunction
+
+function logic [0:128] fn_aes_encrypt_unroll_stage4(
+    input logic [0:127] in_state_3
+);
+    
+    logic [0:127]   state_3;
+    logic [0:127]   state_4;
+    logic [0:127]   mix_column_state_3;
 
     //$display("-------------------- Round 4 --------------------");
     //$display("State: %h", state_3);
 
     // Applying SubBytes operation
-    state_3[0+:8]   = globals::SBOX[state_3[0+:8]];
-    state_3[8+:8]   = globals::SBOX[state_3[8+:8]];
-    state_3[16+:8]  = globals::SBOX[state_3[16+:8]];
-    state_3[24+:8]  = globals::SBOX[state_3[24+:8]];
-    state_3[32+:8]  = globals::SBOX[state_3[32+:8]];
-    state_3[40+:8]  = globals::SBOX[state_3[40+:8]];
-    state_3[48+:8]  = globals::SBOX[state_3[48+:8]];
-    state_3[56+:8]  = globals::SBOX[state_3[56+:8]];
-    state_3[64+:8]  = globals::SBOX[state_3[64+:8]];
-    state_3[72+:8]  = globals::SBOX[state_3[72+:8]];
-    state_3[80+:8]  = globals::SBOX[state_3[80+:8]];
-    state_3[88+:8]  = globals::SBOX[state_3[88+:8]];
-    state_3[96+:8]  = globals::SBOX[state_3[96+:8]];
-    state_3[104+:8] = globals::SBOX[state_3[104+:8]];
-    state_3[112+:8] = globals::SBOX[state_3[112+:8]];
-    state_3[120+:8] = globals::SBOX[state_3[120+:8]];
+    state_3[0+:8]   = globals::SBOX[in_state_3[0+:8]];
+    state_3[8+:8]   = globals::SBOX[in_state_3[8+:8]];
+    state_3[16+:8]  = globals::SBOX[in_state_3[16+:8]];
+    state_3[24+:8]  = globals::SBOX[in_state_3[24+:8]];
+    state_3[32+:8]  = globals::SBOX[in_state_3[32+:8]];
+    state_3[40+:8]  = globals::SBOX[in_state_3[40+:8]];
+    state_3[48+:8]  = globals::SBOX[in_state_3[48+:8]];
+    state_3[56+:8]  = globals::SBOX[in_state_3[56+:8]];
+    state_3[64+:8]  = globals::SBOX[in_state_3[64+:8]];
+    state_3[72+:8]  = globals::SBOX[in_state_3[72+:8]];
+    state_3[80+:8]  = globals::SBOX[in_state_3[80+:8]];
+    state_3[88+:8]  = globals::SBOX[in_state_3[88+:8]];
+    state_3[96+:8]  = globals::SBOX[in_state_3[96+:8]];
+    state_3[104+:8] = globals::SBOX[in_state_3[104+:8]];
+    state_3[112+:8] = globals::SBOX[in_state_3[112+:8]];
+    state_3[120+:8] = globals::SBOX[in_state_3[120+:8]];
 
     //$display("After SubBytes: %h", state_3);
 
@@ -507,16 +522,13 @@ function logic [0:128] fn_aes_encrypt_unroll_stage2(
     return state_4;
 endfunction
 
-function logic [0:128] fn_aes_encrypt_unroll_stage3(
+function logic [0:128] fn_aes_encrypt_unroll_stage5(
     input logic [0:127] in_state_4
 );
 
     logic [0:127]    state_4;
     logic [0:127]    state_5;
-    logic [0:127]    state_6;
-
     logic [0:127]    mix_column_state_4;
-    logic [0:127]    mix_column_state_5;
 
 
     //$display("-------------------- Round 5 --------------------");
@@ -582,27 +594,37 @@ function logic [0:128] fn_aes_encrypt_unroll_stage3(
     //$display("RoundKey Value %h", globals::key_schedule[5*128 +:128]);
     //$display("After AddRoundKey %h", state_5);
 
+    return state_5;
+endfunction
+
+function logic [0:128] fn_aes_encrypt_unroll_stage6(
+    input logic [0:127] in_state_5
+);
+
+    logic [0:127] state_5;
+    logic [0:127] state_6;
+    logic [0:127] mix_column_state_5;
 
     //$display("-------------------- Round 6 --------------------");
     //$display("State: %h", state_5);
 
     // Applying SubBytes operation
-    state_5[0+:8]   = globals::SBOX[state_5[0+:8]];
-    state_5[8+:8]   = globals::SBOX[state_5[8+:8]];
-    state_5[16+:8]  = globals::SBOX[state_5[16+:8]];
-    state_5[24+:8]  = globals::SBOX[state_5[24+:8]];
-    state_5[32+:8]  = globals::SBOX[state_5[32+:8]];
-    state_5[40+:8]  = globals::SBOX[state_5[40+:8]];
-    state_5[48+:8]  = globals::SBOX[state_5[48+:8]];
-    state_5[56+:8]  = globals::SBOX[state_5[56+:8]];
-    state_5[64+:8]  = globals::SBOX[state_5[64+:8]];
-    state_5[72+:8]  = globals::SBOX[state_5[72+:8]];
-    state_5[80+:8]  = globals::SBOX[state_5[80+:8]];
-    state_5[88+:8]  = globals::SBOX[state_5[88+:8]];
-    state_5[96+:8]  = globals::SBOX[state_5[96+:8]];
-    state_5[104+:8] = globals::SBOX[state_5[104+:8]];
-    state_5[112+:8] = globals::SBOX[state_5[112+:8]];
-    state_5[120+:8] = globals::SBOX[state_5[120+:8]];
+    state_5[0+:8]   = globals::SBOX[in_state_5[0+:8]];
+    state_5[8+:8]   = globals::SBOX[in_state_5[8+:8]];
+    state_5[16+:8]  = globals::SBOX[in_state_5[16+:8]];
+    state_5[24+:8]  = globals::SBOX[in_state_5[24+:8]];
+    state_5[32+:8]  = globals::SBOX[in_state_5[32+:8]];
+    state_5[40+:8]  = globals::SBOX[in_state_5[40+:8]];
+    state_5[48+:8]  = globals::SBOX[in_state_5[48+:8]];
+    state_5[56+:8]  = globals::SBOX[in_state_5[56+:8]];
+    state_5[64+:8]  = globals::SBOX[in_state_5[64+:8]];
+    state_5[72+:8]  = globals::SBOX[in_state_5[72+:8]];
+    state_5[80+:8]  = globals::SBOX[in_state_5[80+:8]];
+    state_5[88+:8]  = globals::SBOX[in_state_5[88+:8]];
+    state_5[96+:8]  = globals::SBOX[in_state_5[96+:8]];
+    state_5[104+:8] = globals::SBOX[in_state_5[104+:8]];
+    state_5[112+:8] = globals::SBOX[in_state_5[112+:8]];
+    state_5[120+:8] = globals::SBOX[in_state_5[120+:8]];
 
     //$display("After SubBytes: %h", state_5);
 
@@ -649,16 +671,13 @@ function logic [0:128] fn_aes_encrypt_unroll_stage3(
     return state_6;
 endfunction
 
-function logic [0:128] fn_aes_encrypt_unroll_stage4(
+function logic [0:128] fn_aes_encrypt_unroll_stage7(
     input logic [0:127] in_state_6
 );
 
     logic [0:127]    state_6;
     logic [0:127]    state_7;
-    logic [0:127]    state_8;
-
     logic [0:127]    mix_column_state_6;
-    logic [0:127]    mix_column_state_7;
 
 
     //$display("-------------------- Round 7 --------------------");
@@ -723,27 +742,37 @@ function logic [0:128] fn_aes_encrypt_unroll_stage4(
     state_7 = mix_column_state_6 ^ globals::key_schedule[7*128 +:128]; // round*128
     //$display("RoundKey Value %h", globals::key_schedule[7*128 +:128]);
     //$display("After AddRoundKey %h", state_7);
+    
+    return state_7;
+endfunction
 
+function logic [0:128] fn_aes_encrypt_unroll_stage8(
+    input logic [0:127] in_state_7
+);
+    
+    logic [0:127]   state_7;
+    logic [0:127]   state_8;
+    logic [0:127]   mix_column_state_7;
     //$display("-------------------- Round 8 --------------------");
     //$display("State: %h", state_7);
 
     // Applying SubBytes operation
-    state_7[0+:8]   = globals::SBOX[state_7[0+:8]];
-    state_7[8+:8]   = globals::SBOX[state_7[8+:8]];
-    state_7[16+:8]  = globals::SBOX[state_7[16+:8]];
-    state_7[24+:8]  = globals::SBOX[state_7[24+:8]];
-    state_7[32+:8]  = globals::SBOX[state_7[32+:8]];
-    state_7[40+:8]  = globals::SBOX[state_7[40+:8]];
-    state_7[48+:8]  = globals::SBOX[state_7[48+:8]];
-    state_7[56+:8]  = globals::SBOX[state_7[56+:8]];
-    state_7[64+:8]  = globals::SBOX[state_7[64+:8]];
-    state_7[72+:8]  = globals::SBOX[state_7[72+:8]];
-    state_7[80+:8]  = globals::SBOX[state_7[80+:8]];
-    state_7[88+:8]  = globals::SBOX[state_7[88+:8]];
-    state_7[96+:8]  = globals::SBOX[state_7[96+:8]];
-    state_7[104+:8] = globals::SBOX[state_7[104+:8]];
-    state_7[112+:8] = globals::SBOX[state_7[112+:8]];
-    state_7[120+:8] = globals::SBOX[state_7[120+:8]];
+    state_7[0+:8]   = globals::SBOX[in_state_7[0+:8]];
+    state_7[8+:8]   = globals::SBOX[in_state_7[8+:8]];
+    state_7[16+:8]  = globals::SBOX[in_state_7[16+:8]];
+    state_7[24+:8]  = globals::SBOX[in_state_7[24+:8]];
+    state_7[32+:8]  = globals::SBOX[in_state_7[32+:8]];
+    state_7[40+:8]  = globals::SBOX[in_state_7[40+:8]];
+    state_7[48+:8]  = globals::SBOX[in_state_7[48+:8]];
+    state_7[56+:8]  = globals::SBOX[in_state_7[56+:8]];
+    state_7[64+:8]  = globals::SBOX[in_state_7[64+:8]];
+    state_7[72+:8]  = globals::SBOX[in_state_7[72+:8]];
+    state_7[80+:8]  = globals::SBOX[in_state_7[80+:8]];
+    state_7[88+:8]  = globals::SBOX[in_state_7[88+:8]];
+    state_7[96+:8]  = globals::SBOX[in_state_7[96+:8]];
+    state_7[104+:8] = globals::SBOX[in_state_7[104+:8]];
+    state_7[112+:8] = globals::SBOX[in_state_7[112+:8]];
+    state_7[120+:8] = globals::SBOX[in_state_7[120+:8]];
 
     //$display("After SubBytes: %h", state_7);
 
@@ -789,14 +818,12 @@ function logic [0:128] fn_aes_encrypt_unroll_stage4(
     return state_8;
 endfunction
 
-function logic [0:128] fn_aes_encrypt_unroll_stage5(
+function logic [0:128] fn_aes_encrypt_unroll_stage9(
     input logic [0:127] in_state_8
 );
 
     logic [0:127]    state_8;
     logic [0:127]    state_9;
-    logic [0:127]    state_10;
-
     logic [0:127]    mix_column_state_8;
 
 
@@ -862,27 +889,38 @@ function logic [0:128] fn_aes_encrypt_unroll_stage5(
     state_9 = mix_column_state_8 ^ globals::key_schedule[9*128 +:128]; // round*128
     //$display("RoundKey Value %h", globals::key_schedule[9*128 +:128]);
     //$display("After AddRoundKey %h", state_9);
+    
+    return state_9;
+endfunction
+
+
+function logic [0:128] fn_aes_encrypt_unroll_stage10(
+    input logic [0:127] in_state_9
+);
+    
+    logic [0:127] state_9;
+    logic [0:127] state_10;
 
     //$display("-------------------- Round 10 --------------------");
     //$display("State: %h", state_9);
 
     // Applying SubBytes operation
-    state_9[0+:8]   = globals::SBOX[state_9[0+:8]];
-    state_9[8+:8]   = globals::SBOX[state_9[8+:8]];
-    state_9[16+:8]  = globals::SBOX[state_9[16+:8]];
-    state_9[24+:8]  = globals::SBOX[state_9[24+:8]];
-    state_9[32+:8]  = globals::SBOX[state_9[32+:8]];
-    state_9[40+:8]  = globals::SBOX[state_9[40+:8]];
-    state_9[48+:8]  = globals::SBOX[state_9[48+:8]];
-    state_9[56+:8]  = globals::SBOX[state_9[56+:8]];
-    state_9[64+:8]  = globals::SBOX[state_9[64+:8]];
-    state_9[72+:8]  = globals::SBOX[state_9[72+:8]];
-    state_9[80+:8]  = globals::SBOX[state_9[80+:8]];
-    state_9[88+:8]  = globals::SBOX[state_9[88+:8]];
-    state_9[96+:8]  = globals::SBOX[state_9[96+:8]];
-    state_9[104+:8] = globals::SBOX[state_9[104+:8]];
-    state_9[112+:8] = globals::SBOX[state_9[112+:8]];
-    state_9[120+:8] = globals::SBOX[state_9[120+:8]];
+    state_9[0+:8]   = globals::SBOX[in_state_9[0+:8]];
+    state_9[8+:8]   = globals::SBOX[in_state_9[8+:8]];
+    state_9[16+:8]  = globals::SBOX[in_state_9[16+:8]];
+    state_9[24+:8]  = globals::SBOX[in_state_9[24+:8]];
+    state_9[32+:8]  = globals::SBOX[in_state_9[32+:8]];
+    state_9[40+:8]  = globals::SBOX[in_state_9[40+:8]];
+    state_9[48+:8]  = globals::SBOX[in_state_9[48+:8]];
+    state_9[56+:8]  = globals::SBOX[in_state_9[56+:8]];
+    state_9[64+:8]  = globals::SBOX[in_state_9[64+:8]];
+    state_9[72+:8]  = globals::SBOX[in_state_9[72+:8]];
+    state_9[80+:8]  = globals::SBOX[in_state_9[80+:8]];
+    state_9[88+:8]  = globals::SBOX[in_state_9[88+:8]];
+    state_9[96+:8]  = globals::SBOX[in_state_9[96+:8]];
+    state_9[104+:8] = globals::SBOX[in_state_9[104+:8]];
+    state_9[112+:8] = globals::SBOX[in_state_9[112+:8]];
+    state_9[120+:8] = globals::SBOX[in_state_9[120+:8]];
 
     //$display("After SubBytes: %h", state_9);
 
@@ -978,14 +1016,48 @@ module gcm_aes(
     logic [0:127]                           r_s6_h;
     logic [0:127]                           r_s6_encrypted_j0;
     logic [0:127]                           r_s6_encrypted_cb;
-
+    
     logic                                   r_s7_new_instance;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s7_cipher_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s7_plain_text;
+    logic [0:globals::AAD_SIZE - 1]         r_s7_aad;
     logic [0:127]                           r_s7_h;
     logic [0:127]                           r_s7_encrypted_j0;
-    logic [0:3]                             r_s7_counter;
-    logic [0:127]                           r_s7_sblock;
+    logic [0:127]                           r_s7_encrypted_cb;
 
+    logic                                   r_s8_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s8_plain_text;
+    logic [0:globals::AAD_SIZE - 1]         r_s8_aad;
+    logic [0:127]                           r_s8_h;
+    logic [0:127]                           r_s8_encrypted_j0;
+    logic [0:127]                           r_s8_encrypted_cb;
+
+    logic                                   r_s9_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s9_plain_text;
+    logic [0:globals::AAD_SIZE - 1]         r_s9_aad;
+    logic [0:127]                           r_s9_h;
+    logic [0:127]                           r_s9_encrypted_j0;
+    logic [0:127]                           r_s9_encrypted_cb;
+
+    logic                                   r_s10_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s10_plain_text;
+    logic [0:globals::AAD_SIZE - 1]         r_s10_aad;
+    logic [0:127]                           r_s10_h;
+    logic [0:127]                           r_s10_encrypted_j0;
+    logic [0:127]                           r_s10_encrypted_cb;
+
+    logic                                   r_s11_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s11_plain_text;
+    logic [0:globals::AAD_SIZE - 1]         r_s11_aad;
+    logic [0:127]                           r_s11_h;
+    logic [0:127]                           r_s11_encrypted_j0;
+    logic [0:127]                           r_s11_encrypted_cb;
+
+    logic                                   r_s12_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  r_s12_cipher_text;
+    logic [0:127]                           r_s12_h;
+    logic [0:127]                           r_s12_encrypted_j0;
+    logic [0:3]                             r_s12_counter;
+    logic [0:127]                           r_s12_sblock;
 
     /* Wires within a pipeline stage (grouped by stages) */
     logic                                   w_s1_new_instance;
@@ -1026,19 +1098,54 @@ module gcm_aes(
 
     logic                                   w_s6_new_instance;
     logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s6_plain_text;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s6_cipher_text;
     logic [0:127]                           w_s6_h;
     logic [0:globals::AAD_SIZE - 1]         w_s6_aad;
     logic [0:127]                           w_s6_encrypted_j0;
     logic [0:127]                           w_s6_encrypted_cb;
 
-    logic [0:3]                             w_s7_counter;
-    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s7_cipher_text;
-    logic [0:127]                           w_s7_sblock;
-    logic [0:127]                           w_s7_pre_tag;
-    logic [0:127]                           w_s7_auth_input;
-    logic [0:globals::TAG_SIZE - 1]         w_s7_tag;
-    logic                                   w_s7_tag_ready;
+    logic                                   w_s7_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s7_plain_text;
+    logic [0:127]                           w_s7_h;
+    logic [0:globals::AAD_SIZE - 1]         w_s7_aad;
+    logic [0:127]                           w_s7_encrypted_j0;
+    logic [0:127]                           w_s7_encrypted_cb;
+
+    logic                                   w_s8_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s8_plain_text;
+    logic [0:127]                           w_s8_h;
+    logic [0:globals::AAD_SIZE - 1]         w_s8_aad;
+    logic [0:127]                           w_s8_encrypted_j0;
+    logic [0:127]                           w_s8_encrypted_cb;
+
+    logic                                   w_s9_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s9_plain_text;
+    logic [0:127]                           w_s9_h;
+    logic [0:globals::AAD_SIZE - 1]         w_s9_aad;
+    logic [0:127]                           w_s9_encrypted_j0;
+    logic [0:127]                           w_s9_encrypted_cb;
+
+    logic                                   w_s10_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s10_plain_text;
+    logic [0:127]                           w_s10_h;
+    logic [0:globals::AAD_SIZE - 1]         w_s10_aad;
+    logic [0:127]                           w_s10_encrypted_j0;
+    logic [0:127]                           w_s10_encrypted_cb;
+
+    logic                                   w_s11_new_instance;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s11_plain_text;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s11_cipher_text;
+    logic [0:127]                           w_s11_h;
+    logic [0:globals::AAD_SIZE - 1]         w_s11_aad;
+    logic [0:127]                           w_s11_encrypted_j0;
+    logic [0:127]                           w_s11_encrypted_cb;
+
+    logic [0:3]                             w_s12_counter;
+    logic [0:globals::PLAIN_TEXT_SIZE - 1]  w_s12_cipher_text;
+    logic [0:127]                           w_s12_sblock;
+    logic [0:127]                           w_s12_pre_tag;
+    logic [0:127]                           w_s12_auth_input;
+    logic [0:globals::TAG_SIZE - 1]         w_s12_tag;
+    logic                                   w_s12_tag_ready;
 
     int i;
     // Following variables have the same meaning as in the NIST document
@@ -1098,18 +1205,58 @@ module gcm_aes(
 
         /* Latch Stage 6 outputs */
         r_s7_new_instance   <= w_s6_new_instance;
+        //r_s7_aad          <= w_s6_aad;
+        r_s7_plain_text     <= w_s6_plain_text;
         r_s7_h              <= w_s6_h;
-        r_s7_cipher_text    <= w_s6_cipher_text;
+        r_s7_encrypted_cb   <= w_s6_encrypted_cb;
         r_s7_encrypted_j0   <= w_s6_encrypted_j0;
 
         /* Latch Stage 7 outputs */
-        r_s7_counter        <= w_s7_counter; // Cycle
-        r_s7_sblock         <= w_s7_sblock; // Cycle
+        r_s8_new_instance   <= w_s7_new_instance;
+        //r_s8_aad          <= w_s7_aad;
+        r_s8_plain_text     <= w_s7_plain_text;
+        r_s8_h              <= w_s7_h;
+        r_s8_encrypted_cb   <= w_s7_encrypted_cb;
+        r_s8_encrypted_j0   <= w_s7_encrypted_j0;
+
+        /* Latch Stage 8 outputs */
+        r_s9_new_instance   <= w_s8_new_instance;
+        //r_s9_aad          <= w_s8_aad;
+        r_s9_plain_text     <= w_s8_plain_text;
+        r_s9_h              <= w_s8_h;
+        r_s9_encrypted_cb   <= w_s8_encrypted_cb;
+        r_s9_encrypted_j0   <= w_s8_encrypted_j0;
+
+        /* Latch Stage 9 outputs */
+        r_s10_new_instance   <= w_s9_new_instance;
+        //r_s10_aad          <= w_s9_aad;
+        r_s10_plain_text     <= w_s9_plain_text;
+        r_s10_h              <= w_s9_h;
+        r_s10_encrypted_cb   <= w_s9_encrypted_cb;
+        r_s10_encrypted_j0   <= w_s9_encrypted_j0;
+
+        /* Latch Stage 10 outputs */
+        r_s11_new_instance   <= w_s10_new_instance;
+        //r_s11_aad          <= w_s10_aad;
+        r_s11_plain_text     <= w_s10_plain_text;
+        r_s11_h              <= w_s10_h;
+        r_s11_encrypted_cb   <= w_s10_encrypted_cb;
+        r_s11_encrypted_j0   <= w_s10_encrypted_j0;
+
+        /* Latch Stage 11 outputs */
+        r_s12_new_instance   <= w_s11_new_instance;
+        r_s12_h              <= w_s11_h;
+        r_s12_cipher_text    <= w_s11_cipher_text;
+        r_s12_encrypted_j0   <= w_s11_encrypted_j0;
+
+        /* Latch Stage 12 outputs */
+        r_s12_counter        <= w_s12_counter; // Cycle
+        r_s12_sblock         <= w_s12_sblock; // Cycle
 
         /* Latch final outputs */
-        o_tag               <= w_s7_tag;
-        o_tag_ready         <= w_s7_tag_ready;
-        o_cipher_text       <= w_s7_cipher_text;
+        o_tag               <= w_s12_tag;
+        o_tag_ready         <= w_s12_tag_ready;
+        o_cipher_text       <= w_s12_cipher_text;
     end
     
     //Helper variables
@@ -1203,80 +1350,150 @@ module gcm_aes(
 
         /*------------------ PIPELINE STAGE - 6 [START] ------------------*/
         $display("Stage 6 - START");
+        w_s6_h = fn_aes_encrypt_unroll_stage6(r_s6_h);
         w_s6_encrypted_cb = fn_aes_encrypt_unroll_stage5(r_s6_encrypted_cb);
         w_s6_encrypted_j0 = fn_aes_encrypt_unroll_stage5(r_s6_encrypted_j0);
-        w_s6_cipher_text = r_s6_plain_text ^ w_s6_encrypted_cb;
-
-        //Step 3b - GCTR operation
-                
-        $display("\t\tCB: %h", w_s6_encrypted_cb);
-        $display("\t\tPT: %h", r_s6_plain_text);
-
-        $display("\t\tEncrypted CB: %h", w_s6_encrypted_cb);
-        $display("\t\tCIPHER TEXT: %h", w_s6_cipher_text);
 
         /* Carrying forward register values for subsequent stages */
+        w_s6_plain_text = r_s6_plain_text;
         //w_s6_aad = r_s6_aad;
         w_s6_new_instance = r_s6_new_instance;
-        w_s6_h = r_s6_h;
+        $display("\t\tPLAIN TEXT: %h", r_s6_plain_text);
         $display("Stage 6 - END");
         /*------------------ PIPELINE STAGE - 6 [END] ------------------*/
 
         /*------------------ PIPELINE STAGE - 7 [START] ------------------*/
         $display("Stage 7 - START");
+        w_s7_h = fn_aes_encrypt_unroll_stage7(r_s7_h);
+        w_s7_encrypted_cb = fn_aes_encrypt_unroll_stage6(r_s7_encrypted_cb);
+        w_s7_encrypted_j0 = fn_aes_encrypt_unroll_stage6(r_s7_encrypted_j0);
+
+        /* Carrying forward register values for subsequent stages */
+        w_s7_plain_text = r_s7_plain_text;
+        //w_s7_aad = r_s7_aad;
+        w_s7_new_instance = r_s7_new_instance;
+        $display("\t\tPLAIN TEXT: %h", r_s7_plain_text);
+        $display("Stage 7 - END");
+        /*------------------ PIPELINE STAGE - 7 [END] ------------------*/
+
+        /*------------------ PIPELINE STAGE - 8 [START] ------------------*/
+        $display("Stage 8 - START");
+        w_s8_h = fn_aes_encrypt_unroll_stage8(r_s8_h);
+        w_s8_encrypted_cb = fn_aes_encrypt_unroll_stage7(r_s8_encrypted_cb);
+        w_s8_encrypted_j0 = fn_aes_encrypt_unroll_stage7(r_s8_encrypted_j0);
+
+        /* Carrying forward register values for subsequent stages */
+        w_s8_plain_text = r_s8_plain_text;
+        //w_s8_aad = r_s8_aad;
+        w_s8_new_instance = r_s8_new_instance;
+        $display("\t\tPLAIN TEXT: %h", r_s8_plain_text);
+        $display("Stage 8 - END");
+        /*------------------ PIPELINE STAGE - 8 [END] ------------------*/
+
+        /*------------------ PIPELINE STAGE - 9 [START] ------------------*/
+        $display("Stage 9 - START");
+        w_s9_h = fn_aes_encrypt_unroll_stage9(r_s9_h);
+        w_s9_encrypted_cb = fn_aes_encrypt_unroll_stage8(r_s9_encrypted_cb);
+        w_s9_encrypted_j0 = fn_aes_encrypt_unroll_stage8(r_s9_encrypted_j0);
+
+        /* Carrying forward register values for subsequent stages */
+        w_s9_plain_text = r_s9_plain_text;
+        //w_s9_aad = r_s9_aad;
+        w_s9_new_instance = r_s9_new_instance;
+        $display("\t\tPLAIN TEXT: %h", r_s9_plain_text);
+        $display("Stage 9 - END");
+        /*------------------ PIPELINE STAGE - 9 [END] ------------------*/
+
+        /*------------------ PIPELINE STAGE - 10 [START] ------------------*/
+        $display("Stage 10 - START");
+        w_s10_h = fn_aes_encrypt_unroll_stage10(r_s10_h);
+        w_s10_encrypted_cb = fn_aes_encrypt_unroll_stage9(r_s10_encrypted_cb);
+        w_s10_encrypted_j0 = fn_aes_encrypt_unroll_stage9(r_s10_encrypted_j0);
+
+        /* Carrying forward register values for subsequent stages */
+        w_s10_plain_text = r_s10_plain_text;
+        //w_s10_aad = r_s10_aad;
+        w_s10_new_instance = r_s10_new_instance;
+        $display("\t\tPLAIN TEXT: %h", r_s10_plain_text);
+        $display("Stage 10 - END");
+        /*------------------ PIPELINE STAGE - 10 [END] ------------------*/
+
+        /*------------------ PIPELINE STAGE - 11 [START] ------------------*/
+        $display("Stage 11 - START");
+        w_s11_encrypted_cb = fn_aes_encrypt_unroll_stage10(r_s11_encrypted_cb);
+        w_s11_encrypted_j0 = fn_aes_encrypt_unroll_stage10(r_s11_encrypted_j0);
+        w_s11_cipher_text = r_s11_plain_text ^ w_s11_encrypted_cb;
+
+        //Step 3b - GCTR operation
+                
+        $display("\t\tCB: %h", w_s11_encrypted_cb);
+        $display("\t\tPT: %h", r_s11_plain_text);
+
+        $display("\t\tEncrypted CB: %h", w_s11_encrypted_cb);
+        $display("\t\tCIPHER TEXT: %h", w_s11_cipher_text);
+
+        /* Carrying forward register values for subsequent stages */
+        //w_s11_aad = r_s11_aad;
+        w_s11_new_instance = r_s11_new_instance;
+        w_s11_h = r_s11_h;
+        $display("Stage 11 - END");
+        /*------------------ PIPELINE STAGE - 11 [END] ------------------*/
+
+        /*------------------ PIPELINE STAGE - 12 [START] ------------------*/
+        $display("Stage 12 - START");
       
         /*
         * Step 4 - Computing constants is not necessary since we are assuming
         * the inputs are multiples of 128 (zero padding is done to align the
         * size with 128).
         */
-        $display("\t\tNEW INSTANCE: %d", r_s7_new_instance);
-        if (r_s7_new_instance == 1)
+        $display("\t\tNEW INSTANCE: %d", r_s12_new_instance);
+        if (r_s12_new_instance == 1)
         begin
             $display("\t\tInitializing S Block");
-            w_s7_sblock = 128'd0;
-            w_s7_counter = 0;
+            w_s12_sblock = 128'd0;
+            w_s12_counter = 0;
         end
         else
         begin
-            w_s7_sblock = r_s7_sblock;
-            w_s7_counter = r_s7_counter + 1;
+            w_s12_sblock = r_s12_sblock;
+            w_s12_counter = r_s12_counter + 1;
         end
         
 
         m = (globals::AUTH_INPUT_SIZE / 128) - 1; // Total blocks minus one
 
-        if (w_s7_counter == m)
+        if (w_s12_counter == m)
         begin
             /* 
             * Following computation is for the previous plain text instance
             * This logic is to accomodate the last 128 bits of zeros in
             * authentication input
             */
-            w_s7_auth_input = {64'd0, 64'd512};
-            w_s7_tag_ready = 1'b1;
+            w_s12_auth_input = {64'd0, 64'd512};
+            w_s12_tag_ready = 1'b1;
         end
         else
         begin
-            w_s7_auth_input = r_s7_cipher_text;
-            w_s7_tag_ready = 1'b0;
+            w_s12_auth_input = r_s12_cipher_text;
+            w_s12_tag_ready = 1'b0;
         end
 
-        w_s7_sblock = (w_s7_sblock ^ w_s7_auth_input);
-        w_s7_sblock = fn_product(w_s7_sblock, r_s7_h);
-        w_s7_pre_tag = w_s7_sblock ^ r_s7_encrypted_j0;
-        w_s7_tag = w_s7_pre_tag[0:globals::TAG_SIZE-1];
+        w_s12_sblock = (w_s12_sblock ^ w_s12_auth_input);
+        w_s12_sblock = fn_product(w_s12_sblock, r_s12_h);
+        w_s12_pre_tag = w_s12_sblock ^ r_s12_encrypted_j0;
+        w_s12_tag = w_s12_pre_tag[0:globals::TAG_SIZE-1];
     
-        $display("\t\tEncrypted J0: %h", r_s7_encrypted_j0);
-        $display("\t\tPRE TAG: %h", w_s7_pre_tag);
-        $display("\t\tAUTH INPUT: %h", w_s7_auth_input);
-        $display("\t\tS: %h", w_s7_sblock);
-        $display("\t\tAUTH TAG: %h", w_s7_tag);
-        $display("\t\tAUTH TAG READY: %d", w_s7_tag_ready);
+        $display("\t\tEncrypted J0: %h", r_s12_encrypted_j0);
+        $display("\t\tPRE TAG: %h", w_s12_pre_tag);
+        $display("\t\tAUTH INPUT: %h", w_s12_auth_input);
+        $display("\t\tS: %h", w_s12_sblock);
+        $display("\t\tAUTH TAG: %h", w_s12_tag);
+        $display("\t\tAUTH TAG READY: %d", w_s12_tag_ready);
         
-        w_s7_cipher_text = r_s7_cipher_text;
+        w_s12_cipher_text = r_s12_cipher_text;
         
-        $display("Stage 7 - END");
-        /*------------------ PIPELINE STAGE - 7 [END] ------------------*/
+        $display("Stage 12 - END");
+        /*------------------ PIPELINE STAGE - 12 [END] ------------------*/
     end
 endmodule
