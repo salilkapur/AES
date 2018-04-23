@@ -40,6 +40,7 @@ module aes(
         .clk(clk_out),
         .i_iv(iv_sw),
         .i_new_instance(i_reset),
+        .i_cipher_key(plain_text_sw),
         .i_plain_text(plain_text_sw),
         .i_aad(128'd0),
         .o_cipher_text(cipher_text),
