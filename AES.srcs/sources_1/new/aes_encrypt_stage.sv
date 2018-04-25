@@ -11,11 +11,11 @@ module aes_encrypt_stage(
 
     logic [0:127]    state_0;
     logic [0:127]    state_1;
-    
+
     logic [0:127]    mix_column_state_0;
     logic [0:127]    mix_column_state_1;
-    
-    
+
+
     //$display("--------------------Input--------------------");
     //$display("State: %h", in_state);
     //$display("Round Key Value: %h", globals::key_schedule[0:127]);
@@ -26,7 +26,7 @@ module aes_encrypt_stage(
         in_state = in_state ^ key_schedule[0:127]; // Adding the first round key
     end
     //$display("After AddRoundKey %h", state_0);
-    
+
     //$display("-------------------- Round 1 --------------------");
     //$display("State: %h", state_0);
 
@@ -126,31 +126,37 @@ module aes_encrypt_stage(
     //$display("After ShiftRows: %h", state_1);
 
     // Applying MixColumns operation
-    mix_column_state_1[0*32+0  +:8]  = globals::gf_table_2[state_1[0*32+0+:8]] ^ globals::gf_table_3[state_1[0*32+8+:8]] ^ state_1[0*32+16+:8] ^ state_1[0*32+24+:8];
-    mix_column_state_1[0*32+8  +:8]  = state_1[0*32+0+:8] ^ globals::gf_table_2[state_1[0*32+8+:8]] ^ globals::gf_table_3[state_1[0*32+16+:8]] ^ state_1[0*32+24+:8];
-    mix_column_state_1[0*32+16 +:8]  = state_1[0*32+0+:8] ^ state_1[0*32+8+:8] ^ globals::gf_table_2[state_1[0*32+16+:8]] ^ globals::gf_table_3[state_1[0*32+24+:8]];
-    mix_column_state_1[0*32+24 +:8]  = globals::gf_table_3[state_1[0*32+0+:8]] ^ state_1[0*32+8+:8] ^ state_1[0*32+16+:8] ^ globals::gf_table_2[state_1[0*32+24+:8]];
+    if ((round + 1) != 10)
+    begin
+        mix_column_state_1[0*32+0  +:8]  = globals::gf_table_2[state_1[0*32+0+:8]] ^ globals::gf_table_3[state_1[0*32+8+:8]] ^ state_1[0*32+16+:8] ^ state_1[0*32+24+:8];
+        mix_column_state_1[0*32+8  +:8]  = state_1[0*32+0+:8] ^ globals::gf_table_2[state_1[0*32+8+:8]] ^ globals::gf_table_3[state_1[0*32+16+:8]] ^ state_1[0*32+24+:8];
+        mix_column_state_1[0*32+16 +:8]  = state_1[0*32+0+:8] ^ state_1[0*32+8+:8] ^ globals::gf_table_2[state_1[0*32+16+:8]] ^ globals::gf_table_3[state_1[0*32+24+:8]];
+        mix_column_state_1[0*32+24 +:8]  = globals::gf_table_3[state_1[0*32+0+:8]] ^ state_1[0*32+8+:8] ^ state_1[0*32+16+:8] ^ globals::gf_table_2[state_1[0*32+24+:8]];
 
-    mix_column_state_1[1*32+0  +:8]  = globals::gf_table_2[state_1[1*32+0+:8]] ^ globals::gf_table_3[state_1[1*32+8+:8]] ^ state_1[1*32+16+:8] ^ state_1[1*32+24+:8];
-    mix_column_state_1[1*32+8  +:8]  = state_1[1*32+0+:8] ^ globals::gf_table_2[state_1[1*32+8+:8]] ^ globals::gf_table_3[state_1[1*32+16+:8]] ^ state_1[1*32+24+:8];
-    mix_column_state_1[1*32+16 +:8]  = state_1[1*32+0+:8] ^ state_1[1*32+8+:8] ^ globals::gf_table_2[state_1[1*32+16+:8]] ^ globals::gf_table_3[state_1[1*32+24+:8]];
-    mix_column_state_1[1*32+24 +:8]  = globals::gf_table_3[state_1[1*32+0+:8]] ^ state_1[1*32+8+:8] ^ state_1[1*32+16+:8] ^ globals::gf_table_2[state_1[1*32+24+:8]];
+        mix_column_state_1[1*32+0  +:8]  = globals::gf_table_2[state_1[1*32+0+:8]] ^ globals::gf_table_3[state_1[1*32+8+:8]] ^ state_1[1*32+16+:8] ^ state_1[1*32+24+:8];
+        mix_column_state_1[1*32+8  +:8]  = state_1[1*32+0+:8] ^ globals::gf_table_2[state_1[1*32+8+:8]] ^ globals::gf_table_3[state_1[1*32+16+:8]] ^ state_1[1*32+24+:8];
+        mix_column_state_1[1*32+16 +:8]  = state_1[1*32+0+:8] ^ state_1[1*32+8+:8] ^ globals::gf_table_2[state_1[1*32+16+:8]] ^ globals::gf_table_3[state_1[1*32+24+:8]];
+        mix_column_state_1[1*32+24 +:8]  = globals::gf_table_3[state_1[1*32+0+:8]] ^ state_1[1*32+8+:8] ^ state_1[1*32+16+:8] ^ globals::gf_table_2[state_1[1*32+24+:8]];
 
-    mix_column_state_1[2*32+0  +:8]  = globals::gf_table_2[state_1[2*32+0+:8]] ^ globals::gf_table_3[state_1[2*32+8+:8]] ^ state_1[2*32+16+:8] ^ state_1[2*32+24+:8];
-    mix_column_state_1[2*32+8  +:8]  = state_1[2*32+0+:8] ^ globals::gf_table_2[state_1[2*32+8+:8]] ^ globals::gf_table_3[state_1[2*32+16+:8]] ^ state_1[2*32+24+:8];
-    mix_column_state_1[2*32+16 +:8]  = state_1[2*32+0+:8] ^ state_1[2*32+8+:8] ^ globals::gf_table_2[state_1[2*32+16+:8]] ^ globals::gf_table_3[state_1[2*32+24+:8]];
-    mix_column_state_1[2*32+24 +:8]  = globals::gf_table_3[state_1[2*32+0+:8]] ^ state_1[2*32+8+:8] ^ state_1[2*32+16+:8] ^ globals::gf_table_2[state_1[2*32+24+:8]];
+        mix_column_state_1[2*32+0  +:8]  = globals::gf_table_2[state_1[2*32+0+:8]] ^ globals::gf_table_3[state_1[2*32+8+:8]] ^ state_1[2*32+16+:8] ^ state_1[2*32+24+:8];
+        mix_column_state_1[2*32+8  +:8]  = state_1[2*32+0+:8] ^ globals::gf_table_2[state_1[2*32+8+:8]] ^ globals::gf_table_3[state_1[2*32+16+:8]] ^ state_1[2*32+24+:8];
+        mix_column_state_1[2*32+16 +:8]  = state_1[2*32+0+:8] ^ state_1[2*32+8+:8] ^ globals::gf_table_2[state_1[2*32+16+:8]] ^ globals::gf_table_3[state_1[2*32+24+:8]];
+        mix_column_state_1[2*32+24 +:8]  = globals::gf_table_3[state_1[2*32+0+:8]] ^ state_1[2*32+8+:8] ^ state_1[2*32+16+:8] ^ globals::gf_table_2[state_1[2*32+24+:8]];
 
-    mix_column_state_1[3*32+0  +:8]  = globals::gf_table_2[state_1[3*32+0+:8]] ^ globals::gf_table_3[state_1[3*32+8+:8]] ^ state_1[3*32+16+:8] ^ state_1[3*32+24+:8];
-    mix_column_state_1[3*32+8  +:8]  = state_1[3*32+0+:8] ^ globals::gf_table_2[state_1[3*32+8+:8]] ^ globals::gf_table_3[state_1[3*32+16+:8]] ^ state_1[3*32+24+:8];
-    mix_column_state_1[3*32+16 +:8]  = state_1[3*32+0+:8] ^ state_1[3*32+8+:8] ^ globals::gf_table_2[state_1[3*32+16+:8]] ^ globals::gf_table_3[state_1[3*32+24+:8]];
-    mix_column_state_1[3*32+24 +:8]  = globals::gf_table_3[state_1[3*32+0+:8]] ^ state_1[3*32+8+:8] ^ state_1[3*32+16+:8] ^ globals::gf_table_2[state_1[3*32+24+:8]];
-
+        mix_column_state_1[3*32+0  +:8]  = globals::gf_table_2[state_1[3*32+0+:8]] ^ globals::gf_table_3[state_1[3*32+8+:8]] ^ state_1[3*32+16+:8] ^ state_1[3*32+24+:8];
+        mix_column_state_1[3*32+8  +:8]  = state_1[3*32+0+:8] ^ globals::gf_table_2[state_1[3*32+8+:8]] ^ globals::gf_table_3[state_1[3*32+16+:8]] ^ state_1[3*32+24+:8];
+        mix_column_state_1[3*32+16 +:8]  = state_1[3*32+0+:8] ^ state_1[3*32+8+:8] ^ globals::gf_table_2[state_1[3*32+16+:8]] ^ globals::gf_table_3[state_1[3*32+24+:8]];
+        mix_column_state_1[3*32+24 +:8]  = globals::gf_table_3[state_1[3*32+0+:8]] ^ state_1[3*32+8+:8] ^ state_1[3*32+16+:8] ^ globals::gf_table_2[state_1[3*32+24+:8]];
+    end
+    else
+    begin
+        mix_column_state_1 = state_1;
+    end
     //$display("After MixColumns: %h", mix_column_state_1);
 
     // Applying AddRoundKey operation to the state
     o_state = mix_column_state_1 ^ key_schedule[(round+1)*128 +:128]; // round*128
     //$display("RoundKey Value %h", globals::key_schedule[2*128 +:128]);
     //$display("After AddRoundKey %h", state_2);
-    
+
 endmodule
