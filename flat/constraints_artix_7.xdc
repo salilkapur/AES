@@ -1,1 +1,0 @@
-../AES.srcs/constrs_1/new/constraints_artix_7.xdc
