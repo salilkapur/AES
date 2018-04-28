@@ -6,7 +6,7 @@
 *.sdf
 *.log
 *.jou
+*.pb
 
 *report*
-AES.ip_user_files
-ip
+xsim.dir
