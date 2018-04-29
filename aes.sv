@@ -33,14 +33,15 @@ module aes(
     reg [0:127] cipher_text;
     reg [0:127] tag;
     reg [0:95] iv_sw = {sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7]};
-    reg [0:127] plain_text_sw = {sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15], sw[8:15]};
+    reg [0:127] plain_text_sw = {sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11]};
+    reg [0:127] cipher_key_sw = {sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15], sw[12:15]};
     reg tag_ready;
     
     gcm_aes gcm_aes_instance(
         .clk(clk_out),
         .i_iv(iv_sw),
         .i_new_instance(i_reset),
-        .i_cipher_key(plain_text_sw),
+        .i_cipher_key(cipher_key_sw),
         .i_plain_text(plain_text_sw),
         .i_aad(128'd0),
         .o_cipher_text(cipher_text),

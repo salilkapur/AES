@@ -4,6 +4,7 @@
 set_part xc7a35tcpg236-1
 # Read verilog source files
 read_verilog -sv  fn_aes_encrypt_stage.sv
+read_verilog -sv  fn_aes_key_expansion.sv
 read_verilog -sv  gcm_aes.sv
 read_verilog -sv  aes.sv
 read_verilog -sv  display.sv
@@ -18,6 +19,8 @@ synth_design -top aes
 # Report timing
 report_timing -setup -file synth_aes_setup_report.txt
 report_timing -hold  -file synth_aes_hold_report.txt
+report_timing_summary -file synth_timing_report_aes.txt -max 20
+report_utilization -file synth_utilization_report.txt
 
 place_design
 route_design
@@ -25,6 +28,7 @@ route_design
 # Report timing
 report_timing -setup -file impl_aes_setup_report.txt
 report_timing -hold  -file impl_aes_hold_report.txt
-report_timing_summary -file timing_report_aes.txt
+report_timing_summary -file impl_timing_report_aes.txt -max 20
+report_utilization -file impl_utilization_report.txt
 
 write_bitstream -force ./bitstreams/aes.bit
