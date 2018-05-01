@@ -1,0 +1,149 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
+| Date         : Tue May  1 01:33:19 2018
+| Host         : salil running 64-bit Ubuntu 17.10
+| Command      : report_timing -setup -file synth_aes_setup_report.txt
+| Design       : aes
+| Device       : 7a35t-cpg236
+| Speed File   : -1  PRODUCTION 1.16 2016-11-09
+------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (MET) :             6.571ns  (required time - arrival time)
+  Source:                 gcm_aes_instance/r_s1_cipher_key_reg[3]_rep__0/C
+                            (rising edge-triggered cell FDRE clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@14.925ns period=29.851ns})
+  Destination:            gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4/D
+                            (rising edge-triggered cell SRL16E clocked by w_clk_out_clk_wiz_gen  {rise@0.000ns fall@14.925ns period=29.851ns})
+  Path Group:             w_clk_out_clk_wiz_gen
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            29.851ns  (w_clk_out_clk_wiz_gen rise@29.851ns - w_clk_out_clk_wiz_gen rise@0.000ns)
+  Data Path Delay:        22.948ns  (logic 7.755ns (33.794%)  route 15.193ns (66.206%))
+  Logic Levels:           36  (LUT2=4 LUT3=2 LUT6=12 MUXF7=9 MUXF8=9)
+  Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    -2.261ns = ( 27.590 - 29.851 ) 
+    Source Clock Delay      (SCD):    -1.586ns
+    Clock Pessimism Removal (CPR):    0.530ns
+  Clock Uncertainty:      0.143ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.278ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                      0.000     0.000 r  
+    W5                                                0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_gen_instance/clk
+    W5                   IBUF (Prop_ibuf_I_O)         1.458     1.458 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, unplaced)         0.584     2.042    clk_gen_instance/w_clk_in_clk_wiz_gen
+                         MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -5.108    -3.065 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, unplaced)         0.800    -2.266    clk_gen_instance/w_clk_out_clk_wiz_gen
+                         BUFG (Prop_bufg_I_O)         0.096    -2.170 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=4311, unplaced)      0.584    -1.586    gcm_aes_instance/clk_out
+                         FDRE                                         r  gcm_aes_instance/r_s1_cipher_key_reg[3]_rep__0/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.456    -1.130 r  gcm_aes_instance/r_s1_cipher_key_reg[3]_rep__0/Q
+                         net (fo=115, unplaced)       1.068    -0.062    gcm_aes_instance/r_s1_cipher_key_reg[3]_rep__0_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.295     0.233 r  gcm_aes_instance/g1_b1__17__0_rep__1/O
+                         net (fo=1, unplaced)         0.000     0.233    gcm_aes_instance/g1_b1__17__0_rep__1_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245     0.478 r  gcm_aes_instance/g0_b0__22_i_9/O
+                         net (fo=1, unplaced)         0.000     0.478    gcm_aes_instance/g0_b0__22_i_9_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104     0.582 r  gcm_aes_instance/g0_b0__22_i_2/O
+                         net (fo=51, unplaced)        1.080     1.662    gcm_aes_instance/g0_b0__22_i_2_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.319     1.981 r  gcm_aes_instance/g1_b0__22/O
+                         net (fo=1, unplaced)         0.000     1.981    gcm_aes_instance/g1_b0__22_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245     2.226 r  gcm_aes_instance/r_s2_key_schedule_reg[359]_i_2/O
+                         net (fo=1, unplaced)         0.000     2.226    gcm_aes_instance/r_s2_key_schedule_reg[359]_i_2_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104     2.330 r  gcm_aes_instance/r_s2_key_schedule_reg[359]_i_1/O
+                         net (fo=50, unplaced)        1.079     3.409    gcm_aes_instance/r_s2_key_schedule_reg[359]_i_1_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.319     3.728 r  gcm_aes_instance/g1_b1__23/O
+                         net (fo=1, unplaced)         0.000     3.728    gcm_aes_instance/g1_b1__23_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245     3.973 r  gcm_aes_instance/g0_b0__28_i_9/O
+                         net (fo=1, unplaced)         0.000     3.973    gcm_aes_instance/g0_b0__28_i_9_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104     4.077 r  gcm_aes_instance/g0_b0__28_i_2/O
+                         net (fo=46, unplaced)        1.077     5.154    gcm_aes_instance/g0_b0__28_i_2_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.319     5.473 r  gcm_aes_instance/g1_b1__28/O
+                         net (fo=1, unplaced)         0.000     5.473    gcm_aes_instance/g1_b1__28_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245     5.718 r  gcm_aes_instance/g0_b0__33_i_15/O
+                         net (fo=1, unplaced)         0.000     5.718    gcm_aes_instance/g0_b0__33_i_15_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104     5.822 r  gcm_aes_instance/g0_b0__33_i_8/O
+                         net (fo=12, unplaced)        0.360     6.182    gcm_aes_instance/g0_b0__33_i_8_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.319     6.501 r  gcm_aes_instance/g0_b0__33_i_2/O
+                         net (fo=33, unplaced)        1.183     7.684    gcm_aes_instance/g0_b0__33_i_2_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124     7.808 r  gcm_aes_instance/g2_b1__33/O
+                         net (fo=1, unplaced)         0.000     7.808    gcm_aes_instance/g2_b1__33_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245     8.053 r  gcm_aes_instance/g0_b0__38_i_15/O
+                         net (fo=1, unplaced)         0.000     8.053    gcm_aes_instance/g0_b0__38_i_15_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104     8.157 r  gcm_aes_instance/g0_b0__38_i_8/O
+                         net (fo=13, unplaced)        0.362     8.519    gcm_aes_instance/g0_b0__38_i_8_n_0
+                         LUT2 (Prop_lut2_I0_O)        0.319     8.838 r  gcm_aes_instance/g0_b0__38_i_2/O
+                         net (fo=33, unplaced)        1.183    10.021    gcm_aes_instance/g0_b0__38_i_2_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    10.145 r  gcm_aes_instance/g1_b1__38/O
+                         net (fo=1, unplaced)         0.000    10.145    gcm_aes_instance/g1_b1__38_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245    10.390 r  gcm_aes_instance/r_s3_key_schedule_reg[774]_srl2_i_3/O
+                         net (fo=1, unplaced)         0.000    10.390    gcm_aes_instance/r_s3_key_schedule_reg[774]_srl2_i_3_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104    10.494 r  gcm_aes_instance/r_s3_key_schedule_reg[774]_srl2_i_2/O
+                         net (fo=2, unplaced)         0.323    10.817    gcm_aes_instance/r_s3_key_schedule_reg[774]_srl2_i_2_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.319    11.136 r  gcm_aes_instance/g3_b7__39_i_1/O
+                         net (fo=44, unplaced)        1.190    12.326    gcm_aes_instance/g3_b7__39_i_1_n_0
+                         LUT6 (Prop_lut6_I0_O)        0.124    12.450 r  gcm_aes_instance/g3_b1__39/O
+                         net (fo=1, unplaced)         0.000    12.450    gcm_aes_instance/g3_b1__39_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245    12.695 r  gcm_aes_instance/g0_b0__44_i_15/O
+                         net (fo=1, unplaced)         0.000    12.695    gcm_aes_instance/g0_b0__44_i_15_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104    12.799 r  gcm_aes_instance/g0_b0__44_i_8/O
+                         net (fo=5, unplaced)         0.340    13.139    gcm_aes_instance/g0_b0__44_i_8_n_0
+                         LUT2 (Prop_lut2_I1_O)        0.319    13.458 r  gcm_aes_instance/g0_b0__44_i_2/O
+                         net (fo=33, unplaced)        1.183    14.641    gcm_aes_instance/g0_b0__44_i_2_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    14.765 r  gcm_aes_instance/g1_b1__44/O
+                         net (fo=1, unplaced)         0.000    14.765    gcm_aes_instance/g1_b1__44_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245    15.010 r  gcm_aes_instance/g0_b0__49_i_15/O
+                         net (fo=1, unplaced)         0.000    15.010    gcm_aes_instance/g0_b0__49_i_15_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104    15.114 r  gcm_aes_instance/g0_b0__49_i_8/O
+                         net (fo=7, unplaced)         0.347    15.461    gcm_aes_instance/g0_b0__49_i_8_n_0
+                         LUT3 (Prop_lut3_I0_O)        0.319    15.780 r  gcm_aes_instance/g0_b0__49_i_2/O
+                         net (fo=33, unplaced)        1.183    16.963    gcm_aes_instance/g0_b0__49_i_2_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    17.087 r  gcm_aes_instance/g1_b1__49/O
+                         net (fo=1, unplaced)         0.000    17.087    gcm_aes_instance/g1_b1__49_n_0
+                         MUXF7 (Prop_muxf7_I1_O)      0.245    17.332 r  gcm_aes_instance/g0_b0__54_i_15/O
+                         net (fo=1, unplaced)         0.000    17.332    gcm_aes_instance/g0_b0__54_i_15_n_0
+                         MUXF8 (Prop_muxf8_I0_O)      0.104    17.436 r  gcm_aes_instance/g0_b0__54_i_8/O
+                         net (fo=6, unplaced)         0.344    17.780    gcm_aes_instance/g0_b0__54_i_8_n_0
+                         LUT3 (Prop_lut3_I2_O)        0.319    18.099 r  gcm_aes_instance/g0_b0__54_i_2/O
+                         net (fo=33, unplaced)        1.183    19.282    gcm_aes_instance/p_2_out[145]
+                         LUT6 (Prop_lut6_I1_O)        0.124    19.406 r  gcm_aes_instance/g2_b5__54/O
+                         net (fo=1, unplaced)         0.902    20.308    gcm_aes_instance/g2_b5__54_n_0
+                         LUT6 (Prop_lut6_I1_O)        0.124    20.432 r  gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4_i_3/O
+                         net (fo=4, unplaced)         0.473    20.905    gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4_i_3_n_0
+                         LUT6 (Prop_lut6_I3_O)        0.124    21.029 r  gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4_i_1/O
+                         net (fo=1, unplaced)         0.333    21.362    gcm_aes_instance/fn_key_expansion_return[1282]
+                         SRL16E                                       r  gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock w_clk_out_clk_wiz_gen rise edge)
+                                                     29.851    29.851 r  
+    W5                                                0.000    29.851 r  clk (IN)
+                         net (fo=0)                   0.000    29.851    clk_gen_instance/clk
+    W5                   IBUF (Prop_ibuf_I_O)         1.388    31.239 r  clk_gen_instance/clkin1_ibufg/O
+                         net (fo=1, unplaced)         0.439    31.678    clk_gen_instance/w_clk_in_clk_wiz_gen
+                         MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -5.378    26.300 r  clk_gen_instance/mmcm_adv_inst/CLKOUT0
+                         net (fo=1, unplaced)         0.760    27.060    clk_gen_instance/w_clk_out_clk_wiz_gen
+                         BUFG (Prop_bufg_I_O)         0.091    27.151 r  clk_gen_instance/clkout1_buf/O
+                         net (fo=4311, unplaced)      0.439    27.590    gcm_aes_instance/clk_out
+                         SRL16E                                       r  gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4/CLK
+                         clock pessimism              0.530    28.120    
+                         clock uncertainty           -0.143    27.977    
+                         SRL16E (Setup_srl16e_CLK_D)
+                                                     -0.044    27.933    gcm_aes_instance/r_s5_key_schedule_reg[1282]_srl4
+  -------------------------------------------------------------------
+                         required time                         27.933    
+                         arrival time                         -21.362    
+  -------------------------------------------------------------------
+                         slack                                  6.571    
+
+
+
+
