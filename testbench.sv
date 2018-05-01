@@ -110,15 +110,19 @@ module testbench(
     reg [0:127] aad_block;
     reg [0:127] cipher_text_block;
     reg new_instance = 0;
+    reg pt_instance = 0;
     reg tag_ready;
     
     gcm_aes gcm_aes_instance(
         .clk(clk),
         .i_new_instance(new_instance),
+        .i_pt_instance(pt_instance),
         .i_cipher_key(cipher_key),
         .i_iv(iv),
         .i_plain_text(plain_text_block),
-        .i_aad(aad),
+        .i_aad(aad_block),
+        .i_plain_text_size(64'd512),
+        .i_aad_size(64'd512),
         .o_cipher_text(cipher_text_block),
         .o_tag(tag),
         .o_tag_ready(tag_ready)
@@ -130,33 +134,47 @@ module testbench(
     initial
     begin
         counter = 0;
-        plain_text_block = plain_text[counter*128+:128];
+        //plain_text_block = plain_text[counter*128+:128];
         aad_block = aad[counter*128+:128];
         new_instance = 1;
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         counter = counter + 1;
-        plain_text_block = plain_text[counter*128+:128];
+        //plain_text_block = plain_text[counter*128+:128];
         aad_block = aad[counter*128+:128];
         new_instance = 0;
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         counter = counter + 1;
-        plain_text_block = plain_text[counter*128+:128];
+        //plain_text_block = plain_text[counter*128+:128];
         aad_block = aad[counter*128+:128];
         new_instance = 0;
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         counter = counter + 1;
-        plain_text_block = plain_text[counter*128+:128];
+        //plain_text_block = plain_text[counter*128+:128];
         aad_block = aad[counter*128+:128];
         new_instance = 0;
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
+        pt_instance = 1;
+        counter = 0;
+        plain_text_block = plain_text[counter*128+:128];
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
+        pt_instance = 0;
+        counter = counter + 1;
+        plain_text_block = plain_text[counter*128+:128];
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
+        pt_instance = 0;
+        counter = counter + 1;
+        plain_text_block = plain_text[counter*128+:128];
+        #10 clk = ~clk; // Posedge
+        #10 clk = ~clk;
+        pt_instance = 0;
+        counter = counter + 1;
+        plain_text_block = plain_text[counter*128+:128];
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         #10 clk = ~clk; // Posedge
