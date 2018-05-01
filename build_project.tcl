@@ -4,7 +4,6 @@
 set_part xc7a35tcpg236-1
 # Read verilog source files
 read_verilog -sv  fn_aes_encrypt_stage.sv
-read_verilog -sv  fn_aes_key_expansion.sv
 read_verilog -sv  gcm_aes.sv
 read_verilog -sv  aes.sv
 read_verilog -sv  display.sv
