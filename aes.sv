@@ -9,11 +9,6 @@ module aes(
         output [6:0] seg
 );
     
-    //logic [0:1407] key_schedule;
-    //reg [0:127] cipher_key = 128'h2b7e151628aed2a6abf7158809cf4f3c;  // NIST test key
-    //reg [0:127] plain_text = 128'h3243f6a8885a308d313198a2e0370734;    //NIST test vector
-    //reg [0:127] plain_text   = 128'h0ee00ee00ee00ee00ee00ee00ee00ee0;
-    //reg [0:127] plain_text = {sw, sw, sw, sw, sw, sw, sw, sw};
     reg     i__reset;
     logic   clk_out;
     logic   locked;
