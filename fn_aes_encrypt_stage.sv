@@ -19,14 +19,6 @@ package globals_aes;
         8'he1, 8'hf8, 8'h98, 8'h11, 8'h69, 8'hd9, 8'h8e, 8'h94, 8'h9b, 8'h1e, 8'h87, 8'he9, 8'hce, 8'h55, 8'h28, 8'hdf,
         8'h8c, 8'ha1, 8'h89, 8'h0d, 8'hbf, 8'he6, 8'h42, 8'h68, 8'h41, 8'h99, 8'h2d, 8'h0f, 8'hb0, 8'h54, 8'hbb, 8'h16
     };
-
-    parameter IV_SIZE           = 96;
-    parameter BLOCK_SIZE        = 128;
-    parameter PLAIN_TEXT_SIZE   = 128;
-    parameter AAD_SIZE          = 128; // Ignoring AAD for now
-    parameter TAG_SIZE          = 128;
-    parameter AUTH_INPUT_SIZE   = 640; //AAD_SIZE + PLAIN_TEXT_SIZE + 64 + 64 (Ignoring AAD length for now)
-
 endpackage
 
 function logic[0:7] fn_gf_multiply2(
