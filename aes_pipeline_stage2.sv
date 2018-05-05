@@ -45,7 +45,7 @@ module aes_pipeline_stage2(
     logic           r_new_instance;
     logic           r_pt_instance;
  
-    always@ (posedge clk)
+    always_ff@ (posedge clk)
     begin
         r_key_schedule  <= i_key_schedule;
         r_iv            <= i_iv;

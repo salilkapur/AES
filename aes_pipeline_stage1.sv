@@ -41,7 +41,7 @@ module aes_pipeline_stage1 (
     logic           r_new_instance;
     logic           r_pt_instance;
 
-    always @(posedge clk)
+    always_ff @(posedge clk)
     begin
         r_cipher_key    <= i_cipher_key;
         r_plain_text    <= i_plain_text;
