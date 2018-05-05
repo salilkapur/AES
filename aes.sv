@@ -34,8 +34,14 @@ module aes(
 
     logic [0:127] cipher_text;
     logic [0:127] tag;
-    reg tag_ready;
+    logic tag_ready;
     
+    /* Temporary variables */
+    logic dont_change = 0;
+    logic [0:127] disp_tag;
+    logic [0:127] disp_cipher_text;
+
+
     /* Clock module (Comes from clk_gen.sv) */    
     clk_gen clk_gen_instance(
         .i_clk_in(clk),
@@ -52,6 +58,8 @@ module aes(
         .i_cipher_key(cipher_key_sw),
         .i_plain_text(plain_text_sw),
         .i_aad(~plain_text_sw),
+        .i_aad_size(64'd128),
+        .i_plain_text_size(64'd128),
         .o_cipher_text(cipher_text),
         .o_tag(tag),
         .o_tag_ready(tag_ready)
@@ -60,12 +68,23 @@ module aes(
     /* Display module (comes from display.sv) */
     display u (
         .in_count(1),
-        .i_x({tag[0:7], cipher_text[0:7]}),
+        .i_x({disp_tag[0:7], disp_cipher_text[0:7]}),
         .clk(clk_out),
         .clr(1'b0),
         .a_to_g(seg),
         .an(an),
         .dp(dp)
     );
+    
+    always_comb
+    begin
+        if (tag_ready == 1)
+            dont_change = 1;
 
+        if (dont_change == 0)
+        begin
+            disp_tag = tag;
+            disp_cipher_text = cipher_text;
+        end
+    end
 endmodule
