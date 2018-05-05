@@ -25,7 +25,7 @@ module gcm_aes(
     input   i_new_instance;
     input   i_pt_instance;
 
-    input  [0:127]      i_iv;
+    input  [0:95]       i_iv;
     input  [0:127]      i_plain_text;
     input  [0:127]      i_aad;
     input  [0:127]      i_cipher_key;
@@ -40,7 +40,7 @@ module gcm_aes(
     logic             w_s1_new_instance;
     logic             w_s1_pt_instance;
     logic [0:127]     w_s1_plain_text;
-    logic [0:127]     w_s1_iv;
+    logic [0:95]      w_s1_iv;
     logic [0:1407]    w_s1_key_schedule;
     logic [0:127]     w_s1_aad;
     logic [0:127]     w_s1_instance_size;
@@ -127,7 +127,7 @@ module gcm_aes(
         .clk(clk),
         .i_plain_text(w_s1_plain_text),
         .i_aad(w_s1_aad),
-        .i_new_instance(w_s1_aad),
+        .i_new_instance(w_s1_new_instance),
         .i_iv(w_s1_iv),
         .i_instance_size(w_s1_instance_size),
         .i_pt_instance(w_s1_pt_instance),
@@ -252,4 +252,5 @@ module gcm_aes(
         .o_tag_ready(o_tag_ready),
         .o_tag(o_tag)
     );
+
 endmodule

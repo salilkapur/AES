@@ -53,7 +53,7 @@ module aes_pipeline_stage4(
         r_aad           <= i_aad;
         r_h             <= i_h;
         r_encrypted_j0  <= i_encrypted_j0;
-        r_encrypted_j0  <= i_encrypted_cb;
+        r_encrypted_cb  <= i_encrypted_cb;
         r_new_instance  <= i_new_instance;
         r_key_schedule  <= i_key_schedule;
         r_instance_size <= i_instance_size;
