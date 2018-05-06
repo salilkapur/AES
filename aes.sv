@@ -19,7 +19,9 @@ module aes(
 
     logic           clk_out;
     logic           locked;
-   
+    
+    logic new_instance = 0;
+    logic pt_instance = 0;
     logic [0:95] iv_sw            = {sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7], sw[0:7]};
 
     logic [0:127] plain_text_sw   = {sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11], sw[8:11],
@@ -40,7 +42,8 @@ module aes(
     logic dont_change = 0;
     logic [0:127] disp_tag;
     logic [0:127] disp_cipher_text;
-
+    logic [0:3]   w_count;
+    logic [0:3]   r_count;
 
     /* Clock module (Comes from clk_gen.sv) */    
     clk_gen clk_gen_instance(
@@ -55,6 +58,7 @@ module aes(
         .clk(clk_out),
         .i_iv(iv_sw),
         .i_new_instance(i_reset),
+        .i_pt_instance(pt_instance),
         .i_cipher_key(cipher_key_sw),
         .i_plain_text(plain_text_sw),
         .i_aad(~plain_text_sw),
@@ -76,8 +80,26 @@ module aes(
         .dp(dp)
     );
     
+    always_ff @(posedge clk_out)
+    begin
+        r_count <= w_count;
+    end
+
     always_comb
     begin
+        /* Counter */
+        if (i_reset == 1)
+            w_count = 0;
+        else
+            w_count = r_count + 1;
+
+        /* Logic to indicate plain text */        
+        if (w_count == 1)
+            pt_instance = 1;
+        else
+            pt_instance = 0;
+        
+        /* Sticky logic to verify tag */
         if (tag_ready == 1)
             dont_change = 1;
 
