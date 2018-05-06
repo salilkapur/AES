@@ -58,11 +58,11 @@ module aes(
         .clk(clk_out),
         .i_iv(iv_sw),
         .i_new_instance(i_reset),
-        .i_pt_instance(pt_instance),
+        .i_pt_instance(i_reset),
         .i_cipher_key(cipher_key_sw),
         .i_plain_text(plain_text_sw),
         .i_aad(~plain_text_sw),
-        .i_aad_size(64'd128),
+        .i_aad_size(64'd0),
         .i_plain_text_size(64'd128),
         .o_cipher_text(cipher_text),
         .o_tag(tag),
@@ -93,12 +93,6 @@ module aes(
         else
             w_count = r_count + 1;
 
-        /* Logic to indicate plain text */        
-        if (w_count == 1)
-            pt_instance = 1;
-        else
-            pt_instance = 0;
-        
         /* Sticky logic to verify tag */
         if (tag_ready == 1)
             dont_change = 1;

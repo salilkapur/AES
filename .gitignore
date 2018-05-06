@@ -8,6 +8,8 @@
 *.jou
 *.pb
 *.swp
+*.xml
+*.html
 
 *report*
 xsim.dir

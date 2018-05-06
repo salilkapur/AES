@@ -31,8 +31,8 @@ module testbench(
         .i_iv(iv),
         .i_plain_text(plain_text_block),
         .i_aad(aad_block),
-        .i_plain_text_size(64'd512),
-        .i_aad_size(64'd512),
+        .i_plain_text_size(64'd0),
+        .i_aad_size(64'd0),
         .o_cipher_text(cipher_text_block),
         .o_tag(tag),
         .o_tag_ready(tag_ready)
@@ -43,6 +43,7 @@ module testbench(
     
     initial
     begin
+
         counter = 0;
         aad_block = aad[counter*128+:128];
         new_instance = 1;
@@ -55,12 +56,10 @@ module testbench(
         #10 clk = ~clk;
         counter = counter + 1;
         aad_block = aad[counter*128+:128];
-        new_instance = 0;
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         counter = counter + 1;
         aad_block = aad[counter*128+:128];
-        new_instance = 0;
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         pt_instance = 1;
@@ -73,12 +72,10 @@ module testbench(
         plain_text_block = plain_text[counter*128+:128];
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
-        pt_instance = 0;
         counter = counter + 1;
         plain_text_block = plain_text[counter*128+:128];
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
-        pt_instance = 0;
         counter = counter + 1;
         plain_text_block = plain_text[counter*128+:128];
         #10 clk = ~clk; // Posedge
@@ -98,5 +95,12 @@ module testbench(
         #10 clk = ~clk; // Posedge
         #10 clk = ~clk;
         #10 clk = ~clk; // Posedge
+    end
+
+    always_comb
+    begin
+        $display("CIPHER TEXT: %h", cipher_text_block);
+        $display("TAG: %h", tag);
+        $display("TAG READY: %h", tag_ready);
     end
 endmodule
