@@ -34,7 +34,7 @@ module testbench(
         .i_iv(iv),
         .i_plain_text(plain_text_block),
         .i_aad(aad_block),
-        .i_plain_text_size(64'd0),
+        .i_plain_text_size(64'd128),
         .i_aad_size(64'd0),
         .o_cipher_text(cipher_text_block),
         .o_tag(tag),
@@ -46,7 +46,6 @@ module testbench(
     
     initial
     begin
-
         counter = 0;
         aad_block = aad[counter*128+:128];
         new_instance = 1;

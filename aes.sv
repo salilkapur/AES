@@ -55,26 +55,25 @@ module aes(
     );  
     
     /* GCM AES module (comes from gcm_aes.sv) */
-    gcm_aes gcm_aes_instance(
-        .clk(clk_out),
-        .i_iv(iv_sw),
-        .i_new_instance(i_reset),
-        .i_pt_instance(i_reset),
-        .i_cipher_key(cipher_key_sw),
-        .i_plain_text(plain_text_sw),
-        .i_aad(~plain_text_sw),
-        .i_aad_size(64'd0),
-        .i_plain_text_size(64'd128),
-        .o_cipher_text(cipher_text),
-        .o_tag(tag),
-        .o_tag_ready(tag_ready)
-    );
+//    gcm_aes gcm_aes_instance(
+//        .clk(clk_out),
+//        .i_iv(iv_sw),
+//        .i_new_instance(i_reset),
+//        .i_pt_instance(i_reset),
+//        .i_cipher_key(cipher_key_sw),
+//        .i_plain_text(plain_text_sw),
+//        .i_aad(~plain_text_sw),
+//        .i_aad_size(64'd0),
+//        .i_plain_text_size(64'd128),
+//        .o_cipher_text(cipher_text),
+//        .o_tag(tag),
+//        .o_tag_ready(tag_ready)
+//    );
     
     /* Display module (comes from display.sv) */
     display u (
-        .i_count(1),
-        .i_data({tag[0:7], cipher_text[0:7]}),
-        .i_refresh_display(tag_ready),
+        .i_data(plain_text_sw[0:15]),
+        .i_refresh_display(i_reset),
         .clk(clk_out),
         .clr(1'b0),
         .a_to_g(seg),

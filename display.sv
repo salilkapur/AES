@@ -27,10 +27,9 @@ module display(
     
     always_ff @(posedge clk)
     begin
-        r_data <= i_data;
-        r_display_data <= w_display_data;
-        count <= i_count;
-        r_refresh_display <= i_refresh_display;
+        r_data              <= i_data;
+        r_refresh_display   <= i_refresh_display;
+        r_display_data      <= w_display_data;
     end
     
     always_comb
@@ -50,22 +49,22 @@ module display(
 
         case(digit)
             //Order of bits for 7 segment display gfedcba
-            1'h0:a_to_g = 7'b1000000; 
-            1'h1:a_to_g = 7'b1111001; 
-            1'h2:a_to_g = 7'b0100100; 
-            1'h3:a_to_g = 7'b0110000; 
-            1'h4:a_to_g = 7'b0011001; 
-            1'h5:a_to_g = 7'b0010010; 
-            1'h6:a_to_g = 7'b0000010; 
-            1'h7:a_to_g = 7'b1111000; 
-            1'h8:a_to_g = 7'b0000000; 
-            1'h9:a_to_g = 7'b0010000; 
-            1'hA:a_to_g = 7'b0001000; 
-            1'hB:a_to_g = 7'b0000011; 
-            1'hC:a_to_g = 7'b0100111;
-            1'hD:a_to_g = 7'b0100001;
-            1'hE:a_to_g = 7'b0000110;
-            1'hF:a_to_g = 7'b0001110;
+            1'h0:    a_to_g = 7'b1000000; 
+            1'h1:    a_to_g = 7'b1111001; 
+            1'h2:    a_to_g = 7'b0100100; 
+            1'h3:    a_to_g = 7'b0110000; 
+            1'h4:    a_to_g = 7'b0011001; 
+            1'h5:    a_to_g = 7'b0010010; 
+            1'h6:    a_to_g = 7'b0000010; 
+            1'h7:    a_to_g = 7'b1111000; 
+            1'h8:    a_to_g = 7'b0000000; 
+            1'h9:    a_to_g = 7'b0010000; 
+            1'hA:    a_to_g = 7'b0001000; 
+            1'hB:    a_to_g = 7'b0000011; 
+            1'hC:    a_to_g = 7'b0100111;
+            1'hD:    a_to_g = 7'b0100001;
+            1'hE:    a_to_g = 7'b0000110;
+            1'hF:    a_to_g = 7'b0001110;
             default: a_to_g = 7'b0000000;
         endcase
 
