@@ -39,11 +39,12 @@ module aes(
     logic tag_ready;
     
     /* Temporary variables */
-    logic dont_change = 0;
     logic [0:127] disp_tag;
     logic [0:127] disp_cipher_text;
-    logic [0:3]   w_count;
-    logic [0:3]   r_count;
+    
+    /* Registers */
+    logic [0:127] r_cipher_text;
+    logic [0:127] r_tag;
 
     /* Clock module (Comes from clk_gen.sv) */    
     clk_gen clk_gen_instance(
@@ -71,36 +72,14 @@ module aes(
     
     /* Display module (comes from display.sv) */
     display u (
-        .in_count(1),
-        .i_x({disp_tag[0:7], disp_cipher_text[0:7]}),
+        .i_count(1),
+        .i_data({tag[0:7], cipher_text[0:7]}),
+        .i_refresh_display(tag_ready),
         .clk(clk_out),
         .clr(1'b0),
         .a_to_g(seg),
         .an(an),
         .dp(dp)
     );
-    
-    always_ff @(posedge clk_out)
-    begin
-        r_count <= w_count;
-    end
 
-    always_comb
-    begin
-        /* Counter */
-        if (i_reset == 1)
-            w_count = 0;
-        else
-            w_count = r_count + 1;
-
-        /* Sticky logic to verify tag */
-        if (tag_ready == 1)
-            dont_change = 1;
-
-        if (dont_change == 0)
-        begin
-            disp_tag = tag;
-            disp_cipher_text = cipher_text;
-        end
-    end
 endmodule

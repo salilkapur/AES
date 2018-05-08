@@ -27,7 +27,7 @@ read_xdc constraints_artix_7.xdc
 synth_design -top aes
 
 # Create reports directory
-exec mkdir -p -- ./reports
+# exec mkdir -p -- ./reports
 
 # Reports after synthesis
 report_timing -setup  -file ./reports/synth_aes_setup_report.txt
@@ -46,7 +46,7 @@ report_timing_summary -file ./reports/impl_timing_report_aes.txt
 report_utilization    -file ./reports/impl_utilization_report.txt
 
 # Create bitstreams directory
-exec mkdir -p -- ./bitstreams
+# exec mkdir -p -- ./bitstreams
 
 #Write bitstream
 write_bitstream -force ./bitstreams/aes.bit
