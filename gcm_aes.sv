@@ -12,10 +12,10 @@ module gcm_aes(
         i_pt_instance,
         i_iv,
         i_cipher_key,
-        i_plain_text,
         i_aad,
-        i_plain_text_size,
+        i_plain_text,
         i_aad_size,
+        i_plain_text_size,
         o_cipher_text,
         o_tag,
         o_tag_ready
@@ -104,7 +104,6 @@ module gcm_aes(
     logic [0:127]     w_s7_aad;
     logic [0:127]     w_s7_instance_size;
    
-
     aes_pipeline_stage1 stage1(
         .clk(clk),
         .i_cipher_key(i_cipher_key),
@@ -141,116 +140,125 @@ module gcm_aes(
         .o_new_instance(w_s2_new_instance),
         .o_pt_instance(w_s2_pt_instance)
     );
-    
-    aes_pipeline_stage3 stage3(
-        .clk(clk),
-        .i_plain_text(w_s2_plain_text),
-        .i_aad(w_s2_aad),
-        .i_new_instance(w_s2_new_instance),
-        .i_h(w_s2_h),
-        .i_j0(w_s2_j0),
-        .i_instance_size(w_s2_instance_size),
-        .i_pt_instance(w_s2_pt_instance),
-        .i_key_schedule(w_s2_key_schedule),
-        .o_h(w_s3_h),
-        .o_encrypted_j0(w_s3_encrypted_j0),
-        .o_encrypted_cb(w_s3_encrypted_cb),
-        .o_key_schedule(w_s3_key_schedule),
-        .o_plain_text(w_s3_plain_text),
-        .o_aad(w_s3_aad),
-        .o_instance_size(w_s3_instance_size),
-        .o_new_instance(w_s3_new_instance)
-    );
 
-    aes_pipeline_stage4 stage4(
-        .clk(clk),
-        .i_plain_text(w_s3_plain_text),
-        .i_aad(w_s3_aad),
-        .i_new_instance(w_s3_new_instance),
-        .i_h(w_s3_h),
-        .i_encrypted_j0(w_s3_encrypted_j0),
-        .i_encrypted_cb(w_s3_encrypted_cb),
-        .i_instance_size(w_s3_instance_size),
-        .i_key_schedule(w_s3_key_schedule),
-        .o_h(w_s4_h),
-        .o_encrypted_j0(w_s4_encrypted_j0),
-        .o_encrypted_cb(w_s4_encrypted_cb),
-        .o_key_schedule(w_s4_key_schedule),
-        .o_plain_text(w_s4_plain_text),
-        .o_aad(w_s4_aad),
-        .o_instance_size(w_s4_instance_size),
-        .o_new_instance(w_s4_new_instance)
-    );
+    always_comb
+    begin
+        $display("Key Schedule: %h", w_s2_key_schedule);
+        $display("H: %h", w_s2_h);
+        o_tag = w_s2_key_schedule[0:127];
+        o_cipher_text = w_s2_h;
+        o_tag_ready = 1;
+    end
 
-    aes_pipeline_stage5 stage5(
-        .clk(clk),
-        .i_plain_text(w_s4_plain_text),
-        .i_aad(w_s4_aad),
-        .i_new_instance(w_s4_new_instance),
-        .i_h(w_s4_h),
-        .i_encrypted_j0(w_s4_encrypted_j0),
-        .i_encrypted_cb(w_s4_encrypted_cb),
-        .i_instance_size(w_s4_instance_size),
-        .i_key_schedule(w_s4_key_schedule),
-        .o_h(w_s5_h),
-        .o_encrypted_j0(w_s5_encrypted_j0),
-        .o_encrypted_cb(w_s5_encrypted_cb),
-        .o_key_schedule(w_s5_key_schedule),
-        .o_plain_text(w_s5_plain_text),
-        .o_aad(w_s5_aad),
-        .o_instance_size(w_s5_instance_size),
-        .o_new_instance(w_s5_new_instance)
-    );
-
-    aes_pipeline_stage6 stage6(
-        .clk(clk),
-        .i_plain_text(w_s5_plain_text),
-        .i_aad(w_s5_aad),
-        .i_new_instance(w_s5_new_instance),
-        .i_h(w_s5_h),
-        .i_encrypted_j0(w_s5_encrypted_j0),
-        .i_encrypted_cb(w_s5_encrypted_cb),
-        .i_instance_size(w_s5_instance_size),
-        .i_key_schedule(w_s5_key_schedule),
-        .o_h(w_s6_h),
-        .o_encrypted_j0(w_s6_encrypted_j0),
-        .o_encrypted_cb(w_s6_encrypted_cb),
-        .o_key_schedule(w_s6_key_schedule),
-        .o_plain_text(w_s6_plain_text),
-        .o_aad(w_s6_aad),
-        .o_instance_size(w_s6_instance_size),
-        .o_new_instance(w_s6_new_instance)
-    );
-
-    aes_pipeline_stage7 stage7(
-        .clk(clk),
-        .i_plain_text(w_s6_plain_text),
-        .i_aad(w_s6_aad),
-        .i_new_instance(w_s6_new_instance),
-        .i_h(w_s6_h),
-        .i_encrypted_j0(w_s6_encrypted_j0),
-        .i_encrypted_cb(w_s6_encrypted_cb),
-        .i_instance_size(w_s6_instance_size),
-        .i_key_schedule(w_s6_key_schedule),
-        .o_h(w_s7_h),
-        .o_encrypted_j0(w_s7_encrypted_j0),
-        .o_cipher_text(w_s7_cipher_text),
-        .o_aad(w_s7_aad),
-        .o_instance_size(w_s7_instance_size),
-        .o_new_instance(w_s7_new_instance)
-    );
-
-    aes_pipeline_stage8 stage8(
-        .clk(clk),
-        .i_cipher_text(w_s7_cipher_text),
-        .i_aad(w_s7_aad),
-        .i_new_instance(w_s7_new_instance),
-        .i_h(w_s7_h),
-        .i_encrypted_j0(w_s7_encrypted_j0),
-        .i_instance_size(w_s7_instance_size),
-        .o_cipher_text(o_cipher_text),
-        .o_tag_ready(o_tag_ready),
-        .o_tag(o_tag)
-    );
+//    aes_pipeline_stage3 stage3(
+//        .clk(clk),
+//        .i_plain_text(w_s2_plain_text),
+//        .i_aad(w_s2_aad),
+//        .i_new_instance(w_s2_new_instance),
+//        .i_h(w_s2_h),
+//        .i_j0(w_s2_j0),
+//        .i_instance_size(w_s2_instance_size),
+//        .i_pt_instance(w_s2_pt_instance),
+//        .i_key_schedule(w_s2_key_schedule),
+//        .o_h(w_s3_h),
+//        .o_encrypted_j0(w_s3_encrypted_j0),
+//        .o_encrypted_cb(w_s3_encrypted_cb),
+//        .o_key_schedule(w_s3_key_schedule),
+//        .o_plain_text(w_s3_plain_text),
+//        .o_aad(w_s3_aad),
+//        .o_instance_size(w_s3_instance_size),
+//        .o_new_instance(w_s3_new_instance)
+//    );
+//
+//    aes_pipeline_stage4 stage4(
+//        .clk(clk),
+//        .i_plain_text(w_s3_plain_text),
+//        .i_aad(w_s3_aad),
+//        .i_new_instance(w_s3_new_instance),
+//        .i_h(w_s3_h),
+//        .i_encrypted_j0(w_s3_encrypted_j0),
+//        .i_encrypted_cb(w_s3_encrypted_cb),
+//        .i_instance_size(w_s3_instance_size),
+//        .i_key_schedule(w_s3_key_schedule),
+//        .o_h(w_s4_h),
+//        .o_encrypted_j0(w_s4_encrypted_j0),
+//        .o_encrypted_cb(w_s4_encrypted_cb),
+//        .o_key_schedule(w_s4_key_schedule),
+//        .o_plain_text(w_s4_plain_text),
+//        .o_aad(w_s4_aad),
+//        .o_instance_size(w_s4_instance_size),
+//        .o_new_instance(w_s4_new_instance)
+//    );
+//
+//    aes_pipeline_stage5 stage5(
+//        .clk(clk),
+//        .i_plain_text(w_s4_plain_text),
+//        .i_aad(w_s4_aad),
+//        .i_new_instance(w_s4_new_instance),
+//        .i_h(w_s4_h),
+//        .i_encrypted_j0(w_s4_encrypted_j0),
+//        .i_encrypted_cb(w_s4_encrypted_cb),
+//        .i_instance_size(w_s4_instance_size),
+//        .i_key_schedule(w_s4_key_schedule),
+//        .o_h(w_s5_h),
+//        .o_encrypted_j0(w_s5_encrypted_j0),
+//        .o_encrypted_cb(w_s5_encrypted_cb),
+//        .o_key_schedule(w_s5_key_schedule),
+//        .o_plain_text(w_s5_plain_text),
+//        .o_aad(w_s5_aad),
+//        .o_instance_size(w_s5_instance_size),
+//        .o_new_instance(w_s5_new_instance)
+//    );
+//
+//    aes_pipeline_stage6 stage6(
+//        .clk(clk),
+//        .i_plain_text(w_s5_plain_text),
+//        .i_aad(w_s5_aad),
+//        .i_new_instance(w_s5_new_instance),
+//        .i_h(w_s5_h),
+//        .i_encrypted_j0(w_s5_encrypted_j0),
+//        .i_encrypted_cb(w_s5_encrypted_cb),
+//        .i_instance_size(w_s5_instance_size),
+//        .i_key_schedule(w_s5_key_schedule),
+//        .o_h(w_s6_h),
+//        .o_encrypted_j0(w_s6_encrypted_j0),
+//        .o_encrypted_cb(w_s6_encrypted_cb),
+//        .o_key_schedule(w_s6_key_schedule),
+//        .o_plain_text(w_s6_plain_text),
+//        .o_aad(w_s6_aad),
+//        .o_instance_size(w_s6_instance_size),
+//        .o_new_instance(w_s6_new_instance)
+//    );
+//    
+//    aes_pipeline_stage7 stage7(
+//        .clk(clk),
+//        .i_plain_text(w_s6_plain_text),
+//        .i_aad(w_s6_aad),
+//        .i_new_instance(w_s6_new_instance),
+//        .i_h(w_s6_h),
+//        .i_encrypted_j0(w_s6_encrypted_j0),
+//        .i_encrypted_cb(w_s6_encrypted_cb),
+//        .i_instance_size(w_s6_instance_size),
+//        .i_key_schedule(w_s6_key_schedule),
+//        .o_h(w_s7_h),
+//        .o_encrypted_j0(w_s7_encrypted_j0),
+//        .o_cipher_text(w_s7_cipher_text),
+//        .o_aad(w_s7_aad),
+//        .o_instance_size(w_s7_instance_size),
+//        .o_new_instance(w_s7_new_instance)
+//    );
+//
+//    aes_pipeline_stage8 stage8(
+//        .clk(clk),
+//        .i_cipher_text(w_s7_cipher_text),
+//        .i_aad(w_s7_aad),
+//        .i_new_instance(w_s7_new_instance),
+//        .i_h(w_s7_h),
+//        .i_encrypted_j0(w_s7_encrypted_j0),
+//        .i_instance_size(w_s7_instance_size),
+//        .o_cipher_text(o_cipher_text),
+//        .o_tag_ready(o_tag_ready),
+//        .o_tag(o_tag)
+//    );
 
 endmodule

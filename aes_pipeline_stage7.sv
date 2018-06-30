@@ -69,5 +69,6 @@ module aes_pipeline_stage7(
         o_new_instance = r_new_instance;
         o_instance_size = r_instance_size;
         o_h = r_h;
+        $display("Encrypted J0: %h", o_encrypted_j0);
     end
 endmodule

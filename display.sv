@@ -2,7 +2,6 @@
 
 module display(  
         input [0:15] i_data,
-        input [0:31] i_count,
         input logic i_refresh_display,
         input clk,
         input clr,
@@ -18,7 +17,6 @@ module display(
     logic [0:15]    r_data;
     logic [0:15]    r_display_data;
     logic [0:15]    w_display_data;
-    logic [0:31]    count;
     logic           r_refresh_display;
     logic           w_refresh_display;
 

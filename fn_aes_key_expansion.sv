@@ -71,6 +71,5 @@ function logic[0:1407] fn_key_expansion(
         end
         key_schedule[32*i+:32] = key_schedule[(i-4)*32+:32] ^ temp;
     end
-    $display("Key schedule: %h", key_schedule[1279+:8]);
     return key_schedule;
 endfunction

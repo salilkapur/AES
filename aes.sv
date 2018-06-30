@@ -38,13 +38,7 @@ module aes(
     logic [0:127] tag;
     logic tag_ready;
     
-    /* Temporary variables */
-    logic [0:127] disp_tag;
-    logic [0:127] disp_cipher_text;
-    
-    /* Registers */
-    logic [0:127] r_cipher_text;
-    logic [0:127] r_tag;
+    logic [0:127] w_disp_data;
 
     /* Clock module (Comes from clk_gen.sv) */    
     clk_gen clk_gen_instance(
@@ -55,30 +49,34 @@ module aes(
     );  
     
     /* GCM AES module (comes from gcm_aes.sv) */
-//    gcm_aes gcm_aes_instance(
+    gcm_aes gcm_aes_instance(
+        .clk(clk_out),
+        .i_new_instance(i_reset),
+        .i_pt_instance(i_reset),
+        .i_iv(iv_sw),
+        .i_cipher_key(cipher_key_sw),
+        .i_aad(~plain_text_sw),
+        .i_plain_text(plain_text_sw),
+        .i_aad_size(64'd0),
+        .i_plain_text_size(64'd128),
+        .o_cipher_text(cipher_text),
+        .o_tag(tag),
+        .o_tag_ready(tag_ready)
+    );
+       
+//    display_latch display_latch_inst (
 //        .clk(clk_out),
-//        .i_iv(iv_sw),
-//        .i_new_instance(i_reset),
-//        .i_pt_instance(i_reset),
-//        .i_cipher_key(cipher_key_sw),
-//        .i_plain_text(plain_text_sw),
-//        .i_aad(~plain_text_sw),
-//        .i_aad_size(64'd0),
-//        .i_plain_text_size(64'd128),
-//        .o_cipher_text(cipher_text),
-//        .o_tag(tag),
-//        .o_tag_ready(tag_ready)
+//        .i_data(tag[0:15]),
+//        .i_refresh_display(tag_ready),
+//        .o_display_data(w_disp_data)
 //    );
-    
-    /* Display module (comes from display.sv) */
+
     display u (
-        .i_data(plain_text_sw[0:15]),
-        .i_refresh_display(i_reset),
+        .x(cipher_text[0:15]),
         .clk(clk_out),
         .clr(1'b0),
         .a_to_g(seg),
         .an(an),
         .dp(dp)
     );
-
 endmodule

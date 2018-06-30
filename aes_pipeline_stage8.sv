@@ -30,11 +30,11 @@ module aes_pipeline_stage8(
     logic [0:127]   r_instance_size;
     logic           r_new_instance;
     logic [0:127]   r_sblock;
-    logic [0:15]    r_counter;
+    logic [0:31]    r_counter;
 
     logic [0:127]   w_encrypted_cb;
     logic [0:127]   w_sblock;
-    logic [0:15]    w_counter;
+    logic [0:31]    w_counter;
     logic [0:127]   w_auth_input;
      
     /* Helper variables */
